@@ -1,6 +1,6 @@
 # PayMe
 
-**PayMe** is a mock web app that simulates an intermediary wallet between users and their banks and acts as a form of a payment and billing system. Our app allows users to create artificial bank accounts and complete transactions.
+**PayMe** is a mock web app that simulates an intermediary wallet between users and their banks and acts as a form of a payment and billing system. Our app allows users to create artificial accounts, complete transactions, transfer money, and setup billing for subscriptions.
 
 
 ## Screenshots
