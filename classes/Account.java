@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 public class Account { 
 
     // Attributes
@@ -12,6 +16,13 @@ public class Account {
     private String loginPassword;
     private boolean isLoggedIn; 
 
+    // Address list 
+    private List<Address> addresses; 
+
+    // CC list
+    private List<CreditCardInfo> creditcardList; 
+
+
     // constructor
     public Account() {
         this.userID = UUID.randomUUID();
@@ -24,7 +35,7 @@ public class Account {
                 - this function would have to be triggered when a form
                   or something is triggered from the front end
 
-        - How to add a new Address 
+        - How to add a new Address  
             - validation
             - set one of them to isPriority true, 
             - when one become true, change others to false
@@ -37,5 +48,17 @@ public class Account {
 
     */
 
+
+    public void addAddress(Address address)
+    {
+        this.addresses.add(address); 
+
+    }
+
+    public void addCreditCardInfo(CreditCardInfo cc)
+    {
+
+        this.creditcardList.add(cc); 
+    }
 
 }
