@@ -1,7 +1,7 @@
 public class Account { 
 
     // Attributes
-    private int userID;
+    private final UUID userID;
     private int phoneNumber;
     private String firstName;
     private String lastName;
@@ -12,18 +12,17 @@ public class Account {
     private String loginPassword;
     private boolean isLoggedIn; 
 
-
     // constructor
-    public Account()
-    {
-
-
+    public Account() {
+        this.userID = UUID.randomUUID();
     }
 
     /*  some of the methods to work on 
 
         - login functino
             - how to change isLoggedIn to true and false
+                - this function would have to be triggered when a form
+                  or something is triggered from the front end
 
         - How to add a new Address 
             - validation

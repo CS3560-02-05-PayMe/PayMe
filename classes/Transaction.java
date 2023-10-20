@@ -1,16 +1,23 @@
-public class Transaction{
+public class Transaction {
 
     // Attributes
-    private int transactionID; 
-    private int transactionDate; // only digits
-    private double transactionAmount; 
-    private String transactionType; 
-    private boolean isRecurring; 
+    private final UUID transactionID; 
+    private final Date transactionDate; // only digits
+    private final double transactionAmount; 
+    private final String transactionType; 
+    private final boolean isRecurring; 
 
+    public Transaction(Date transactionDate, double transactionAmount, String transactionType) {
+        this(transactionDate, transactionAmount, transactionType, false);
+    }
 
+    public Transaction(Date transactionDate, double transactionAmount, String transactionType, boolean isRecurring) {
+        this.transactionID = UUID.randomUUID();
 
-    
+        this.transactionDate = transactionDate;
+        this.transactionAmount = transactionAmount;
+        this.transactionType = transactionType;
 
-
-
+        this.isRecurring = isRecurring;
+    }
 }

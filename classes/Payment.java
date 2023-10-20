@@ -1,35 +1,45 @@
-public class Payment{
+public class Payment {
 
-    // Attributes
-    private int paymentID;
-    private int paymentDate;
-    private double paymmentAmount; 
-    private String paymentType; 
-    private boolean isSettled; 
+   // Attributes
+   private final UUID paymentID;
+   private final Date paymentDate;
+   private final double paymentAmount; 
+   private final String paymentType; 
+   private boolean isSettled, isRecurring;
 
+   public Payment(Date paymentDate, double paymentAmount, String paymentType) {
+      this(paymentDate, paymentAmount, paymentType, false, false);
+   }
 
+   public Payment(Date paymentDate, double paymentAmount, String paymentType, boolean isSettled, boolean isRecurring) {
+      this.paymentID = UUID.randomUUID();
+     
+      this.paymentDate = paymentDate;
+      this.paymentAmount = paymentAmount;
+      this.paymentType = paymentType;
 
-    /*  Methods to work on
-     * 
-     * 
-     */
+      this.isSettled = isSettled;
+      this.isRecurring = isRecurring;
+   }
 
+   /*  Methods to work on
+    * 
+    * 
+    */
 
-     void paymentInitiation()
-     {
-        // void, but can change
-     }
+   void paymentInitiation()
+   {
+      // void, but can change
+   }
 
-     void sendPayment()
-     {
-        // call paymentInitiation()
-     }
+   void sendPayment()
+   {
+      // call paymentInitiation()
+   }
 
-     void requestPayment()
-     {
-        // call paymentInitiation()
-     }
-
-
+   void requestPayment()
+   {
+      // call paymentInitiation()
+   }
 
 }
