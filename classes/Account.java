@@ -65,7 +65,7 @@ public class Account {
     {
         for (CreditCardInfo card : creditCardList)
         {
-            if (card.getCardNumber == cardNumber)
+            if (card.getCardNumber() == cardNumber)
                 card.setPriority(true);
             else
                 card.setPriority(false);
