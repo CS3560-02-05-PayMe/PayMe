@@ -20,7 +20,7 @@ public class Account {
     private List<Address> addresses; 
 
     // CC list
-    private List<CreditCardInfo> creditcardList; 
+    private List<CreditCardInfo> creditCardList; 
 
 
     // constructor
@@ -58,7 +58,17 @@ public class Account {
     public void addCreditCardInfo(CreditCardInfo cc)
     {
 
-        this.creditcardList.add(cc); 
+        this.creditCardList.add(cc); 
     }
 
+    public void setPriorityCard(long cardNumber) 
+    {
+        for (CreditCardInfo card : creditCardList)
+        {
+            if (card.getCardNumber == cardNumber)
+                card.setPriority(true);
+            else
+                card.setPriority(false);
+        }
+    }
 }
