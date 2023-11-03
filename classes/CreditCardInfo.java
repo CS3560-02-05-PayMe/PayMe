@@ -37,6 +37,13 @@ public class CreditCardInfo {
         this.isPriority = isPriority;
     }
 
+    public boolean getPriority() {
+        return isPriority;
+    }
+
+    public void setPriority(boolean isPriority) {
+        this.isPriority = isPriority;
+    }
     // getter/setter for info update
 
 }
