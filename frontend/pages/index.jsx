@@ -1,5 +1,4 @@
 import styles from "../styles/main.module.css";
-import typingStyles from "../styles/typing.module.css";
 
 import Header from "../components/header";
 import CurrentBalance from "../components/CurrentBalance";
@@ -12,7 +11,7 @@ import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
 
 /**
- * Default location Next.js checks for rendering
+ * Default location Next.js checks to render website
  */
 const { provider, webSocketProvider } = configureChains([mainnet, polygonMumbai], [publicProvider()]);
 

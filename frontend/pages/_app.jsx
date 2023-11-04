@@ -16,6 +16,9 @@ const fontPoppins = Poppins({
 	display: "swap",
 });
 
+/** This allows easier communication with queries when
+ *  using POST/GET methods
+ */
 const queryClient = new QueryClient();
 
 /**

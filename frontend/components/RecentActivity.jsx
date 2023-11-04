@@ -1,5 +1,6 @@
 import { Card, Table } from "antd";
 
+// Temporary sample data provided
 const sampleData = [
 	{
 		key: "1",
@@ -95,7 +96,7 @@ const sampleColumns = [
 		render: (_, record) => (
 			<div style={record.type === "Send" ? { color: "red" } : { color: "green" }}>
 				{record.type === "Send" ? "-" : "+"}
-				{record.amount} Matic
+				{record.amount}
 			</div>
 		),
 	},
