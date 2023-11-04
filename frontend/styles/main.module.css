@@ -1,0 +1,23 @@
+.transparentContainer {
+    background-color: transparent;
+	min-height: calc(100vh - 72px);
+    overflow: auto;
+}
+
+.leftContainer,
+.rightContainer {
+    display: flex;
+    flex: 1 0 50%;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    overflow: auto;
+    flex-wrap: wrap;
+}
+
+.leftContainer {
+    flex: 1 0 40%;
+}
+
+.rightContainer {
+    flex: 1 0 60%;
+}
