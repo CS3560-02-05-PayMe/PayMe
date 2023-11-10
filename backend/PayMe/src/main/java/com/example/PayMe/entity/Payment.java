@@ -2,6 +2,7 @@ package com.example.PayMe.entity;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -21,20 +22,20 @@ public class Payment {
     // Attributes
 
     @Id
+    @GeneratedValue
     private final UUID paymentID;
     private final Date paymentDate;
-    private final double paymentAmount;
     private final String paymentType;
+    private double paymentAmount;
     private boolean isSettled, isRecurring;
 
-
-    // General ctor
-    public Payment(UUID paymentID, Date paymentDate, double paymentAmount, String paymentType, boolean isSettled, boolean isRecurring) {
+    public Payment(UUID paymentID, Date paymentDate, String paymentType) {
         this.paymentID = paymentID;
         this.paymentDate = paymentDate;
-        this.paymentAmount = paymentAmount;
         this.paymentType = paymentType;
-        this.isSettled = isSettled;
-        this.isRecurring = isRecurring;
     }
+
+
+
+
 }
