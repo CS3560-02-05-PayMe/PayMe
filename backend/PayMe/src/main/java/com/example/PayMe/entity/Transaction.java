@@ -33,4 +33,6 @@ public class Transaction {
         this.transactionAmount = transactionAmount;
         this.transactionType = transactionType;
     }
+
+
 }
