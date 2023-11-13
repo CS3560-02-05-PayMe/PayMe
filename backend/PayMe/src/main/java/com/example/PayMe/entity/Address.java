@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @Entity
 @Table(name = "Address")
 public class Address {
@@ -29,4 +29,7 @@ public class Address {
     public Address(UUID addressID) {
         this.addressID = addressID;
     }
+
+
+
 }
