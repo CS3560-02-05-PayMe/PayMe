@@ -1,13 +1,15 @@
 import "../styles/global.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { ConfigProvider } from "antd";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Poppins } from "next/font/google";
-
 import React, { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { WindowSizeProvider } from "../components/providers/WindowSizeProvider";
 
+// default font
 const fontPoppins = Poppins({
 	weight: ["300", "400", "500", "600", "700", "900"],
 	preload: true,
@@ -30,18 +32,18 @@ const queryClient = new QueryClient();
  */
 const App = ({ Component, pageProps }) => {
 	const router = useRouter();
-	const [isLoading, setIsLoading] = useState(true);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		const handleLoadStart = (url) => {
-			setIsLoading(true);
+			setLoading(true);
 		};
 
 		const handleLoadComplete = (url) => {
-			setIsLoading(false);
+			setLoading(false);
 		};
 
-		setIsLoading(false);
+		setLoading(false);
 
 		// router events to allow dry coding of inter-page loading screens
 		router.events.on("routeChangeStart", handleLoadStart);
@@ -61,15 +63,27 @@ const App = ({ Component, pageProps }) => {
 				<title>PayMe</title>
 			</Head>
 			<QueryClientProvider client={queryClient}>
-				<style jsx global>
-					{`
-						html {
-							--font-Poppins: ${fontPoppins.style.fontFamily};
-						}
-					`}
-				</style>
-				<Component {...pageProps} />
-				{/* add loading screen */}
+				<WindowSizeProvider>
+					{/* sets default font for all antd objects to Poppins */}
+					<ConfigProvider
+						theme={{
+							token: {
+								fontFamily: fontPoppins.style.fontFamily,
+							},
+						}}
+					>
+						{/* adds variable for font family */}
+						<style jsx global>
+							{`
+								html {
+									--font-Poppins: ${fontPoppins.style.fontFamily};
+								}
+							`}
+						</style>
+						<Component {...pageProps} />
+						{/* add loading screen */}
+					</ConfigProvider>
+				</WindowSizeProvider>
 			</QueryClientProvider>
 		</>
 	);
