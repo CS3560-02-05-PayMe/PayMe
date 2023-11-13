@@ -4,7 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a21bf16f-f970-45e0-bc55-857eaeb30dbd" name="Changes" comment="" />
+    <list default="true" id="a21bf16f-f970-45e0-bc55-857eaeb30dbd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Address.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/CreditCardInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/CreditCardInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/repository/TransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/repository/TransactionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/components/Overlay/RegisterForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Overlay/RegisterForm.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,13 +46,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/Users/eugene/Desktop/CS3560_PayMe/PayMe"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/eugene/Desktop/CS3560_PayMe/PayMe&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunManager">
+    <configuration name="PayMeApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.example.PayMe.PayMeApplication" />
+      <module name="PayMe" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.PayMe.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.PayMeApplication" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

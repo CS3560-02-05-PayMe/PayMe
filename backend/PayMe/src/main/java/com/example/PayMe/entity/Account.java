@@ -1,9 +1,6 @@
 package com.example.PayMe.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -19,15 +16,26 @@ import java.util.UUID;
 public class Account {
     @Getter
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final UUID userID;
-    private int phoneNumber;
+    // Login Credentials
+    @Column(nullable = false, unique = true)
+    private String loginID;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, name = "first_name")
     private String firstName;
+
+    @Column(nullable = false, name = "last_name")
     private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String emailAddress;
 
-    // Login Credentials
-    private String loginID;
+    @Column(nullable = false)
+    private int phoneNumber;
 
 
     public Account(UUID userID) {

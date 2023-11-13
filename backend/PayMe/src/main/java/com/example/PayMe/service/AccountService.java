@@ -5,6 +5,8 @@ import com.example.PayMe.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AccountService {
     @Autowired
@@ -18,7 +20,9 @@ public class AccountService {
         return repo.save(account);
     }
 
-
+    public List<Account> listAll() {
+        return (List<Account>) repo.findAll();
+    }
 
 
     //------------------------------------------------
