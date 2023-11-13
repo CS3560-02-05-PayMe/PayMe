@@ -15,12 +15,12 @@ import java.util.Date;
 @Table(name = "CreditCardInfo")
 public class CreditCardInfo {
     /*
-     * Account may have multiple CreditCardInfo
+     * One Account may have multiple CreditCardInfo
      */
 
 
     // Attributes
-    private long cardNumber; // should only cantain numbers (no - or space)
+    private long cardNumber; // should only contain numbers (no '-' or ' ')
     private int cvvNumber;
     private Date expDate;
     private String firstNameOnCard;
