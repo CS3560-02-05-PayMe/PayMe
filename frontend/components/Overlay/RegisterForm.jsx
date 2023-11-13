@@ -16,6 +16,9 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		console.log(name, username, password, address, phone);
+		fetch("http://localhost:8080/users/save", { name, username, password, address, phone }).then((response) => {
+			console.log(response);
+		});
 	};
 
 	const formatPhoneNumber = (value) => {
