@@ -1,45 +1,53 @@
 package com.example.PayMe.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @Entity
 @Table(name = "Account")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account {
-    @Getter
     @Id
-    @GeneratedValue
-    private final UUID userID;
-    private int phoneNumber;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "account_id", updatable = false, nullable = false)
+    private UUID accountID;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
+
+    @Column(name = "email_address")
     private String emailAddress;
 
     // Login Credentials
-    private String loginID;
+    @Column(name = "username")
+    private String username;
 
+    @Column(name = "password")
+    private String password;
 
-    public Account(UUID userID) {
-        this.userID = userID;
+    @Column(name = "balance")
+    private double balance;
+
+    public UUID getAccountID() {
+        return accountID;
     }
 
-
-    public UUID getUserID() {
-        return userID;
-    }
-
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -55,27 +63,15 @@ public class Account {
         return emailAddress;
     }
 
-    public String getLoginID() {
-        return loginID;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public String getPassword() {
+        return password;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public void setLoginID(String loginID) {
-        this.loginID = loginID;
+    public double getBalance() {
+        return balance;
     }
 }

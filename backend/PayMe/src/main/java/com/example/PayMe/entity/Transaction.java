@@ -1,9 +1,7 @@
 package com.example.PayMe.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,25 +14,48 @@ import java.util.UUID;
 @NoArgsConstructor
 @Entity
 @Table(name = "Transaction")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Transaction {
-    // Attributes
     @Id
-    @GeneratedValue
-    private final UUID transactionID;
-    private final Date transactionDate; // only digits
-    private final double transactionAmount;
-    private final String transactionType;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "transaction_id", updatable = false, nullable = false)
+    private UUID transactionID;
+
+    @Column(name = "transaction_date")
+    private Date transactionDate;
+
+    @Column(name = "transaction_amount")
+    private double transactionAmount;
+
+    @Column(name = "transaction_type")
+    private String transactionType;
+
+    @Column(name = "transaction_recipient")
+    private UUID recipient;
+
+    @Column(name = "transaction_payer")
+    private UUID payer;
+
+    @Column(name = "is_recurring", columnDefinition = "boolean default false")
     private boolean isRecurring;
 
-
-    public Transaction(UUID transactionID, Date transactionDate, double transactionAmount, String transactionType) {
-        this.transactionID = transactionID;
-        this.transactionDate = transactionDate;
-        this.transactionAmount = transactionAmount;
-        this.transactionType = transactionType;
+    public UUID getTransactionID() {
+        return transactionID;
     }
 
+    public Date getTransactionDate() {
+        return transactionDate;
+    }
 
-    public Transaction save(Transaction transaction) {
+    public double getTransactionAmount() {
+        return transactionAmount;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public boolean isRecurring() {
+        return isRecurring;
     }
 }
