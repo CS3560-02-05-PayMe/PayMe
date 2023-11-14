@@ -34,8 +34,30 @@ public class AccountService {
 
     //------------------------------------------------
     // DELETE methods below
+    public void deleteAccount(UUID uuid) {
+        repo.deleteById(uuid);
+    }
 
+    public Account updateAccount(UUID uuid, Account updatedAccount) {
+        Account existingAccount = repo.findById(uuid).orElse(null);
 
+        if (existingAccount != null) {
+            // Update the existing account with the data from updatedAccount
+            existingAccount.setFirstName(updatedAccount.getFirstName());
+            existingAccount.setLastName(updatedAccount.getLastName());
+            existingAccount.setBalance(updatedAccount.getBalance());
+            existingAccount.setPhoneNumber(updatedAccount.getPhoneNumber());
+            existingAccount.setEmailAddress(updatedAccount.getEmailAddress());
+            existingAccount.setUsername(updatedAccount.getUsername());
+            existingAccount.setPassword(updatedAccount.getPassword());
+
+            // Save the updated account
+            return repo.save(existingAccount);
+        }
+
+        // If the account with the specified UUID doesn't exist, return null or throw an exception
+        return null;
+    }
 
 
     //------------------------------------------------

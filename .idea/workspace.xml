@@ -7,17 +7,9 @@
     <list default="true" id="a21bf16f-f970-45e0-bc55-857eaeb30dbd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Address.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/CreditCardInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/CreditCardInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Payment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/repository/TransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/repository/TransactionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Overlay/RegisterForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Overlay/RegisterForm.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

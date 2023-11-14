@@ -74,4 +74,46 @@ public class Account {
     public double getBalance() {
         return balance;
     }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "accountID=" + accountID +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", balance=" + balance +
+                '}';
+    }
 }

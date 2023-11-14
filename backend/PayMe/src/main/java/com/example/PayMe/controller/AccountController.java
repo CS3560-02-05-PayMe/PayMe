@@ -36,4 +36,23 @@ public class AccountController {
         System.out.println("Accessing account with uuid: " + uuid.toString());
         return new ResponseEntity<>(service.retrieveAccount(uuid), HttpStatus.OK);
     }
+
+    @DeleteMapping("/deleteAccount/{uuid}")
+    public ResponseEntity<String> deleteAccount(@PathVariable UUID uuid) {
+        service.deleteAccount(uuid);
+        return new ResponseEntity<>("Account deleted successfully", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateAccount/{uuid}")
+    public ResponseEntity<Account> updateAccount(
+            @PathVariable UUID uuid,
+            @RequestBody Account updatedAccount) {
+        Account result = service.updateAccount(uuid, updatedAccount);
+
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
