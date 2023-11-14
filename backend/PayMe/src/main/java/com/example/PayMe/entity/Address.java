@@ -1,35 +1,64 @@
-//package com.example.PayMe.entity;
-//
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.GeneratedValue;
-//import jakarta.persistence.Id;
-//import jakarta.persistence.Table;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//import java.util.UUID;
-//
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor(force = true)
-//@Entity
-//@Table(name = "Address")
-//public class Address {
-//    @Id
-//    @GeneratedValue
-//    private final UUID addressID;
-//    private String streetAddress1;
-//    private String streetAddress2;
-//    private String cityName;
-//    private String stateName;
-//    private String zipCode; // since others are strings
-//    private String country;
-//
-//    public Address(UUID addressID) {
-//        this.addressID = addressID;
-//    }
-//
-//
-//
-//}
+package com.example.PayMe.entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "Address")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class Address {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "address_id", updatable = false, nullable = false)
+    private UUID addressID;
+
+    @Column(name = "primary_address")
+    private String primaryAddress;
+
+    //    @Column(name = "secondary_address")
+    //    private String secondaryAddress;
+
+    @Column(name = "city_name")
+    private String cityName;
+
+    @Column(name = "state_name")
+    private String stateName;
+
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @Column(name = "country")
+    private String country;
+
+    public UUID getAddressID() {
+        return addressID;
+    }
+
+    public String getPrimaryAddress() {
+        return primaryAddress;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+}

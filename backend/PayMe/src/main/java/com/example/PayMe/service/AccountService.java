@@ -5,6 +5,7 @@ import com.example.PayMe.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.List;
 
 @Service
@@ -24,11 +25,11 @@ public class AccountService {
         return (List<Account>) repo.findAll();
     }
 
-
     //------------------------------------------------
     // GET methods below
-
-
+    public Account retrieveAccount(UUID uuid) {
+        return repo.getReferenceById(uuid);
+    }
 
 
     //------------------------------------------------
