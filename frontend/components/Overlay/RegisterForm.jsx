@@ -22,8 +22,10 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ emailAddress: email, firstName: name, lastName: name, username, password, phoneNumber: phone, balance: 100 }),
 		})
-			.then(response => response.json())
-			.then(data => {console.log(data)})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+			})
 			.catch(console.error);
 	};
 
