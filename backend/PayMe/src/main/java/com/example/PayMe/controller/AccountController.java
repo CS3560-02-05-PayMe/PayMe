@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-import java.util.List;
-
 @RestController
 public class AccountController {
     // controller will talk to service

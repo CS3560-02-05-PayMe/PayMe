@@ -114,7 +114,7 @@ export default function Header({ loggedIn, account, handleLogout }) {
 					)}
 				</div>
 				{forms["loginFormOpen"] && <LoginForm onRelease={closeLoginForm} onAltRelease={openRegisterForm} />}
-				{forms["registerFormOpen"] && <RegisterForm apply={closeRegisterForm} applyAlt={openLoginForm} />}
+				{forms["registerFormOpen"] && <RegisterForm onRelease={closeRegisterForm} onAltRelease={openLoginForm} />}
 			</div>
 		</header>
 	);
