@@ -11,14 +11,20 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 	const [password, setPassword] = useState("");
 	const [address, setAddress] = useState("");
 	const [phone, setPhone] = useState("");
+	const [email, setEmail] = useState("");
 
 	// create new user account
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log(name, username, password, address, phone);
-		fetch("http://localhost:8080/users/save", { name, username, password, address, phone }).then((response) => {
-			console.log(response);
-		});
+		console.log(name, username, password, address, phone, email);
+		fetch(`http://localhost:8080/addAccount`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ emailAddress: email, firstName: name, lastName: name, username, password, phoneNumber: phone, balance: 100 }),
+		})
+			.then(response => response.json())
+			.then(data => {console.log(data)})
+			.catch(console.error);
 	};
 
 	const formatPhoneNumber = (value) => {
@@ -72,6 +78,14 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 				const formattedNumber = formatPhoneNumber(event.target.value);
 				event.target.value = formattedNumber;
 				setPhone(formattedNumber);
+			}}
+		/>,
+		<input
+			type="email"
+			placeholder="Email Address"
+			required
+			onChange={(event) => {
+				setEmail(event.target.value);
 			}}
 		/>,
 	];
