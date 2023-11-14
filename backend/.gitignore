@@ -5,6 +5,9 @@
 # Compiled class file
 *.class
 
+# Unnecessary for builds
+.idea
+
 # Log file
 *.log
 

@@ -59,15 +59,7 @@ public class Payment {
         return isSettled;
     }
 
-    public void setSettled(boolean settled) {
-        isSettled = settled;
-    }
-
     public boolean isRecurring() {
         return isRecurring;
-    }
-
-    public void setRecurring(boolean recurring) {
-        isRecurring = recurring;
     }
 }
