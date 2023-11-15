@@ -18,4 +18,20 @@ public class AddressService {
     public void deleteAddress(UUID uuid) {
         repo.deleteById(uuid);
     }
+
+    public Address updateAddress(UUID uuid, Address updatedAddress){
+        Address existingAddress = repo.findById(uuid).orElse(null);
+
+        if(existingAddress != null){
+            existingAddress.setPrimaryAddress(updatedAddress.getPrimaryAddress());
+            existingAddress.setCityName(updatedAddress.getCityName());
+            existingAddress.setStateName(updatedAddress.getStateName());
+            existingAddress.setZipCode(updatedAddress.getZipCode());
+            existingAddress.setCountry(updatedAddress.getCountry());
+
+            return repo.save(existingAddress);
+        }
+        else
+            return null; //Return null if address id doesn't return Address
+    }
 }

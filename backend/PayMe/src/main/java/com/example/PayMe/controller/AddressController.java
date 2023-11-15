@@ -35,6 +35,17 @@ public class AddressController {
         return new ResponseEntity<>("Address deleted successfully",HttpStatus.OK);
     }
 
+    ///////////////////////////////////
+    //Functionality added on 11/14 Eric
+    ///////////////////////////////////
+    @PutMapping("/account/updateAddress/{uuid}")
+    public ResponseEntity<Address> updateAddress(@PathVariable UUID uuid, @RequestBody Address updatedAddress){
+        Address result = service.updateAddress(uuid, updatedAddress);
 
-
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
