@@ -25,9 +25,9 @@ public class AccountService {
         return repo.save(account);
     }
 
-    public List<Account> listAll() {
-        return (List<Account>) repo.findAll();
-    }
+//    public List<Account> listAll() {
+//        return (List<Account>) repo.findAll();
+//    }
 
     //------------------------------------------------
     // GET methods below
@@ -66,6 +66,5 @@ public class AccountService {
     }
 
 
-    //------------------------------------------------
-    // UPDATE methods below
+
 }
