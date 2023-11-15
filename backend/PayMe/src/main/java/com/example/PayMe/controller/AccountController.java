@@ -94,6 +94,9 @@ public class AccountController {
 //    @GetMapping("/getAccount/{username}/{password}")
 //    public ResponseEntity<Account> getAccountByLogin(@PathVariable("username") String username, @PathVariable("password") String password)
 //    {
+            // get the account corresponding username, and check if
+            // input password matches,
+            // return account if match, return null if not match
 //
 //    }
 
