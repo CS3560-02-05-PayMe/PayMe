@@ -3,9 +3,10 @@ package com.example.PayMe.service;
 import com.example.PayMe.entity.CreditCardInfo;
 import com.example.PayMe.repository.CreditCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class CreditCardService {
     @Autowired
     private CreditCardRepository repo;

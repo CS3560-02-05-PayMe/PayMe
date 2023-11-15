@@ -2,6 +2,7 @@ package com.example.PayMe.controller;
 
 import com.example.PayMe.entity.Account;
 import com.example.PayMe.service.AccountService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,10 +64,21 @@ public class AccountController {
 
 
     // get Account by first name
-    @GetMapping("/getAccount/{firstName}")
-    public ResponseEntity<Account> getAccountByFirstName(@PathVariable("firstName") String firstName) {
-        System.out.println("Accessing account with uuid: " + firstName.toString());
-        return new ResponseEntity<>(service.retrieveAccount(firstName), HttpStatus.OK);
+    @GetMapping("/getAccount/{username}")
+    public ResponseEntity<Account> getAccountByUsername(@PathVariable("username") String username) {
+        System.out.println("Accessing account with username: " + username.toString());
+        //return new ResponseEntity<>(service.retrieveAccount(firstName), HttpStatus.OK);
+        Account account = service.getAccountByUsername(username);
+
+        // check if inputed username is valid on system
+        if (account != null)
+        {
+            // if user exist
+            return new ResponseEntity<>(account, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     // get account by email
@@ -77,5 +89,12 @@ public class AccountController {
     }
 
 
+
+    // create new method that takes username and password
+//    @GetMapping("/getAccount/{username}/{password}")
+//    public ResponseEntity<Account> getAccountByLogin(@PathVariable("username") String username, @PathVariable("password") String password)
+//    {
+//
+//    }
 
 }

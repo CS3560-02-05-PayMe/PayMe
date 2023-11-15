@@ -65,6 +65,14 @@ public class AccountService {
         return null;
     }
 
+    //
+    //  functionalities added on Nov 15
+    //
+    public Account getAccountByUsername(String username) {
+        // save id of user in hash map
+        UUID accountId = userHash.get(username);
 
-
+        // return account if Id found, otherwise return null
+        return accountId != null ? repo.findById(accountId).orElse(null) : null;
+    }
 }
