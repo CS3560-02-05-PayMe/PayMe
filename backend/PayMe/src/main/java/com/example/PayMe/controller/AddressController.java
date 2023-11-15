@@ -35,6 +35,6 @@ public class AddressController {
         return new ResponseEntity<>("Address deleted successfully",HttpStatus.OK);
     }
 
-    
+
 
 }

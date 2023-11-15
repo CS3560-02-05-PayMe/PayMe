@@ -20,9 +20,7 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="49ab8dd0-2fb2-4771-8ffd-73b8cb03aa19" object-ref="consoles/payme" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />

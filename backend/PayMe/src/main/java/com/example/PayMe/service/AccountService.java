@@ -5,6 +5,7 @@ import com.example.PayMe.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.List;
 
@@ -12,12 +13,15 @@ import java.util.List;
 public class AccountService {
     @Autowired
     private AccountRepository repo;
+    private HashMap<String, UUID> userHash = new HashMap<>();
 
     // Write get, post, delete... methods
 
     //------------------------------------------------
     // POST methods below
     public Account saveAccount(Account account){
+
+        userHash.put(account.getUsername(), account.getAccountID());
         return repo.save(account);
     }
 
@@ -30,6 +34,8 @@ public class AccountService {
     public Account retrieveAccount(UUID uuid) {
         return repo.getReferenceById(uuid);
     }
+
+    public Account retrieveAccount(String username) {return repo.getReferenceById(userHash.get(username));}
 
 
     //------------------------------------------------

@@ -55,4 +55,27 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+
+    // ------------------------------------------------------------------------------------------
+    // Functionality added on Nov 14
+    // ------------------------------------------------------------------------------------------
+
+
+    // get Account by first name
+    @GetMapping("/getAccount/{firstName}")
+    public ResponseEntity<Account> getAccountByFirstName(@PathVariable("firstName") String firstName) {
+        System.out.println("Accessing account with uuid: " + firstName.toString());
+        return new ResponseEntity<>(service.retrieveAccount(firstName), HttpStatus.OK);
+    }
+
+    // get account by email
+    @GetMapping("/getAccount/{emailAddress}")
+    public ResponseEntity<Account> getAccountByEmailAddress(@PathVariable("emailAddress") String emailAddress) {
+        System.out.println("Accessing account with uuid: " + emailAddress.toString());
+        return new ResponseEntity<>(service.retrieveAccount(UUID.fromString(emailAddress)), HttpStatus.OK);
+    }
+
+
+
 }
