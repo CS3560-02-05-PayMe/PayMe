@@ -116,4 +116,9 @@ public class Account {
                 ", balance=" + balance +
                 '}';
     }
+
+    // attributes added on Nov 15
+    public String getFullname(){
+        return this.firstName + " " + this.lastName;
+    }
 }
