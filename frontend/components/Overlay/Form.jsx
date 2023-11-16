@@ -22,13 +22,21 @@ export default function Form({ children, formType, formInputs = [], onSubmit: ha
 	}, []);
 
 	return (
-		<div className={clsx("position-absolute top-0 start-0", styles.loginFormContainer)}>
+		<div className={clsx("position-fixed top-0 start-0", styles.loginFormContainer)}>
 			<div className={clsx("d-flex flex-column position-relative top-50 start-50 p-4", styles.loginForm, typingStyles.fontType5)} ref={formRef}>
 				<span className={clsx("w-100 text-center", typingStyles.fontTypeHeading1)}>{formType}</span>
-				<form className="w-100 text-center" onSubmit={handleSubmit}>
-					{formInputs.map((item, index) => {
-						return <div key={index} className={clsx("my-3", styles.formInput)}>{item}</div>;
-					})}
+				<form
+					className={clsx("w-100 text-center", styles.formFields)}
+					onSubmit={(event) => {
+						handleSubmit(event);
+						apply();
+					}}
+				>
+					{formInputs.map((item, index) => (
+						<div key={index} className={clsx("my-3", styles.formInput)}>
+							{item}
+						</div>
+					))}
 					{children}
 				</form>
 			</div>

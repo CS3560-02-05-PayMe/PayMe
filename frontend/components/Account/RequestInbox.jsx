@@ -7,7 +7,7 @@ import RequestInboxForm from "../Overlay/RequestInboxForm";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
-export default function RequestInbox({ apply, dollarBalance, requests }) {
+export default function RequestInbox({ loggedIn, apply, dollarBalance, requests }) {
 	const [requestInboxOpen, setRequestInboxOpen] = useState(false);
 
 	const openRequestInbox = (event) => {
@@ -28,7 +28,7 @@ export default function RequestInbox({ apply, dollarBalance, requests }) {
 		<>
 			<div className={clsx("w-100", styles.inboxContainer)}>
 				<div className={clsx("d-flex mt-2 mx-auto align-items-center justify-content-center", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={openRequestInbox}>
-					Request Inbox{requests.length && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requests.length}</span>}
+					Request Inbox{loggedIn && requests.length > 0 && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requests.length}</span>}
 				</div>
 			</div>
 			{requestInboxOpen && <RequestInboxForm apply={apply} dollarBalance={dollarBalance} requests={requests} onRelease={closeRequestInbox} />}

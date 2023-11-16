@@ -50,9 +50,9 @@ export default function Header({ loggedIn, account, handleLogout }) {
 	};
 
 	useEffect(() => {
-		const hashFragment = router.asPath.split("#")[1];
-		console.log(hashFragment, loggedIn);
-
+		// const hashFragment = router.asPath.split("#")[1];
+		// console.log(hashFragment, loggedIn);
+		
 		const handleDropdownClick = (event) => {
 			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
 				toggleDropdown(event, false);

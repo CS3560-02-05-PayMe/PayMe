@@ -1,5 +1,6 @@
 import styles from "../../styles/heading.module.css";
 
+import { doubleify, toFloat } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -19,11 +20,13 @@ export default function RequestForm({ apply, onRelease }) {
 			}}
 		/>,
 		<input
-			type="number"
+			type="text"
 			placeholder="Amount"
 			required
 			onChange={(event) => {
-				setAmount(event.target.value);
+				const formattedNumber = doubleify(event.target.value);
+				event.target.value = formattedNumber;
+				setAmount(toFloat(formattedNumber));
 			}}
 		/>,
 	];
@@ -31,6 +34,7 @@ export default function RequestForm({ apply, onRelease }) {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		console.log(debtor, amount);
+		apply({ name: debtor, amount });
 	};
 
 	return (
