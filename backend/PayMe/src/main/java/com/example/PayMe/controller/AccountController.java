@@ -66,17 +66,15 @@ public class AccountController {
     // get Account by first name
     @GetMapping("/getAccount/{username}")
     public ResponseEntity<Account> getAccountByUsername(@PathVariable("username") String username) {
-        System.out.println("Accessing account with username: " + username.toString());
-        //return new ResponseEntity<>(service.retrieveAccount(firstName), HttpStatus.OK);
-        Account account = service.getAccountByUsername(username);
+        System.out.println("Accessing account with username: " + username);
 
-        // check if inputed username is valid on system
-        if (account != null)
-        {
-            // if user exist
+        Account account;
+        account = service.getAccountByUsername(username);
+
+        // Check if the account is found
+        if (account != null) {
             return new ResponseEntity<>(account, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -90,14 +88,16 @@ public class AccountController {
 
 
 
-    // create new method that takes username and password
-//    @GetMapping("/getAccount/{username}/{password}")
-//    public ResponseEntity<Account> getAccountByLogin(@PathVariable("username") String username, @PathVariable("password") String password)
-//    {
-            // get the account corresponding username, and check if
-            // input password matches,
-            // return account if match, return null if not match
-//
-//    }
+     //create new method that takes username and password
+     @GetMapping("/getAccount/{username}/{password}")
+     public ResponseEntity<Account> getAccountByLogin(@PathVariable("username") String username, @PathVariable("password") String password) {
+         Account account = service.getAccountByLogin(username, password);
+
+         if (account != null) {
+             return new ResponseEntity<>(account, HttpStatus.OK);
+         } else {
+             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+         }
+     }
 
 }

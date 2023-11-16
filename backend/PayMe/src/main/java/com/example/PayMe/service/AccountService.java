@@ -22,6 +22,7 @@ public class AccountService {
     public Account saveAccount(Account account){
 
         userHash.put(account.getUsername(), account.getAccountID());
+
         return repo.save(account);
     }
 
@@ -74,5 +75,25 @@ public class AccountService {
 
         // return account if Id found, otherwise return null
         return accountId != null ? repo.findById(accountId).orElse(null) : null;
+    }
+
+
+
+
+
+
+    // In your AccountService class
+    public Account getAccountByLogin(String username, String password) {
+        // Retrieve the account based on the provided username
+        UUID accountID = userHash.get(username);
+        Account account = repo.getReferenceById(accountID);
+
+        // Check if the account is found and the password matches
+        if (account != null && account.getPassword().equals(password)) {
+            return account;
+        } else {
+            // If the account is not found or the password doesn't match, return null
+            return null;
+        }
     }
 }
