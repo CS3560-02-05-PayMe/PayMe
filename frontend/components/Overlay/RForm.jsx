@@ -1,7 +1,6 @@
 import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 
-import { numberify, formatCardNumber, formatExpirationDate, formatPhoneNumber } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -22,15 +21,13 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 	const [cvvNumber, setCvvNumber] = useState("");
 	const [cardExpDate, setCardExpDate] = useState("");
 
-	const handleNextStep = (event) => {
-		event.preventDefault();
+	const handleNextStep = () => {
 		if (step < totalSteps) {
 			setStep(step + 1);
 		}
 	};
 
-	const handlePreviousStep = (event) => {
-		event.preventDefault();
+	const handlePreviousStep = () => {
 		if (step > 1) {
 			setStep(step - 1);
 		}
@@ -59,6 +56,32 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 				console.log(account);
 			})
 			.catch(console.error);
+	};
+
+	const numberify = (value) => {
+		return value.replace(/\D/g, "");
+	};
+
+	const formatPhoneNumber = (value) => {
+		value = numberify(value);
+
+		let npa = value.slice(0, 3); // number planning area (area code)
+		let nxx = value.slice(3, 6); // exchange/central office code
+		let sln = value.slice(6, 10); // subscriber line number (last 4 digits)
+
+		return npa + (nxx.length > 0 ? "-" : "") + nxx + (sln.length > 0 ? "-" : "") + sln;
+	};
+
+	const formatCardNumber = (value) => {
+		value = numberify(value);
+
+		return value.replace(/(\d{4})/g, "$1 ").trim();
+	};
+
+	const formatExpirationDate = (value) => {
+		value = numberify(value);
+
+		return value.replace(/(\d{2})(\d{0,2})/g, (match, p1, p2) => `${p1}${p2 ? "/" + p2 : ""}`);
 	};
 
 	const firstFormInput = [
@@ -149,44 +172,36 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 		/>,
 	];
 
-	// TODO: clean up logic
+	const formInputs = step < 2 ? firstFormInput : secondFormInput;
 	// formInputs={formInputs}
 	return (
 		<Form formType={"Register"} onSubmit={handleSubmit} onRelease={onRelease}>
-			<fieldset className={clsx("w-100", { ["d-none"]: step > 1 })}>
+			<fieldset className={clsx("w-100")}>
 				<div className={clsx("d-flex w-100 justify-content-center")}>
-					<span className={clsx(typingStyles.fontType7)}>Personal Details</span>
+					<span className={clsx(typingStyles.fontType7)}>{step === 1 ? "Personal Details" : "Payment Details"}</span>
 				</div>
-				{firstFormInput.map((item, index) => {
+				{formInputs.map((item, index) => {
 					return (
 						<div key={index} className={clsx("my-3", styles.formInput)}>
 							{item}
 						</div>
 					);
 				})}
-				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
-					Next
-				</button>
-			</fieldset>
-			<fieldset className={clsx("w-100", { ["d-inline-block"]: step > 1 })}>
-				<div className={clsx("d-flex w-100 justify-content-center")}>
-					<span className={clsx(typingStyles.fontType7)}>Payment Details</span>
-				</div>
-				{secondFormInput.map((item, index) => {
-					return (
-						<div key={index} className={clsx("my-3", styles.formInput)}>
-							{item}
-						</div>
-					);
-				})}
-				<div className={clsx("d-flex w-100 justify-content-between", styles.registerButtonWrapper)}>
-					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handlePreviousStep}>
-						Previous
+				{step < 2 && (
+					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
+						Next
 					</button>
-					<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
-						Register
-					</button>
-				</div>
+				)}
+				{step > 1 && (
+					<div className={clsx("d-flex w-100 justify-content-between", styles.registerButtonWrapper)}>
+						<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handlePreviousStep}>
+							Previous
+						</button>
+						<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
+							Register
+						</button>
+					</div>
+				)}
 			</fieldset>
 			<div className={clsx("my-2", styles.formRegister)}>
 				<span>

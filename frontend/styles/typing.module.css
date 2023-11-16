@@ -22,6 +22,15 @@
     font-weight: 400;
 }
 
+.fontType3 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 12px;
+    font-weight: 400;
+}
+
 .fontType4 {
     font-family: var(--font-Poppins);
     line-height: 1.5;
@@ -74,6 +83,10 @@
 	letter-spacing: normal;
     font-size: 36px;
     font-weight: 400;
+}
+
+.white9 {
+    color: #999;
 }
 
 @media screen and (max-width: 425px) {

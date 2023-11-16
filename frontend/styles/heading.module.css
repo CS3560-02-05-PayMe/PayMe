@@ -112,8 +112,6 @@
 	will-change: opacity;
 }
 
-
-
 .loginForm {
 	width: 90vw;
 	color: black;
@@ -257,20 +255,23 @@
 	background-color: #06345c;
 }
 
-.payNowButton::after {
-	content: "PAY";
+.payNowButton {
 	display: inline-block;
 	color: #fff;
 	background-color: #06345c;
-	border-radius: 5px;
-	padding: 2px 5px 2px 5px;
+	border-radius: 15px;
 	margin-left: 10px;
-	will-change: transform;
-	transition: transform 265ms ease-in-out;
+	will-change: transform, background-color;
+	transition: transform 265ms ease-in-out, background-color 265ms ease-in-out;
 }
 
-.payNowButton:hover::after {
+.payNowButton:hover {
+	background-color: #072c4d;
 	transform: scale(1.05);
+}
+
+.formFields fieldset:not(:first-of-type) {
+	display: none;
 }
 
 @media only screen and (max-width: 767px) {
