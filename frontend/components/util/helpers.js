@@ -20,7 +20,7 @@ export function toFloat(value) {
 
 export function formatCardNumber(value) {
 	value = numberify(value);
-
+	// ensures there is a space between every 4 digits
 	return value.replace(/(\d{4})/g, "$1 ").trim();
 }
 
@@ -38,4 +38,8 @@ export function formatPhoneNumber(value) {
 	let sln = value.slice(6, 10); // subscriber line number (last 4 digits)
 
 	return npa + (nxx.length > 0 ? "-" : "") + nxx + (sln.length > 0 ? "-" : "") + sln;
+}
+
+export function fullName({ firstName, lastName }) {
+	return firstName + " " + lastName;
 }

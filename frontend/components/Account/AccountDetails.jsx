@@ -2,13 +2,25 @@ import styles from "../../styles/main.module.css";
 import headingStyles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 
+import AddressForm from "../Overlay/AddressForm";
+import CardForm from "../Overlay/CardForm";
+
 import { Card, Skeleton } from "antd";
 import { CreditCardOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useState } from "react";
-import AddressForm from "../Overlay/AddressForm";
-import CardForm from "../Overlay/CardForm";
 
+/**
+ * 
+ * @param loggedIn 		Whether user is logged in 
+ * @param loading 		Whether data is still being loaded
+ * @param addresses 	List of user addresses
+ * @param account 		User account
+ * @param cards 		List of user credit cards
+ * @param changeAddress Helper function to change primary address
+ * @param changeCard 	Helper function to change primary card
+ * 
+ */
 export default function AccountDetails({ loggedIn, loading, addresses, account: { name, username }, cards, pointsBalance, changeAddress, changeCard }) {
 	// helper function to shorten/hide account address
 	const abbreviate = (input, prefixLength = 3, suffixLength = 3) => {

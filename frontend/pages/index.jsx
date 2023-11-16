@@ -72,7 +72,13 @@ export default function PayMeApp() {
 		}
 
 		setBalance((balance - amount).toFixed(2));
-		setRequests(requests.filter((request) => request.uuid !== uuid));
+
+		const requestIndex = requests.findIndex((request) => request.uuid === uuid && request.amount === amount);
+		if (requestIndex !== -1) {
+			const updatedRequests = [...requests];
+			updatedRequests.splice(requestIndex, 1);
+			setRequests(updatedRequests);
+		}
 
 		const tempHistory = history.map((transaction) => ({
 			...transaction,
@@ -80,6 +86,20 @@ export default function PayMeApp() {
 		}));
 		tempHistory.unshift({ key: 0, subject: name, type: "Send", address: "0x12...2345", message: randomElement(sampleMessage), amount });
 		setHistory(tempHistory);
+	};
+
+	const handleRequestRemove = ({ uuid, name, amount, updatedList = [] }) => {
+		if (!!updatedList) {
+			setRequests(updatedList);
+			return;
+		}
+
+		const requestIndex = requests.findIndex((request) => request.uuid === uuid && request.amount === amount);
+		if (requestIndex !== -1) {
+			const updatedRequests = [...requests];
+			updatedRequests.splice(requestIndex, 1);
+			setRequests(updatedRequests);
+		}
 	};
 
 	const handlePay = ({ name = null, username = null, amount }) => {
@@ -102,9 +122,12 @@ export default function PayMeApp() {
 
 		setBalance((balance - amount).toFixed(2));
 
-		const request = requests.filter((r) => r.username === username || r.name === name);
-		if (!!request.length) {
-			const requestIndex = requests.findIndex((r) => (r.username === username || r.name === name) && r.amount === amount);
+		const requestFilter = (r) => (r.username === username || r.name === name) && r.amount === amount;
+		// check if pay amount/recipient matches any in inbox
+		const requestFiltered = requests.filter(requestFilter);
+		if (!!requestFiltered.length) {
+			// find index of request to remove
+			const requestIndex = requests.findIndex(requestFilter);
 			requests.splice(requestIndex, 1);
 			setRequests(requests);
 		}
@@ -165,9 +188,11 @@ export default function PayMeApp() {
 		setHistory(tempHistory);
 
 		setRequests([
-			// { uuid: 1, name: "John", username: "joster", amount: 15.68 },
-			{ uuid: 2, name: "Sam", username: "s0m", amount: 25 },
-			{ uuid: 3, name: "Sam", username: "s0m", amount: 15.68 },
+			{ uuid: 1, name: "John Doe", username: "joster", amount: 19.94 },
+			{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 25 },
+			{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 20.23 },
+			{ uuid: 3, name: "Sam Oh", username: "fakes0m", amount: 17.38 },
+			{ uuid: 4, name: "Caitlyn Kiramman", username: "kuppcake", amount: 17.38 },
 		]);
 
 		setBalance((Math.random() * 1000).toFixed(2));
@@ -194,7 +219,7 @@ export default function PayMeApp() {
 			<div className={clsx("contentContainer d-flex h-100 p-md-3 p-xl-5", styles.transparentContainer)}>
 				<div className={clsx("accountContainer p-2", styles.leftContainer)}>
 					{/* <Switch checked={!loading} onChange={onChange} /> */}
-					<CurrentBalance loggedIn={loggedIn} loading={loading} dollarBalance={balance} requests={requests} handleRequest={handleRequestPay} />
+					<CurrentBalance loggedIn={loggedIn} loading={loading} dollarBalance={balance} requests={requests} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
 					<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
 						<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
 							<Pay apply={handlePay} />

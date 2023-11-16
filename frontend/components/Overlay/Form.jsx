@@ -24,7 +24,7 @@ export default function Form({ children, formType, formInputs = [], onSubmit: ha
 	return (
 		<div className={clsx("position-fixed top-0 start-0", styles.loginFormContainer)}>
 			<div className={clsx("d-flex flex-column position-relative top-50 start-50 p-4", styles.loginForm, typingStyles.fontType5)} ref={formRef}>
-				<span className={clsx("w-100 text-center", typingStyles.fontTypeHeading1)}>{formType}</span>
+				<span className={clsx("w-100 text-center", styles.formHeading, typingStyles.fontTypeHeading1)}>{formType}</span>
 				<form
 					className={clsx("w-100 text-center", styles.formFields)}
 					onSubmit={(event) => {

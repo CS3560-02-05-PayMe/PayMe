@@ -1,13 +1,21 @@
 import styles from "../../styles/main.module.css";
 import headingStyles from "../../styles/heading.module.css";
-import typingStyles from "../../styles/typing.module.css";
 
 import RequestInboxForm from "../Overlay/RequestInboxForm";
 
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
-export default function RequestInbox({ loggedIn, apply, dollarBalance, requests }) {
+/**
+ * 
+ * @param loggedIn 		Whether user is logged in 
+ * @param apply 		Pays the request from other user
+ * @param remove 		Removes the request from other user
+ * @param dollarBalance Current user account balance
+ * @param requests 		All request data for current user
+ * 
+ */
+export default function RequestInbox({ loggedIn, apply, remove, dollarBalance, requests }) {
 	const [requestInboxOpen, setRequestInboxOpen] = useState(false);
 
 	const openRequestInbox = (event) => {
@@ -31,7 +39,7 @@ export default function RequestInbox({ loggedIn, apply, dollarBalance, requests 
 					Request Inbox{loggedIn && requests.length > 0 && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requests.length}</span>}
 				</div>
 			</div>
-			{requestInboxOpen && <RequestInboxForm apply={apply} dollarBalance={dollarBalance} requests={requests} onRelease={closeRequestInbox} />}
+			{requestInboxOpen && <RequestInboxForm apply={apply} remove={remove} dollarBalance={dollarBalance} requests={requests} onRelease={closeRequestInbox} />}
 		</>
 	);
 }
