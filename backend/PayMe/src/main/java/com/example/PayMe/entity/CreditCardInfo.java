@@ -1,10 +1,13 @@
 package com.example.PayMe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.UUID;
@@ -24,6 +27,12 @@ public class CreditCardInfo {
     @Id
     @Column(name = "card_number", updatable = false, nullable = false)
     private String cardNumber; // should only contain numbers (no '-' or ' ')
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "account_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Account account;
 
     @Column(name = "cvv_number")
     private int cvvNumber;
