@@ -62,4 +62,16 @@ public class Payment {
     public boolean isRecurring() {
         return isRecurring;
     }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "paymentID=" + paymentID +
+                ", paymentDate=" + paymentDate +
+                ", paymentType='" + paymentType + '\'' +
+                ", paymentAmount=" + paymentAmount +
+                ", isSettled=" + isSettled +
+                ", isRecurring=" + isRecurring +
+                '}';
+    }
 }
