@@ -5,19 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a21bf16f-f970-45e0-bc55-857eaeb30dbd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dbnavigator.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dbnavigator.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/controller/TransactionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Address.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Address.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/CreditCardInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/CreditCardInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Payment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/entity/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/repository/TransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/repository/TransactionRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/AccountService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/PayMe/src/main/java/com/example/PayMe/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/components/Overlay/RegisterForm.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/components/Overlay/RegisterForm.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +15,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -38,6 +26,10 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2Y2i9CSrjEotEwCTCeYTsINQ4PD" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -48,15 +40,39 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/eugene/Desktop/CS3560_PayMe/PayMe&quot;
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/eugene/Desktop/CS3560_PayMe/PayMe&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.PayMeApplication">
     <configuration name="PayMeApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.example.PayMe.PayMeApplication" />
       <module name="PayMe" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.example.PayMe.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PayMeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="PayMe" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.PayMe.PayMeApplication" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.example.PayMe.*" />
@@ -81,7 +97,22 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1699729921280</updated>
+      <workItem from="1700025249186" duration="5263000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

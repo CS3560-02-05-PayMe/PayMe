@@ -22,7 +22,6 @@ public class CreditCardInfo {
      * for this project, we will only have one card active
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "card_number", updatable = false, nullable = false)
     private String cardNumber; // should only contain numbers (no '-' or ' ')
 

@@ -2,6 +2,7 @@ package com.example.PayMe.controller;
 
 import com.example.PayMe.entity.Account;
 import com.example.PayMe.service.AccountService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +37,67 @@ public class AccountController {
         System.out.println("Accessing account with uuid: " + uuid.toString());
         return new ResponseEntity<>(service.retrieveAccount(uuid), HttpStatus.OK);
     }
+
+    @DeleteMapping("/deleteAccount/{uuid}")
+    public ResponseEntity<String> deleteAccount(@PathVariable UUID uuid) {
+        service.deleteAccount(uuid);
+        return new ResponseEntity<>("Account deleted successfully", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateAccount/{uuid}")
+    public ResponseEntity<Account> updateAccount(
+            @PathVariable UUID uuid,
+            @RequestBody Account updatedAccount) {
+        Account result = service.updateAccount(uuid, updatedAccount);
+
+        if (result != null) {
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    // ------------------------------------------------------------------------------------------
+    // Functionality added on Nov 14
+    // ------------------------------------------------------------------------------------------
+
+
+    // get Account by first name
+    @GetMapping("/getAccount/{username}")
+    public ResponseEntity<Account> getAccountByUsername(@PathVariable("username") String username) {
+        System.out.println("Accessing account with username: " + username.toString());
+        //return new ResponseEntity<>(service.retrieveAccount(firstName), HttpStatus.OK);
+        Account account = service.getAccountByUsername(username);
+
+        // check if inputed username is valid on system
+        if (account != null)
+        {
+            // if user exist
+            return new ResponseEntity<>(account, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // get account by email
+    @GetMapping("/getAccount/{emailAddress}")
+    public ResponseEntity<Account> getAccountByEmailAddress(@PathVariable("emailAddress") String emailAddress) {
+        System.out.println("Accessing account with uuid: " + emailAddress.toString());
+        return new ResponseEntity<>(service.retrieveAccount(UUID.fromString(emailAddress)), HttpStatus.OK);
+    }
+
+
+
+    // create new method that takes username and password
+//    @GetMapping("/getAccount/{username}/{password}")
+//    public ResponseEntity<Account> getAccountByLogin(@PathVariable("username") String username, @PathVariable("password") String password)
+//    {
+            // get the account corresponding username, and check if
+            // input password matches,
+            // return account if match, return null if not match
+//
+//    }
+
 }
