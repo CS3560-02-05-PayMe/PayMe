@@ -59,4 +59,31 @@ public class Request {
     public boolean isRecurring() {
         return isRecurring;
     }
+
+    public void setRequestDate(Date requestDate) {
+        this.requestDate = requestDate;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+    public void setRequestAmount(double requestAmount) {
+        this.requestAmount = requestAmount;
+    }
+    public void setIsSettled(boolean isSettled) {
+        this.isSettled = isSettled;
+    }
+    public void setIsRecurring(boolean isRecurring) {
+        this.isRecurring = isRecurring;
+    }
+    public String toString() {
+        return "Request{" +
+                "requestID=" + requestID +
+                ", requestDate=" + requestDate +
+                ", requestType='" + requestType + '\'' +
+                ", requestAmount=" + requestAmount +
+                ", isSettled=" + isSettled +
+                ", isRecurring=" + isRecurring +
+                '}';
+    }
 }
