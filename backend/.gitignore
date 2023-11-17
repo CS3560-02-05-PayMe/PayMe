@@ -5,8 +5,11 @@
 # Compiled class file
 *.class
 
-# Unnecessary for builds
+# IntelliJ IDEA
 .idea
+*.iws
+*.iml
+*.ipr
 
 # Log file
 *.log
