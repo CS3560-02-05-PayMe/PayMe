@@ -2,13 +2,25 @@ import styles from "../../styles/main.module.css";
 import headingStyles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 
+import AddressForm from "../Overlay/AddressForm";
+import CardForm from "../Overlay/CardForm";
+
 import { Card, Skeleton } from "antd";
 import { CreditCardOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useState } from "react";
-import AddressForm from "../Overlay/AddressForm";
-import CardForm from "../Overlay/CardForm";
 
+/**
+ * 
+ * @param loggedIn 		Whether user is logged in 
+ * @param loading 		Whether data is still being loaded
+ * @param addresses 	List of user addresses
+ * @param account 		User account
+ * @param cards 		List of user credit cards
+ * @param changeAddress Helper function to change primary address
+ * @param changeCard 	Helper function to change primary card
+ * 
+ */
 export default function AccountDetails({ loggedIn, loading, addresses, account: { name, username }, cards, pointsBalance, changeAddress, changeCard }) {
 	// helper function to shorten/hide account address
 	const abbreviate = (input, prefixLength = 3, suffixLength = 3) => {
@@ -20,15 +32,18 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 		return `${prefix}...${suffix}`;
 	};
 
+	// helper function to shorten/hide card number
 	const shorten = (input) => {
 		if (input.length <= 4) return input;
 		return input.slice(input.length - 4);
 	};
 
+	// helper function to find primary address/card
 	const findPrimary = (array) => {
 		return array.find((ele) => ele.primary);
 	};
 
+	// items to populate Account Details Card
 	const accountDetails = [
 		{
 			icon: <UserOutlined className="accountUserIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
@@ -46,6 +61,7 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 		},
 	];
 
+	// moderation for address/credit card forms
 	const [forms, setForms] = useState({ addressFormOpen: false, cardFormOpen: false });
 
 	const openForm = (form, event) => {
@@ -82,7 +98,7 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 							<div className={clsx("d-flex ms-3")}>{item.icon}</div>
 							<div className={clsx("d-flex h-100 w-100 flex-column align-items-start")}>
 								<span className="accountDetail">{item.detail}</span>
-								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{username}</span>}
+								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{username || "unavailable"}</span>}
 							</div>
 							{index > 0 && (
 								<div className={clsx("d-flex w-100 justify-content-end")}>

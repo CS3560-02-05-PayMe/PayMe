@@ -63,6 +63,15 @@
 	border-radius: 10px;
 }
 
+.balanceLogin > a {
+	border-color: #06345c;
+}
+
+.balanceLogin > a:hover {
+	color: #fff;
+	background-color: #06345c;
+}
+
 @media screen and (max-width: 768px) {
 	.transparentContainer {
 		flex-wrap: wrap;

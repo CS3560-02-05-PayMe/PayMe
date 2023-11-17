@@ -7,6 +7,13 @@ import Form from "./Form";
 import clsx from "clsx";
 import { useState } from "react";
 
+/**
+ * 
+ * @param cards 	List of saved cards
+ * @param apply 	Updates primary card
+ * @param onRelease Closes card form
+ * 
+ */
 export default function CardForm({ cards, apply, onRelease }) {
 	const [card, setCard] = useState({});
 	const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -23,10 +30,12 @@ export default function CardForm({ cards, apply, onRelease }) {
 		/>,
 	];
 
+	// helper function to determine which card is "checked"
 	const handleRadioChange = (index) => {
 		setSelectedIndex(index);
 	};
-
+	
+	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		let updatedCard = selectedIndex === -1 ? card : cards.at(selectedIndex);

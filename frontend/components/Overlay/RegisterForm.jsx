@@ -7,7 +7,14 @@ import Form from "./Form";
 import clsx from "clsx";
 import { useState } from "react";
 
-export default function RegisterForm({ onRelease, onAltRelease }) {
+/**
+ * 
+ * @param apply 	   Calls provided function from parent (ensure conditional state is correct)
+ * @param onRelease    Closes register form
+ * @param onAltRelease Opens login form
+ * 
+ */
+export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 	const [step, setStep] = useState(1);
 	const totalSteps = 2;
 
@@ -152,7 +159,7 @@ export default function RegisterForm({ onRelease, onAltRelease }) {
 	// TODO: clean up logic
 	// formInputs={formInputs}
 	return (
-		<Form formType={"Register"} onSubmit={handleSubmit} onRelease={onRelease}>
+		<Form formType={"Register"} onSubmit={handleSubmit} onRelease={onRelease} outsideClick={apply}>
 			<fieldset className={clsx("w-100", { ["d-none"]: step > 1 })}>
 				<div className={clsx("d-flex w-100 justify-content-center")}>
 					<span className={clsx(typingStyles.fontType7)}>Personal Details</span>

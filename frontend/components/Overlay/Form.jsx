@@ -4,13 +4,25 @@ import typingStyles from "../../styles/typing.module.css";
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
 
-export default function Form({ children, formType, formInputs = [], onSubmit: handleSubmit = null, onRelease: apply }) {
+/**
+ *
+ * @param children 	   Child components/content to pass
+ * @param formType     Title of form
+ * @param formInputs   List of inputs expected from user
+ * @param onSubmit
+ * @param onRelease    Closes form
+ * @param outsideClick Calls provided function from parent
+ *
+ */
+export default function Form({ children, formType, formInputs = [], onSubmit: handleSubmit = () => {}, onRelease: apply, outsideClick = () => {} }) {
 	const formRef = useRef(null);
 
 	useEffect(() => {
+		//
 		const handleFormClick = (event) => {
 			if (formRef.current && !formRef.current.contains(event.target)) {
 				apply();
+				outsideClick();
 			}
 		};
 
@@ -24,7 +36,7 @@ export default function Form({ children, formType, formInputs = [], onSubmit: ha
 	return (
 		<div className={clsx("position-fixed top-0 start-0", styles.loginFormContainer)}>
 			<div className={clsx("d-flex flex-column position-relative top-50 start-50 p-4", styles.loginForm, typingStyles.fontType5)} ref={formRef}>
-				<span className={clsx("w-100 text-center", typingStyles.fontTypeHeading1)}>{formType}</span>
+				<span className={clsx("w-100 text-center", styles.formHeading, typingStyles.fontTypeHeading1)}>{formType}</span>
 				<form
 					className={clsx("w-100 text-center", styles.formFields)}
 					onSubmit={(event) => {
