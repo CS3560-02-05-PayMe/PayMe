@@ -6,6 +6,13 @@ import Form from "./Form";
 import clsx from "clsx";
 import { useState } from "react";
 
+/**
+ * 
+ * @param addresses List of saved addresses
+ * @param apply 	Updates primary address
+ * @param onRelease Closes Address Form
+ * 
+ */
 export default function AddressForm({ addresses, apply, onRelease }) {
 	const [address, setAddress] = useState({});
 	const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -20,10 +27,12 @@ export default function AddressForm({ addresses, apply, onRelease }) {
 		/>,
 	];
 
+	// helper function to determine which address is "checked"
 	const handleRadioChange = (index) => {
 		setSelectedIndex(index);
 	};
 
+	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		let updatedAddress = selectedIndex === -1 ? address : addresses.at(selectedIndex);

@@ -1,48 +1,19 @@
 import styles from "../styles/heading.module.css";
 import typingStyles from "../styles/typing.module.css";
 
-import LoginForm from "./Overlay/LoginForm";
-import RegisterForm from "./Overlay/RegisterForm";
+import AuthForm from "./Overlay/AuthForm";
 
 import { LoginOutlined } from "@ant-design/icons";
 import clsx from "clsx";
-import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 
 export default function Header({ loggedIn, account, handleLogout }) {
-	const router = useRouter();
-
-	const [forms, setForms] = useState({ loginFormOpen: false, registerFormOpen: false });
 	const [dropdownOpen, setDropdownOpen] = useState(false);
+	const [loginFormOpen, setLoginFormOpen] = useState(false);
 
 	const dropdownRef = useRef(null);
 
 	const navItems = ["Summary", "Activity", "Send/Request", "Wallet", "Help"];
-
-	const openForm = (form, event) => {
-		event?.stopPropagation();
-		setForms((prevForms) => ({ ...prevForms, [form]: true }));
-	};
-
-	const closeForm = (form) => {
-		setForms((prevForms) => ({ ...prevForms, [form]: false }));
-	};
-
-	const openLoginForm = (event) => {
-		openForm("loginFormOpen", event);
-	};
-
-	const closeLoginForm = () => {
-		closeForm("loginFormOpen");
-	};
-
-	const openRegisterForm = (event) => {
-		openForm("registerFormOpen", event);
-	};
-
-	const closeRegisterForm = () => {
-		closeForm("registerFormOpen");
-	};
 
 	const toggleDropdown = (event, forcedToggle = !dropdownOpen) => {
 		event?.stopPropagation();
@@ -52,7 +23,7 @@ export default function Header({ loggedIn, account, handleLogout }) {
 	useEffect(() => {
 		// const hashFragment = router.asPath.split("#")[1];
 		// console.log(hashFragment, loggedIn);
-		
+
 		const handleDropdownClick = (event) => {
 			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
 				toggleDropdown(event, false);
@@ -65,6 +36,10 @@ export default function Header({ loggedIn, account, handleLogout }) {
 			document.removeEventListener("click", handleDropdownClick);
 		};
 	}, []);
+
+	useEffect(() => {
+
+	}, [loginFormOpen]);
 
 	return (
 		<header className={clsx("headerContainer py-3 py-md-2 px-md-3 px-xl-5", styles.header)}>
@@ -90,14 +65,25 @@ export default function Header({ loggedIn, account, handleLogout }) {
 				</ul>
 				<div className={clsx("d-none d-md-block ms-auto", styles.loginWrapper)}>
 					{!loggedIn && (
-						<div className={clsx("position-relative", styles.loginContainer)} onClick={openLoginForm}>
+						<div
+							className={clsx("position-relative", styles.loginContainer)}
+							onClick={(event) => {
+								event.stopPropagation();
+								setLoginFormOpen(true);
+							}}
+						>
 							<a className={clsx("d-inline-block", styles.loginButton)}>
 								<span className={clsx(typingStyles.fontType7)}>Login</span>
 							</a>
 						</div>
 					)}
 					{loggedIn && (
-						<button type="button" className={clsx("d-flex position-relative", styles.loginButton, styles.profileWrapper, { [styles.active]: dropdownOpen })} onClick={toggleDropdown} ref={dropdownRef}>
+						<button
+							type="button"
+							className={clsx("d-flex position-relative", styles.loginButton, styles.profileWrapper, { [styles.active]: dropdownOpen })}
+							onClick={toggleDropdown}
+							ref={dropdownRef}
+						>
 							<span className={clsx(styles.profileNameWrapper, typingStyles.fontType7)}>{account.name}</span>
 							<span className={clsx("align-self-center", styles.dropdownArrow)} />
 							{dropdownOpen && (
@@ -113,8 +99,7 @@ export default function Header({ loggedIn, account, handleLogout }) {
 						</button>
 					)}
 				</div>
-				{forms["loginFormOpen"] && <LoginForm onRelease={closeLoginForm} onAltRelease={openRegisterForm} />}
-				{forms["registerFormOpen"] && <RegisterForm onRelease={closeRegisterForm} onAltRelease={openLoginForm} />}
+				{loginFormOpen && <AuthForm forms={{ login: true }} resetConditional={() => setLoginFormOpen(false)} />}
 			</div>
 		</header>
 	);

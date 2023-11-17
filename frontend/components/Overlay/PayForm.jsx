@@ -6,6 +6,12 @@ import Form from "./Form";
 import clsx from "clsx";
 import { useState } from "react";
 
+/**
+ * 
+ * @param apply 	Calls provided function from parent (updates user balance and transaction history)
+ * @param onRelease Closes pay form
+ * 
+ */
 export default function PayForm({ apply, onRelease }) {
 	const [recipient, setRecipient] = useState("");
 	const [amount, setAmount] = useState(0);
@@ -31,6 +37,7 @@ export default function PayForm({ apply, onRelease }) {
 		/>,
 	];
 
+	// update user balance and transaction history
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		const recipientObject = {};

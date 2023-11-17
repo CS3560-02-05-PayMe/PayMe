@@ -7,6 +7,11 @@ import { DollarOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useState } from "react";
 
+/**
+ * 
+ * @param apply Function passed from parent to child > child
+ * 
+ */
 export default function Pay({ apply }) {
 	const [payFormOpen, setPayFormOpen] = useState(false);
 

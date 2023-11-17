@@ -93,6 +93,10 @@
     color: #999;
 }
 
+.defaultColor {
+    color: #06345c;
+}
+
 @media screen and (max-width: 425px) {
     .fontTypeHeading1 {
         font-size: 24px;

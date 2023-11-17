@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 
@@ -9,13 +9,14 @@ import { DeleteOutlined } from "@ant-design/icons";
 
 /**
  *
- * @param apply 	Pays the request from other user
+ * @param apply 	Calls provided function from parent (pays user request)
  * @param remove 	Removes the request from other user
- * @param requests 	All request data for current user
- * @param onRelease Closes form on click outside of form
+ * @param requests 	List of requests from other users
+ * @param onRelease Closes request inbox form
  *
  */
 export default function RequestInboxForm({ apply, remove, requests, onRelease }) {
+	// moderation for checked/unchecked boxes
 	const [checkedItems, setCheckedItems] = useState(Array(requests.length).fill(false));
 	const [listState, setListState] = useState("default");
 

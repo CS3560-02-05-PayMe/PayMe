@@ -32,15 +32,18 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 		return `${prefix}...${suffix}`;
 	};
 
+	// helper function to shorten/hide card number
 	const shorten = (input) => {
 		if (input.length <= 4) return input;
 		return input.slice(input.length - 4);
 	};
 
+	// helper function to find primary address/card
 	const findPrimary = (array) => {
 		return array.find((ele) => ele.primary);
 	};
 
+	// items to populate Account Details Card
 	const accountDetails = [
 		{
 			icon: <UserOutlined className="accountUserIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
@@ -58,6 +61,7 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 		},
 	];
 
+	// moderation for address/credit card forms
 	const [forms, setForms] = useState({ addressFormOpen: false, cardFormOpen: false });
 
 	const openForm = (form, event) => {
@@ -94,7 +98,7 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 							<div className={clsx("d-flex ms-3")}>{item.icon}</div>
 							<div className={clsx("d-flex h-100 w-100 flex-column align-items-start")}>
 								<span className="accountDetail">{item.detail}</span>
-								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{username}</span>}
+								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{username || "unavailable"}</span>}
 							</div>
 							{index > 0 && (
 								<div className={clsx("d-flex w-100 justify-content-end")}>

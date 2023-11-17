@@ -6,6 +6,7 @@ import { Card, Table } from "antd";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 
+// table columns shown on different viewport devices
 const smColumns = [
 	{
 		title: "Payment Subject",
@@ -63,6 +64,7 @@ const lgColumns = [
 	},
 ];
 
+// viewheight breakpoints for table page size
 const pageBreakpoints = {
 	768: 6,
 	1024: 10,
@@ -74,6 +76,7 @@ export default function RecentActivity({ loading, history = [] }) {
 	const [pageBreakpoint, setPageBreakpoint] = useState(0);
 	
 	useEffect(() => {
+		// helper function to set page size
 		setPageBreakpoint(
 			Object.keys(pageBreakpoints)
 				.map(Number)

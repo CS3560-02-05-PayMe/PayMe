@@ -1,7 +1,9 @@
+// helper function to remove non-numerical values
 export function numberify(value) {
 	return value.replace(/\D/g, "");
 }
 
+// helper function to validate "amount" values
 export function doubleify(value) {
 	return (
 		value

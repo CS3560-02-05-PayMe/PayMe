@@ -5,7 +5,14 @@ import Form from "./Form";
 import clsx from "clsx";
 import { useState } from "react";
 
-export default function LoginForm({ onRelease, onAltRelease }) {
+/**
+ * 
+ * @param apply 	   Calls provided function from parent (ensure conditional state is correct)
+ * @param onRelease    Closes login form
+ * @param onAltRelease Opens register form
+ * 
+ */
+export default function LoginForm({ apply, onRelease, onAltRelease }) {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -37,7 +44,7 @@ export default function LoginForm({ onRelease, onAltRelease }) {
 	];
 
 	return (
-		<Form formType={"Login"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
+		<Form formType={"Login"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} outsideClick={apply}>
 			<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
 				Login
 			</button>

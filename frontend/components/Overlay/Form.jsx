@@ -4,13 +4,25 @@ import typingStyles from "../../styles/typing.module.css";
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
 
-export default function Form({ children, formType, formInputs = [], onSubmit: handleSubmit = null, onRelease: apply }) {
+/**
+ *
+ * @param children 	   Child components/content to pass
+ * @param formType     Title of form
+ * @param formInputs   List of inputs expected from user
+ * @param onSubmit
+ * @param onRelease    Closes form
+ * @param outsideClick Calls provided function from parent
+ *
+ */
+export default function Form({ children, formType, formInputs = [], onSubmit: handleSubmit = () => {}, onRelease: apply, outsideClick = () => {} }) {
 	const formRef = useRef(null);
 
 	useEffect(() => {
+		//
 		const handleFormClick = (event) => {
 			if (formRef.current && !formRef.current.contains(event.target)) {
 				apply();
+				outsideClick();
 			}
 		};
 
