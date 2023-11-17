@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Account")
+@Table(name = "Account", uniqueConstraints = {@UniqueConstraint(columnNames = "email_address"), @UniqueConstraint(columnNames = "username")})
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Account {
     @Id
