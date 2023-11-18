@@ -52,6 +52,10 @@ public class Address {
         return this.addressID;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
     public String getPrimaryAddress() {
         return this.primaryAddress;
     }
