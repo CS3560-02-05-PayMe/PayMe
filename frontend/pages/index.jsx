@@ -231,7 +231,7 @@ export default function PayMeApp() {
 					<AccountDetails loggedIn={loggedIn} loading={loading} addresses={addresses} account={account} cards={cards} changeAddress={handleAddressUpdate} changeCard={handleCardUpdate} />
 				</div>
 				<div className={clsx("activityContainer p-2 pb-3 pb-md-2", styles.rightContainer)}>
-					<RecentActivity loading={loading} history={history} />
+					<RecentActivity loggedIn={loggedIn} loading={loading} history={history} />
 				</div>
 			</div>
 		</WagmiConfig>
