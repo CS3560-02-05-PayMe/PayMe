@@ -80,7 +80,13 @@
 			<artifactId>spring-core</artifactId>
 			<version>6.0.13</version>
 		</dependency>
-	</dependencies>
+	
+   <dependency>
+     <groupId>com.stripe</groupId>
+     <artifactId>stripe-java</artifactId>
+     <version>24.4.0-beta.1</version>
+   </dependency>
+ </dependencies>
 
 	<build>
 		<plugins>
