@@ -1,0 +1,142 @@
+.defaultFamily {
+    font-family: var(--font-Poppins);
+	font-style: normal;
+	letter-spacing: normal;
+}
+
+.fontType1 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 8px;
+    font-weight: 400;
+}
+
+.fontType2 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.fontType3 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.fontType4 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.fontType5 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.fontType6 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.fontType7 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.fontType9 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 24px;
+    font-weight: 400;
+}
+
+.fontTypeHeading1 {
+    font-family: var(--font-Poppins);
+    line-height: 1.5;
+	font-style: normal;
+	letter-spacing: normal;
+    font-size: 36px;
+    font-weight: 400;
+}
+
+.gray {
+    color: #5f6368;
+}
+
+.white9 {
+    color: #999;
+}
+
+.defaultColor {
+    color: #06345c;
+}
+
+@media screen and (max-width: 425px) {
+    .fontTypeHeading1 {
+        font-size: 24px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .fontTypeHeading1 {
+        font-size: 28px;
+    }
+
+    .fontType5 {
+        font-size: 18px;
+    }
+
+    .fontType6 {
+        font-size: 14px;
+    }
+
+    .fontType7 {
+        font-size: 18px;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .fontTypeHeading1 {
+        font-size: 36px;
+    }
+
+    .fontType5 {
+        font-size: 18px;
+    }
+
+    .fontType6 {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .fontType5 {
+        font-size: 20px;
+    }
+}

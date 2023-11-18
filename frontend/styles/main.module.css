@@ -1,0 +1,104 @@
+.transparentContainer {
+	background-color: transparent;
+	min-height: calc(100vh - 72px);
+	overflow: auto;
+}
+
+.leftContainer,
+.rightContainer,
+.payContainer,
+.requestContainer {
+	display: flex;
+	flex: 1 0 50%;
+	justify-content: space-evenly;
+	align-items: flex-start;
+	overflow: visible;
+	flex-wrap: wrap;
+}
+
+.leftContainer {
+	flex: 1 0 40%;
+}
+
+.rightContainer {
+	flex: 1 0 60%;
+}
+
+.payContainer,
+.requestContainer {
+	justify-content: center;
+	border-radius: 10px;
+	color: white;
+	background: #06345c;
+    will-change: background, transform;
+    transition: background 265ms ease-in-out, transform 265ms ease-in-out;
+}
+
+:is(.payContainer, .requestContainer):hover {
+    background: #072c4d;
+    transform: scale(1.05);
+}
+
+.buttonContainer {
+	display: flex;
+	width: 100%;
+}
+
+.containerShadow {
+	border: 0;
+	box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.recentActivityContainer {
+	height: 100vh;
+}
+
+.inboxContainer {
+	width: fit-content;
+}
+
+.inboxSizeWrapper {
+	color: white;
+	background: red;
+	border-radius: 10px;
+}
+
+.balanceLogin > a {
+	border-color: #06345c;
+}
+
+.balanceLogin > a:hover {
+	color: #fff;
+	background-color: #06345c;
+}
+
+@media screen and (max-width: 768px) {
+	.transparentContainer {
+		flex-wrap: wrap;
+	}
+
+	.leftContainer,
+	.rightContainer,
+	.payContainer,
+	.requestContainer {
+		flex: 1 0 100%;
+	}
+
+	/* .payContainer,
+    .requestContainer {
+        color: black;
+        background: white;
+        border: 2px solid #06345c;
+    } */
+}
+
+@media screen and (min-width: 1024px) {
+	.transparentContainer {
+		max-height: calc(100vh - 72px - 1rem) !important;
+	}
+
+	.payContainer,
+	.requestContainer {
+		flex-direction: column;
+	}
+}

@@ -1,0 +1,477 @@
+.header {
+	top: 0;
+	display: -moz-box;
+	display: flex;
+	position: sticky;
+	z-index: 2;
+	-moz-box-align: center;
+	align-items: center;
+	padding: 0 16px;
+	-webkit-box-shadow: 0 5px 10px rgb(0 0 0 / 6%);
+	box-shadow: 0 5px 10px rgb(0 0 0 / 6%);
+	background-color: #03203a;
+	color: #f1f1f1;
+}
+
+.navItemLink {
+	text-decoration: none;
+	/* color: #cfc7c7; */
+	color: #cacaca;
+	transition: color 0.3s ease;
+}
+
+.headerNavItems {
+	list-style: none;
+}
+
+.headerNavItems > .headerNavItem {
+	margin: 0 1rem;
+	overflow: hidden;
+}
+
+.navListIcon {
+	z-index: 0;
+	width: 70px;
+	height: 70px;
+	background: #6a87a5;
+	-webkit-transition: 265ms ease-in-out;
+	transition: 265ms ease-in-out;
+	cursor: pointer;
+}
+
+.navHamburger {
+	width: 30px;
+	height: 2px;
+	background: white;
+	display: block;
+	-webkit-transform-origin: center;
+	transform-origin: center;
+	-webkit-transition: 265ms ease-in-out;
+	transition: 265ms ease-in-out;
+}
+
+.navHamburger:after,
+.navHamburger:before {
+	-webkit-transition: 265ms ease-in-out;
+	transition: 265ms ease-in-out;
+	content: "";
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: white;
+}
+
+.navHamburger:before {
+	top: -10px;
+}
+
+.navHamburger:after {
+	bottom: -10px;
+}
+
+.navListInput:checked + label .navListIcon > .navHamburger {
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+.navListInput:checked + label .navListIcon > .navHamburger:after {
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+	bottom: 0;
+}
+
+.navListInput:checked + label .navListIcon > .navHamburger:before {
+	-webkit-transform: rotate(90deg);
+	transform: rotate(90deg);
+	top: 0;
+}
+
+.loginButton {
+	padding: 12px 30px;
+	border-radius: 31px;
+	background-color: transparent;
+	border: 2px solid #fff;
+	color: #fff;
+	text-transform: capitalize;
+	outline: none;
+	will-change: background-color, color;
+	transition: background-color 265ms ease-in-out, color 265ms ease-in-out;
+}
+
+.loginButton:hover {
+	background-color: #fff;
+	color: black;
+}
+
+.loginFormContainer {
+	z-index: 100;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+	will-change: opacity;
+}
+
+.loginForm {
+	width: 90vw;
+	color: black;
+	background-color: white;
+	transform: translate(-50%, -50%);
+	border-radius: 20px;
+}
+
+/* .formHeading {
+	position: relative;
+}
+
+.formHeading::after {
+	content: "";
+	position: absolute;
+	background-color: #999;
+	width: 100%;
+	height: 1px;
+	left: 0;
+	bottom: 0;
+} */
+
+.inputTitle {
+	color: #999;
+}
+/* Century Gothic,Regular!important */
+
+.formInput {
+	width: 100%;
+	/* background: ; */
+}
+
+.formInput input {
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	border: none;
+	outline: none;
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-radius: 40px;
+	/* color: black; */
+	padding: 10px 20px 10px 20px;
+}
+
+.formInput input::placeholder {
+	color: #555;
+}
+
+.formSubmit.loginButton {
+	border: 2px solid #03203a;
+	color: #03203a;
+	text-transform: capitalize;
+}
+
+.formSubmit.loginButton:hover {
+	border: 2px solid #03203a;
+	color: #fff;
+	background-color: #03203a;
+}
+
+.formRegister a {
+	color: black;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.formRegister a:hover {
+	text-decoration: underline !important;
+}
+
+.profileWrapper {
+	background: #03203a;
+	color: white;
+	border: 1px solid #fff;
+	border-radius: 30px;
+}
+
+.profileWrapper.loginButton {
+	padding: 10px 8px 10px 14px;
+}
+
+.profileWrapper:hover,
+.profileWrapper.active {
+	background: #011425;
+	color: white;
+}
+
+.profileNameWrapper {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	text-align: left;
+}
+
+.dropdownArrow {
+	border: solid #fff;
+	border-width: 0 2px 2px 0;
+	height: 6px;
+	width: 6px;
+	display: inline-block;
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	margin: 0 8px 0 12px;
+	-webkit-transition: -webkit-transform 0.2s ease;
+	transition: -webkit-transform 0.2s ease;
+	-moz-transition: transform 0.2s ease, -moz-transform 0.2s ease;
+	transition: transform 0.2s ease;
+	transition: transform 0.2s ease, -webkit-transform 0.2s ease, -moz-transform 0.2s ease;
+}
+
+.active .dropdownArrow {
+	-webkit-transform: rotate(-135deg) !important;
+	-moz-transform: rotate(-135deg) !important;
+	transform: rotate(-135deg) !important;
+}
+
+.dropdownItems {
+	position: absolute;
+	overflow: hidden;
+	z-index: 2;
+	color: #ada5b6;
+	background-color: #011425;
+	border: 2px solid black;
+	top: -webkit-calc(100% + 4px);
+	top: -moz-calc(100% + 4px);
+	top: calc(100% + 4px);
+	margin-top: calc(0.5rem + 2px);
+	padding: 8px 0;
+	border-radius: 16px;
+	right: 0;
+}
+
+.dropdownItem {
+	color: #cccbcb;
+	will-change: color;
+	transition: color 265ms ease-in-out;
+}
+
+.dropdownItem:hover {
+	color: white;
+}
+
+.requestInboxButton {
+	width: fit-content;
+}
+
+.requestInboxButton.loginButton {
+	color: #06345c;
+	border: 2px solid #06345c;
+}
+
+.requestInboxButton:hover {
+	color: white;
+	background-color: #06345c;
+}
+
+.requestInboxItem:not(:last-child),
+.listCheckable {
+	border-bottom: 1px solid rgba(211, 218, 224, 0.493);
+	/* box-shadow: inset 0 -1px 0 0 rgba(100,121,143,0.122); */
+}
+
+.listCheckable.listChecked {
+	border-bottom: 0;
+}
+
+.requestInboxItem {
+	will-change: background-color;
+	transition: background-color 165ms ease-in-out;
+}
+
+.requestInboxItem.selectedItem {
+	background-color: #fafafa;
+}
+
+.requestItemCheckable,
+.requestListCheckable {
+	min-height: 22.5px;
+	min-width: 22.5px;
+	background-image: url(/images/checkBox.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	opacity: 0.32;
+	will-change: opacity;
+	transition: opacity 165ms ease-in-out;
+}
+
+.requestInboxItem:hover .requestItemCheckable,
+.requestListCheckable:hover {
+	opacity: 1;
+}
+
+.selectedItem .requestItemCheckable,
+.listChecked .requestListCheckable {
+	background-image: url(/images/checkedBox.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	opacity: 1;
+}
+
+.removeChecked .requestListCheckable {
+	background-image: url(/images/removeCheckedBox.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 20px;
+	opacity: 1;
+}
+
+.notifChecked {
+	background-color: rgba(241,243,244,0.871);
+	box-shadow: inset 0 -1px 0 0 rgba(100,121,143,0.122);;
+}
+
+.payNowButton {
+	display: inline-block;
+	color: #fff;
+	background-color: #06345c;
+	border-radius: 15px;
+	will-change: transform, background-color;
+	transition: transform 265ms ease-in-out, background-color 265ms ease-in-out;
+}
+
+.payNowButton:hover {
+	background-color: #072c4d;
+	/* transform: scale(1.05); */
+}
+
+.ignoreButton {
+	display: none;
+	color: rgba(122, 122, 122, 0.6);
+	will-change: color;
+	transition: color 265ms ease-in-out;
+}
+
+.ignoreButton:hover {
+	color: rgba(255, 0, 0, 0.5);
+}
+
+.formFields fieldset:not(:first-of-type) {
+	display: none;
+}
+
+@media only screen and (max-width: 767px) {
+	.headerNavItems {
+		position: absolute;
+		top: 0;
+		margin-top: 74px;
+		height: auto !important;
+		max-height: 0;
+		left: 0;
+		width: 100%;
+		justify-content: start;
+		align-items: center;
+		will-change: max-height;
+		transition: max-height 500ms linear;
+	}
+
+	.navListInput:not(:checked) ~ .headerNavItems {
+		will-change: max-height;
+		transition: max-height 350ms linear;
+	}
+
+	.headerNavItems > .headerNavItem {
+		justify-content: center;
+		width: 100%;
+		background-color: #46688d;
+	}
+
+	/* .navListInput:not(:checked) ~ .headerNavItems > .headerNavItem {
+		border: 0;
+	} */
+
+	/* .headerNavItems .headerNavItem:first-child {
+		border-top: 1px solid #a8c1d1;
+	} */
+
+	/* .headerNavItems .headerNavItem:not(:last-child) {
+		border-bottom: 1px solid #a8c1d1;
+	} */
+
+	.headerNavItem > .navItemLink {
+		color: white;
+		width: 100%;
+	}
+
+	.navListInput:checked ~ .headerNavItems {
+		max-height: 100vh;
+	}
+
+	/* adding a border-bottom with dynamic width */
+	.headerNavItem::after {
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 1px;
+		background: #a8c1d1;
+	}
+
+	.headerNavItem:hover {
+		background-color: #375b81;
+		will-change: background-color;
+		transition: background-color 265ms ease-in-out;
+	}
+
+	.blankContainer {
+		z-index: -100;
+		margin-top: 74px;
+		height: 100vh;
+		max-height: 0;
+		background-color: rgba(1, 20, 37, 0.7);
+		will-change: max-height;
+		transition: max-height 265ms ease-in-out;
+	}
+
+	.navListInput:checked ~ .blankContainer {
+		max-height: 100vh;
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	.header {
+		height: 72px;
+		-webkit-box-shadow: 0 5px 10px rgb(0 0 0 / 6%);
+		box-shadow: 0 5px 10px rgb(0 0 0 / 6%);
+		/* background-color: white; */
+		color: white;
+		/* border-bottom: 1px solid #3b3842; */
+	}
+
+	/* .headerNavItems::after {
+		content: "";
+		position: absolute;
+		width: 100%;
+		height: 3px;
+		background: rgba(106, 135, 165, 0.5);
+		bottom: 15%;
+		left: 0;
+	} */
+
+	.navItemLink:hover {
+		color: white;
+		transition: color 265ms ease-in-out;
+	}
+
+	.loginForm {
+		width: 50vw !important;
+	}
+}
+
+@media only screen and (min-width: 1024px) {
+	.loginForm {
+		width: 30vw !important;
+	}
+}
+
+@media only screen and (min-width: 1440px) {
+	.loginForm {
+		width: 20vw !important;
+	}
+}
