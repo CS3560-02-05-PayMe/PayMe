@@ -10,6 +10,9 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.Date;
 import java.util.UUID;
 
+/** This is the entity class Request which contains information for payment requests.
+ * Requests must be associated with one Transaction, which contains the information
+ * required to make the associated payment. */
 @Data
 @Getter
 @AllArgsConstructor
@@ -41,10 +44,16 @@ public class Request {
     @Column(name = "message")
     private String message;
 
+    /** Retrieves the transactionID within the Transaction associated with this Request.
+     * @return The transactionID (UUID) of the associated Transaction. */
     public UUID getTransactionID() {
         return transaction.getTransactionID();
     }
 
+    /** A toString method that prints the information stored in Request,
+     * as well as the associated Transaction's transactionID
+     * (rather than the information stored in the Transaction).
+     * @return A string containing the information stored in Request. */
     @Override
     public String toString() {
         return "Request{" +
