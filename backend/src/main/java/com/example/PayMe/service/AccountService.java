@@ -21,16 +21,14 @@ public class AccountService {
 
     //------------------------------------------------
     // POST methods below
-    public ResponseEntity<?> saveAccount(Account account) {
-        if (userHash.containsKey(account.getUsername())) {
-            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
-        } else if (emailExist(account.getEmailAddress())) {
-            return new ResponseEntity<>("Email address already exists", HttpStatus.BAD_REQUEST);
+    public Account saveAccount(Account account) {
+        if (userHash.containsKey(account.getUsername()) || emailExist(account.getEmailAddress())) {
+            return null;
         } else {
             Account savedAccount = repo.save(account);
             userHash.put(account.getUsername(), account.getAccountID());
 
-            return new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
+            return savedAccount;
         }
     }
 
@@ -72,7 +70,7 @@ public class AccountService {
             existingAccount.setPassword(updatedAccount.getPassword());
 
             // Save the updated account
-            return repo.save(existingAccount);
+            return saveAccount(updatedAccount);
         }
 
         // If the account with the specified UUID doesn't exist, return null or throw an exception
