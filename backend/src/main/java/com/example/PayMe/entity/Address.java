@@ -51,6 +51,10 @@ public class Address {
         return addressID;
     }
 
+    public Account getAccount() {
+        return account;
+    }
+
     public String getPrimaryAddress() {
         return primaryAddress;
     }

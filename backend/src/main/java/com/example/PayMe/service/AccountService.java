@@ -20,10 +20,8 @@ public class AccountService {
     //------------------------------------------------
     // POST methods below
     public Account saveAccount(Account account){
-
         userHash.put(account.getUsername(), account.getAccountID());
-
-        return repo.save(account);
+        return repo.saveAndFlush(account);
     }
 
 //    public List<Account> listAll() {
@@ -36,8 +34,9 @@ public class AccountService {
         return repo.getReferenceById(uuid);
     }
 
-    public Account retrieveAccount(String username) {return repo.getReferenceById(userHash.get(username));}
-
+    public Account retrieveAccount(String username) {
+        return retrieveAccount(userHash.get(username));
+    }
 
     //------------------------------------------------
     // DELETE methods below
@@ -45,8 +44,12 @@ public class AccountService {
         repo.deleteById(uuid);
     }
 
+    public void deleteAccount(String username) {
+        deleteAccount(userHash.get(username));
+    }
+
     public Account updateAccount(UUID uuid, Account updatedAccount) {
-        Account existingAccount = repo.findById(uuid).orElse(null);
+        Account existingAccount = retrieveAccount(uuid);
 
         if (existingAccount != null) {
             // Update the existing account with the data from updatedAccount
@@ -59,7 +62,7 @@ public class AccountService {
             existingAccount.setPassword(updatedAccount.getPassword());
 
             // Save the updated account
-            return repo.save(existingAccount);
+            return saveAccount(existingAccount);
         }
 
         // If the account with the specified UUID doesn't exist, return null or throw an exception
@@ -69,19 +72,6 @@ public class AccountService {
     //
     //  functionalities added on Nov 15
     //
-    public Account getAccountByUsername(String username) {
-        // save id of user in hash map
-        UUID accountId = userHash.get(username);
-
-        // return account if Id found, otherwise return null
-        return accountId != null ? repo.findById(accountId).orElse(null) : null;
-    }
-
-
-
-
-
-
     // In your AccountService class
     public Account getAccountByLogin(String username, String password) {
         // Retrieve the account based on the provided username
@@ -89,7 +79,7 @@ public class AccountService {
         Account account = repo.getReferenceById(accountID);
 
         // Check if the account is found and the password matches
-        if (account != null && account.getPassword().equals(password)) {
+        if (account.getPassword().equals(password)) {
             return account;
         } else {
             // If the account is not found or the password doesn't match, return null
