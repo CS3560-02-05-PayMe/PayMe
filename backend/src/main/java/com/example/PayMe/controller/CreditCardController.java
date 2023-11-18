@@ -17,6 +17,7 @@ public class CreditCardController {
 
     @Autowired private CreditCardService service;
 
+    //Add Card
     @PostMapping("/addCreditCard")
     public ResponseEntity<CreditCardInfo> addCreditCard(@RequestBody CreditCardInfo creditcard)
     {
@@ -24,6 +25,7 @@ public class CreditCardController {
         return new ResponseEntity<>(service.saveCreditCardInfo(creditcard), HttpStatus.CREATED);
     }
 
+    //Get Card
     @GetMapping("/getCreditCard/{cardNumber}")
     public ResponseEntity<CreditCardInfo> getCreditCardInfo(@PathVariable("cardNumber") String cardNumber)
     {
@@ -31,12 +33,14 @@ public class CreditCardController {
         return new ResponseEntity<>(service.retrieveCreditCardInfo(cardNumber), HttpStatus.OK);
     }
 
+    //Get list of cards
     @GetMapping("/getCreditCards")
     public List<CreditCardInfo> getCreditCardInfoList()
     {
         return service.listAll();
     }
 
+    //Delete card
     @DeleteMapping("/deleteCreditCardInfo/{cardNumber}")
     public ResponseEntity<String> deleteCreditCardInfo(@PathVariable("cardNumber") String cardNumber)
     {

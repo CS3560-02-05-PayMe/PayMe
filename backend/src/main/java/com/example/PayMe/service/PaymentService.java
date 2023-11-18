@@ -12,12 +12,17 @@ public class PaymentService {
     @Autowired
     private PaymentRepository repo;
 
+    //Save Payment to database
     public Payment savePayment(Payment payment){  return repo.save(payment);  }
 
+    //Retrieve Payment from database
     public Payment retrievePayment(UUID uuid){  return repo.getReferenceById(uuid);  }
 
+    //Delete Payment from database
     public void deletePayment(UUID uuid){  repo.deleteById(uuid);  }
 
+    //Update Payment
+    //Note that we can't simply set existingPayment to updatedPayment as we don't want to overwrite everything
     public Payment updatePayment(UUID uuid, Payment updatedPayment){
         Payment existingPayment = repo.findById(uuid).orElse(null);
 
@@ -29,7 +34,7 @@ public class PaymentService {
             return repo.save(existingPayment);
         }
         else{
-            return null;
+            return null;    //Return null if payment id doesn't return
         }
     }
 

@@ -10,15 +10,19 @@ import java.util.UUID;
 public class AddressService {
     private AddressRepository repo;
 
+    //Save address to database
     public Address saveAddress(Address address) { return repo.save(address);}
 
-
+    //Retrieve address from database
     public Address retrieveAddress(UUID uuid) { return repo.getReferenceById(uuid);}
 
+    //Delete address from database
     public void deleteAddress(UUID uuid) {
         repo.deleteById(uuid);
     }
 
+    //Update address in database
+    //Note that we can't simply set existingAddress to updatedAddress as we don't want to overwrite everything
     public Address updateAddress(UUID uuid, Address updatedAddress){
         Address existingAddress = repo.findById(uuid).orElse(null);
 

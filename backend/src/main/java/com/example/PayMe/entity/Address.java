@@ -47,30 +47,32 @@ public class Address {
     @Column(name = "country")
     private String country;
 
+    //Getters
     public UUID getAddressID() {
-        return addressID;
+        return this.addressID;
     }
 
     public String getPrimaryAddress() {
-        return primaryAddress;
+        return this.primaryAddress;
     }
 
     public String getCityName() {
-        return cityName;
+        return this.cityName;
     }
 
     public String getStateName() {
-        return stateName;
+        return this.stateName;
     }
 
     public String getZipCode() {
-        return zipCode;
+        return this.zipCode;
     }
 
     public String getCountry() {
-        return country;
+        return this.country;
     }
 
+    //Setters
     public void setPrimaryAddress(String primaryAddress) {
         this.primaryAddress = primaryAddress;
     }
