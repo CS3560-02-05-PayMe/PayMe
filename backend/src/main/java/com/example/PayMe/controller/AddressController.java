@@ -39,9 +39,9 @@ public class AddressController {
     ///////////////////////////////////
     //Functionality added on 11/14 Eric
     ///////////////////////////////////
-    @PutMapping("/updateAddress/{uuid}")
-    public ResponseEntity<Address> updateAddress(@PathVariable UUID uuid, @RequestBody Address updatedAddress) {
-        Address result = service.updateAddress(uuid, updatedAddress);
+    @PutMapping("/updateAddress/{userId}/{addressId}")
+    public ResponseEntity<Address> updateAddress(@PathVariable("userId") UUID userID, @PathVariable("addressId") UUID addressID, @RequestBody Address updatedAddress) {
+        Address result = service.updateAddress(userID, addressID, updatedAddress);
 
         if (result != null) {
             return new ResponseEntity<>(result, HttpStatus.OK);

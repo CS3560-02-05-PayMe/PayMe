@@ -40,8 +40,8 @@ public class AddressService {
         repo.deleteById(uuid);
     }
 
-    public Address updateAddress(UUID uuid, Address updatedAddress) {
-        Address existingAddress = retrieveAddresses(uuid);
+    public Address updateAddress(UUID userID, UUID addressID, Address updatedAddress) {
+        Address existingAddress = retrieveAddress(userID, addressID);
 
         if (existingAddress != null) {
             existingAddress.setPrimaryAddress(updatedAddress.getPrimaryAddress());
