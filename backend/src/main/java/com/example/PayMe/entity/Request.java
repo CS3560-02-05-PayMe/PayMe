@@ -1,15 +1,17 @@
 package com.example.PayMe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -21,69 +23,35 @@ public class Request {
     @Column(name = "request_id", updatable = false, nullable = false)
     private UUID requestID;
 
-    @Column(name = "request_date")
-    private Date requestDate;
+    @ManyToOne( fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "transaction_id", updatable = false, nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Transaction transaction;
 
-    @Column(name = "request_type")
-    private String requestType;
-
-    @Column(name = "request_amount")
-    private double requestAmount;
-
+    @Setter
     @Column(name = "is_settled", columnDefinition = "boolean default false")
     private boolean isSettled;
 
-    @Column(name = "is_recurring", columnDefinition = "boolean default false")
-    private boolean isRecurring;
+    @Setter
+    @Column(name = "request_date")
+    private Date requestDate;
 
-    public UUID getRequestID() {
-        return requestID;
-    }
+    @Setter
+    @Column(name = "message")
+    private String message;
 
-    public Date getRequestDate() {
-        return requestDate;
-    }
-
-    public String getRequestType() {
-        return requestType;
+    public UUID getTransactionID() {
+        return transaction.getTransactionID();
     }
 
-    public double getRequestAmount() {
-        return requestAmount;
-    }
-
-    public boolean isSettled() {
-        return isSettled;
-    }
-
-    public boolean isRecurring() {
-        return isRecurring;
-    }
-
-    public void setRequestDate(Date requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
-    }
-    public void setRequestAmount(double requestAmount) {
-        this.requestAmount = requestAmount;
-    }
-    public void setIsSettled(boolean isSettled) {
-        this.isSettled = isSettled;
-    }
-    public void setIsRecurring(boolean isRecurring) {
-        this.isRecurring = isRecurring;
-    }
+    @Override
     public String toString() {
         return "Request{" +
-                "requestID=" + requestID +
-                ", requestDate=" + requestDate +
-                ", requestType='" + requestType + '\'' +
-                ", requestAmount=" + requestAmount +
-                ", isSettled=" + isSettled +
-                ", isRecurring=" + isRecurring +
+                "transactionID=" + getTransactionID() +
+                ", isSettled=" + isSettled() +
+                ", requestDate=" + getRequestDate() +
+                ", message=" + getMessage() +
                 '}';
     }
 }

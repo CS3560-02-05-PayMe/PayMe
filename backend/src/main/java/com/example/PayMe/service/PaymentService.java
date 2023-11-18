@@ -20,11 +20,9 @@ public class PaymentService {
         Payment existingPayment = repo.findById(uuid).orElse(null);
 
         if (existingPayment != null){
-            existingPayment.setPaymentDate(updatedPayment.getPaymentDate());
-            existingPayment.setPaymentType(updatedPayment.getPaymentType());
             existingPayment.setPaymentAmount(updatedPayment.getPaymentAmount());
-            existingPayment.setSettled(updatedPayment.isSettled());
-            existingPayment.setRecurring(updatedPayment.isRecurring());
+            existingPayment.setPaymentDate(updatedPayment.getPaymentDate());
+            existingPayment.setMessage(updatedPayment.getMessage());
 
             return repo.save(existingPayment);
         }

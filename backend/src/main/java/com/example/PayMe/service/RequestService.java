@@ -23,11 +23,9 @@ public class RequestService {
         Request existingRequest = repo.findById(uuid).orElse(null);
 
         if(existingRequest != null){
+            existingRequest.setSettled(updatedRequest.isSettled());
             existingRequest.setRequestDate(updatedRequest.getRequestDate());
-            existingRequest.setRequestType(updatedAddress.getRequestType());
-            existingRequest.setRequestAmount(updatedAddress.getRequestAmount());
-            existingRequest.setIsSettled(isSettled());
-            existingRequest.setIsRecurring(isRecurring());
+            existingRequest.setMessage(updatedRequest.getMessage());
 
             return repo.save(existingRequest);
         }

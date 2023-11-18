@@ -1,20 +1,20 @@
 package com.example.PayMe.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 import java.util.UUID;
 
-
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @Entity
 @Table(name = "Payment")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -24,54 +24,35 @@ public class Payment {
     @Column(name = "payment_id", updatable = false, nullable = false)
     private UUID paymentID;
 
-    @Column(name = "payment_date")
-    private Date paymentDate;
+    @ManyToOne( fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "transaction_id", updatable = false, nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private final Transaction transaction;
 
-    @Column(name = "payment_type")
-    private String paymentType;
-
+    @Setter
     @Column(name = "payment_amount")
     private double paymentAmount;
 
-    @Column(name = "is_settled", columnDefinition = "boolean default false")
-    private boolean isSettled;
+    @Setter
+    @Column(name = "payment_date")
+    private Date paymentDate;
 
-    @Column(name = "is_recurring", columnDefinition = "boolean default false")
-    private boolean isRecurring;
+    @Setter
+    @Column(name = "message")
+    private String message;
 
-    public UUID getPaymentID() {
-        return paymentID;
+    public UUID getTransactionID() {
+        return transaction.getTransactionID();
     }
-
-    public Date getPaymentDate() {
-        return paymentDate;
-    }
-
-    public String getPaymentType() {
-        return paymentType;
-    }
-
-    public double getPaymentAmount() {
-        return paymentAmount;
-    }
-
-    public boolean isSettled() {
-        return isSettled;
-    }
-
-    public boolean isRecurring() {
-        return isRecurring;
-    }
-
     @Override
     public String toString() {
         return "Payment{" +
-                "paymentID=" + paymentID +
-                ", paymentDate=" + paymentDate +
-                ", paymentType='" + paymentType + '\'' +
-                ", paymentAmount=" + paymentAmount +
-                ", isSettled=" + isSettled +
-                ", isRecurring=" + isRecurring +
+                "transactionID=" + getTransactionID() +
+                ", paymentID=" + getPaymentID() +
+                ", paymentAmount=" + getPaymentAmount() +
+                ", paymentDate=" + getPaymentDate() +
+                ", message=" + getMessage() +
                 '}';
     }
 }
