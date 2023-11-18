@@ -49,6 +49,7 @@ public class CreditCardInfo {
     @Column(name = "is_priority")
     private boolean isPriority;
 
+    //getters
     public String getCardNumber() {
         return cardNumber;
     }
@@ -71,5 +72,34 @@ public class CreditCardInfo {
 
     public boolean isPriority() {
         return isPriority;
+    }
+
+    //Setters
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public void setCvvNumber(int cvvNumber) {
+        this.cvvNumber = cvvNumber;
+    }
+
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setPriority(boolean priority) {
+        isPriority = priority;
     }
 }

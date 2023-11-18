@@ -3,6 +3,8 @@ package com.example.PayMe.service;
 import com.example.PayMe.entity.Account;
 import com.example.PayMe.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,20 +15,28 @@ import java.util.List;
 public class AccountService {
     @Autowired
     private AccountRepository repo;
-    private HashMap<String, UUID> userHash = new HashMap<>();
+    private final HashMap<String, UUID> userHash = new HashMap<>();
 
     // Write get, post, delete... methods
 
     //------------------------------------------------
     // POST methods below
-    public Account saveAccount(Account account){
-        userHash.put(account.getUsername(), account.getAccountID());
-        return repo.saveAndFlush(account);
+    public ResponseEntity<?> saveAccount(Account account) {
+        if (userHash.containsKey(account.getUsername())) {
+            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+        } else if (emailExist(account.getEmailAddress())) {
+            return new ResponseEntity<>("Email address already exists", HttpStatus.BAD_REQUEST);
+        } else {
+            Account savedAccount = repo.save(account);
+            userHash.put(account.getUsername(), account.getAccountID());
+
+            return new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
+        }
     }
 
-//    public List<Account> listAll() {
-//        return (List<Account>) repo.findAll();
-//    }
+    private boolean emailExist(String emailAddress) {
+        return repo.findByEmailAddress(emailAddress).isPresent();
+    }
 
     //------------------------------------------------
     // GET methods below
@@ -62,7 +72,7 @@ public class AccountService {
             existingAccount.setPassword(updatedAccount.getPassword());
 
             // Save the updated account
-            return saveAccount(existingAccount);
+            return repo.save(existingAccount);
         }
 
         // If the account with the specified UUID doesn't exist, return null or throw an exception

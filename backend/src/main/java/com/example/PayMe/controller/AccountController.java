@@ -24,12 +24,21 @@ public class AccountController {
     // ------------------------------------------------
     // POST
 
-//    ResponseEntity returns the class in a JSON object to frontend
+    //    ResponseEntity returns the class in a JSON object to frontend
 //    This makes it easier for frontend to parse and read data
     @PostMapping("/addAccount")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account) {
-        System.out.println("Added account :: " + account.toString());
-        return new ResponseEntity<>(service.saveAccount(account), HttpStatus.CREATED);
+    public ResponseEntity<?> addAccount(@RequestBody Account account) {
+        // service.saveAccount will receive account object passed inputed from user
+        ResponseEntity<?> responseEntity = service.saveAccount(account);
+
+        if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
+            // if HttpStatus is created, new row is added
+            return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.CREATED);
+        } else {
+            // if row already exist with info input, will not save new row
+            return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.BAD_REQUEST);
+
+        }
     }
 
     @GetMapping("/getAccount/{uuid}")
@@ -41,7 +50,7 @@ public class AccountController {
     // ------------------------------------------------------------------------------------------
     // Functionality added on Nov 14
     // ------------------------------------------------------------------------------------------
-    // get Account by first name
+    // get Account by username
     @GetMapping("/getAccount/{username}")
     public ResponseEntity<Account> getAccount(@PathVariable("username") String username) {
         System.out.println("Accessing account with username: " + username);
@@ -54,6 +63,14 @@ public class AccountController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    // get account by email
+    // maybe might remove and only keep getAccount by username/uuid/(username,password)
+    @GetMapping("/getAccount/{emailAddress}")
+    public ResponseEntity<Account> getAccountByEmailAddress(@PathVariable("emailAddress") String emailAddress) {
+        System.out.println("Accessing account with uuid: " + emailAddress.toString());
+        return new ResponseEntity<>(service.retrieveAccount(UUID.fromString(emailAddress)), HttpStatus.OK);
     }
 
     //create new method that takes username and password

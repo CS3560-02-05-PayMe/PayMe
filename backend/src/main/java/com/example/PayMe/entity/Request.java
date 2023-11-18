@@ -1,15 +1,20 @@
 package com.example.PayMe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Date;
 import java.util.UUID;
 
+/** This is the entity class Request which contains information for payment requests.
+ * Requests must be associated with one Transaction, which contains the information
+ * required to make the associated payment. */
 @Data
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -21,69 +26,41 @@ public class Request {
     @Column(name = "request_id", updatable = false, nullable = false)
     private UUID requestID;
 
-    @Column(name = "request_date")
-    private Date requestDate;
+    @ManyToOne( fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "transaction_id", updatable = false, nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Transaction transaction;
 
-    @Column(name = "request_type")
-    private String requestType;
-
-    @Column(name = "request_amount")
-    private double requestAmount;
-
+    @Setter
     @Column(name = "is_settled", columnDefinition = "boolean default false")
     private boolean isSettled;
 
-    @Column(name = "is_recurring", columnDefinition = "boolean default false")
-    private boolean isRecurring;
+    @Setter
+    @Column(name = "request_date")
+    private Date requestDate;
 
-    public UUID getRequestID() {
-        return requestID;
-    }
+    @Setter
+    @Column(name = "message")
+    private String message;
 
-    public Date getRequestDate() {
-        return requestDate;
-    }
-
-    public String getRequestType() {
-        return requestType;
-    }
-
-    public double getRequestAmount() {
-        return requestAmount;
+    /** Retrieves the transactionID within the Transaction associated with this Request.
+     * @return The transactionID (UUID) of the associated Transaction. */
+    public UUID getTransactionID() {
+        return transaction.getTransactionID();
     }
 
-    public boolean isSettled() {
-        return isSettled;
-    }
-
-    public boolean isRecurring() {
-        return isRecurring;
-    }
-
-    public void setRequestDate(Date requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
-    }
-    public void setRequestAmount(double requestAmount) {
-        this.requestAmount = requestAmount;
-    }
-    public void setIsSettled(boolean isSettled) {
-        this.isSettled = isSettled;
-    }
-    public void setIsRecurring(boolean isRecurring) {
-        this.isRecurring = isRecurring;
-    }
+    /** A toString method that prints the information stored in Request,
+     * as well as the associated Transaction's transactionID
+     * (rather than the information stored in the Transaction).
+     * @return A string containing the information stored in Request. */
+    @Override
     public String toString() {
         return "Request{" +
-                "requestID=" + requestID +
-                ", requestDate=" + requestDate +
-                ", requestType='" + requestType + '\'' +
-                ", requestAmount=" + requestAmount +
-                ", isSettled=" + isSettled +
-                ", isRecurring=" + isRecurring +
+                "transactionID=" + getTransactionID() +
+                ", isSettled=" + isSettled() +
+                ", requestDate=" + getRequestDate() +
+                ", message=" + getMessage() +
                 '}';
     }
 }
