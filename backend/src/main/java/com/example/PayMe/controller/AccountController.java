@@ -27,18 +27,13 @@ public class AccountController {
     //    ResponseEntity returns the class in a JSON object to frontend
 //    This makes it easier for frontend to parse and read data
     @PostMapping("/addAccount")
-    public ResponseEntity<?> addAccount(@RequestBody Account account) {
+    public ResponseEntity<Account> addAccount(@RequestBody Account account) {
         // service.saveAccount will receive account object passed inputed from user
-        ResponseEntity<?> responseEntity = service.saveAccount(account);
+        account = service.saveAccount(account);
 
-        if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
-            // if HttpStatus is created, new row is added
-            return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.CREATED);
-        } else {
-            // if row already exist with info input, will not save new row
-            return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.BAD_REQUEST);
-
-        }
+        // if account does not exist, new row is added
+        // if row already exist with info input, will not save new row
+        return new ResponseEntity<>(account, account == null ? HttpStatus.CONFLICT : HttpStatus.CREATED);
     }
 
     @GetMapping("/getAccount/{uuid}")
