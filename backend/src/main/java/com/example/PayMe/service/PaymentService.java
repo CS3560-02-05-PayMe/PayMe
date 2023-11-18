@@ -3,9 +3,11 @@ package com.example.PayMe.service;
 import com.example.PayMe.entity.Payment;
 import com.example.PayMe.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class PaymentService {
     @Autowired
     private PaymentRepository repo;
