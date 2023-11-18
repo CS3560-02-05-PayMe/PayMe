@@ -3,6 +3,8 @@ package com.example.PayMe.service;
 import com.example.PayMe.entity.Account;
 import com.example.PayMe.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -19,12 +21,31 @@ public class AccountService {
 
     //------------------------------------------------
     // POST methods below
-    public Account saveAccount(Account account){
+    public ResponseEntity<?> saveAccount(Account account){
+        if (userHash.containsKey(account.getUsername()))
+        {
+            return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
+        }
+        else if (emailExist(account.getEmailAddress()))
+        {
+            return new ResponseEntity<>("Email address already exists", HttpStatus.BAD_REQUEST);
 
-        userHash.put(account.getUsername(), account.getAccountID());
+        }
+        else{
+            Account savedAccount = repo.save(account);
+            userHash.put(account.getUsername(), account.getAccountID());
 
-        return repo.save(account);
+            return new ResponseEntity<>(savedAccount, HttpStatus.CREATED);
+
+        }
     }
+
+    private boolean emailExist(String emailAddress){
+        return repo.findByEmailAddress(emailAddress).isPresent();
+    }
+
+
+
 
 //    public List<Account> listAll() {
 //        return (List<Account>) repo.findAll();
