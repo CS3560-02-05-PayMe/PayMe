@@ -3,9 +3,11 @@ package com.example.PayMe.service;
 import com.example.PayMe.entity.Payment;
 import com.example.PayMe.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 public class PaymentService {
     @Autowired
     private PaymentRepository repo;
@@ -27,10 +29,10 @@ public class PaymentService {
 
         if (existingPayment != null) {
             existingPayment.setPaymentDate(updatedPayment.getPaymentDate());
-            existingPayment.setPaymentType(updatedPayment.getPaymentType());
+//            existingPayment.setPaymentType(updatedPayment.getPaymentType());
             existingPayment.setPaymentAmount(updatedPayment.getPaymentAmount());
-            existingPayment.setSettled(updatedPayment.isSettled());
-            existingPayment.setRecurring(updatedPayment.isRecurring());
+//            existingPayment.setSettled(updatedPayment.isSettled());
+//            existingPayment.setRecurring(updatedPayment.isRecurring());
 
             return repo.save(existingPayment);
         } else {

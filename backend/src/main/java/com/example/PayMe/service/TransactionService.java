@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -17,8 +18,12 @@ public class TransactionService {
     private TransactionRepository repository;
 
     // This method retrieves all transactions from the database and sorts them in descending order by date.
-    public List<Transaction> getAllTransactions() {
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "date"));
+    public List<Transaction> getAllTransactions(UUID userId) {
+        return repository.findAll(Sort.by(Sort.Direction.DESC, "date"))
+                .parallelStream()
+                // filters all transactions for specified account
+                .filter(transaction -> transaction.containsUser(userId))
+                .collect(Collectors.toList());
     }
 
     // This method creates a new transaction in the database.
