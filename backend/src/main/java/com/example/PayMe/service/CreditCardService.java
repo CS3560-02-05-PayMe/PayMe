@@ -1,5 +1,6 @@
 package com.example.PayMe.service;
 
+import com.example.PayMe.entity.Account;
 import com.example.PayMe.entity.Address;
 import com.example.PayMe.entity.CreditCardInfo;
 import com.example.PayMe.repository.CreditCardRepository;
@@ -14,12 +15,14 @@ import java.util.stream.Collectors;
 public class CreditCardService {
     @Autowired
     private CreditCardRepository repo;
+    @Autowired
+    private AccountService accountService;
 
     // -----------------------------------------------------------------
     // methods added on Nov 14 - Eugene
     // -----------------------------------------------------------------
     public CreditCardInfo saveCreditCardInfo(CreditCardInfo creditcard) {
-        return repo.save(creditcard);
+        return repo.saveAndFlush(creditcard);
     }
 
     // get card associated with user
@@ -32,17 +35,31 @@ public class CreditCardService {
                 .orElse(null);
     }
 
-    // list all the credit cards associated with user
+    // get all credit cards associated with user
     public List<CreditCardInfo> retrieveCreditCards(UUID userID) {
-        // list all cards
-        return repo.findAll()
-                .parallelStream()
-                // filter cards associated with specified uuid/account
-                .filter(card -> card.getAccount().getAccountID().equals(userID))
-                .collect(Collectors.toList());
+        return repo.findAllByAccount_AccountID(userID);
     }
 
     public void deleteCreditCardInfo(String cardNumber) {
         repo.deleteById(cardNumber);
+    }
+
+    public List<CreditCardInfo> updateCreditCardList(UUID userId, List<CreditCardInfo> updatedCardList) {
+        Account account = accountService.retrieveAccount(userId);
+        List<CreditCardInfo> existingList = retrieveCreditCards(userId);
+
+        // remove existing list (lazy update)
+        repo.deleteAll(existingList);
+
+        // update existing list with new address list
+        existingList.clear();
+        updatedCardList.parallelStream().forEach(creditCardInfo -> {
+            creditCardInfo.setAccount(account);
+            existingList.add(creditCardInfo);
+        });
+
+        // save updated list
+        repo.saveAll(existingList);
+        return existingList;
     }
 }

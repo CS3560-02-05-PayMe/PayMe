@@ -29,8 +29,8 @@ public class AccountController {
     @PostMapping("/addAccount")
     public ResponseEntity<Account> addAccount(@RequestBody Account account) {
         // service.saveAccount will receive account object passed inputed from user
+        System.out.println(account);
         account = service.saveAccount(account);
-
         // if account does not exist, new row is added
         // if row already exist with info input, will not save new row
         return new ResponseEntity<>(account, account == null ? HttpStatus.CONFLICT : HttpStatus.CREATED);
@@ -58,14 +58,6 @@ public class AccountController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    // get account by email
-    // maybe might remove and only keep getAccount by username/uuid/(username,password)
-    @GetMapping("/getAccount/{emailAddress}")
-    public ResponseEntity<Account> getAccountByEmailAddress(@PathVariable("emailAddress") String emailAddress) {
-        System.out.println("Accessing account with uuid: " + emailAddress.toString());
-        return new ResponseEntity<>(service.retrieveAccount(UUID.fromString(emailAddress)), HttpStatus.OK);
     }
 
     //create new method that takes username and password

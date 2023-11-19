@@ -2,6 +2,7 @@ package com.example.PayMe.service;
 
 import com.example.PayMe.entity.Account;
 import com.example.PayMe.repository.AccountRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,15 @@ public class AccountService {
     @Autowired
     private AccountRepository repo;
     private final HashMap<String, UUID> userHash = new HashMap<>();
+
+    @PostConstruct
+    public void init() {
+        synchronized (this) {
+            repo.findAll()
+                    .parallelStream()
+                    .forEach(account -> userHash.put(account.getUsername(), account.getAccountID()));
+        }
+    }
 
     // Write get, post, delete... methods
 
@@ -39,7 +49,7 @@ public class AccountService {
     //------------------------------------------------
     // GET methods below
     public Account retrieveAccount(UUID uuid) {
-        return repo.getReferenceById(uuid);
+        return repo.findByAccountID(uuid);
     }
 
     public Account retrieveAccount(String username) {
