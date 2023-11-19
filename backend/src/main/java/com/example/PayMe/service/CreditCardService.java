@@ -48,6 +48,9 @@ public class CreditCardService {
         Account account = accountService.retrieveAccount(userId);
         List<CreditCardInfo> existingList = retrieveCreditCards(userId);
 
+        // remove existing list (lazy update)
+        repo.deleteAll(existingList);
+
         // update existing list with new address list
         existingList.clear();
         updatedCardList.parallelStream().forEach(creditCardInfo -> {

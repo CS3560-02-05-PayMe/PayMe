@@ -73,6 +73,9 @@ public class AddressService {
         Account account = accountService.retrieveAccount(userId);
         List<Address> existingList = retrieveAddresses(userId);
 
+        // remove existing list (lazy update)
+        repo.deleteAll(existingList);
+
         // update existing list with new address list
         existingList.clear();
         updatedAddressList.parallelStream().forEach(address -> {

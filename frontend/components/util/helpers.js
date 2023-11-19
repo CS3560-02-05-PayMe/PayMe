@@ -69,7 +69,10 @@ export async function postPM(mapping = "/", body, ...pathVariables) {
 			}
 			return response.json();
 		})
-		.catch(console.error);
+		.catch((error) => {
+			console.error(error);
+			return Promise.reject(error);
+		});
 }
 
 export async function fetchPM(mapping = "/", ...pathVariables) {
@@ -80,7 +83,10 @@ export async function fetchPM(mapping = "/", ...pathVariables) {
 			}
 			return response.json();
 		})
-		.catch(console.error);
+		.catch((error) => {
+			console.error(error);
+			return Promise.reject(error);
+		});
 }
 
 // ???

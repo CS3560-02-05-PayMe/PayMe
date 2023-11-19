@@ -47,12 +47,12 @@ export default function AccountDetails({ loggedIn, loading, pointsBalance, chang
 		},
 		{
 			icon: <HomeOutlined className="accountAddressIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
-			detail: loggedIn ? findPrimary(addressList).primaryAddress : "Unavailable",
+			detail: loggedIn ? findPrimary(addressList)?.primaryAddress : "Unavailable",
 			apply: changeAddress,
 		},
 		{
 			icon: <CreditCardOutlined className="accountCreditCardIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
-			detail: loggedIn ? `Ends in ${shorten(findPrimary(cardList).cardNumber)}` : "Unavailable",
+			detail: loggedIn ? `Ends in ${shorten(findPrimary(cardList)?.cardNumber)}` : "Unavailable",
 			apply: changeCard,
 		},
 	];

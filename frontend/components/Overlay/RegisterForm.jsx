@@ -68,40 +68,45 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 			balance: 1000,
 		};
 
-		const account = await postPM("/addAccount", accountBody);
-		updateAccount(account);
+		await postPM("/addAccount", accountBody).then((account) => {
+			updateAccount(account);
 
-		const addressBody = {
-			primaryAddress: address,
-			cityName: city,
-			stateName: state,
-			zipCode,
-			country,
-			isPriority: true,
-		};
+			const addressBody = {
+				primaryAddress: address,
+				cityName: city,
+				stateName: state,
+				zipCode,
+				country,
+				isPriority: true,
+			};
 
-		postPM("/addAddress", addressBody, account.accountID)
-			.then((addressList) => {
-				updateAddressList(addressList);
-				console.log(addressList);
-			})
-			.catch(console.error);
+			postPM("/addAddress", addressBody, account.accountID)
+				.then((addressList) => {
+					updateAddressList(addressList);
+					console.log(addressList);
+				})
+				.catch(console.error);
 
-		const cardBody = {
-			firstName: tokenizedName[0],
-			lastName: tokenizedName[1],
-			cardNumber,
-			cvvNumber,
-			expDate: cardExpDate,
-			isPriority: true,
-		};
+			const cardBody = {
+				firstName: tokenizedName[0],
+				lastName: tokenizedName[1],
+				cardNumber,
+				cvvNumber,
+				expDate: cardExpDate,
+				isPriority: true,
+			};
 
-		postPM("/addCreditCard", cardBody, account.accountID)
-			.then((cardList) => {
-				updateCardList(cardList);
-				console.log(cardList);
-			})
-			.catch(console.error);
+			postPM("/addCreditCard", cardBody, account.accountID)
+				.then((cardList) => {
+					updateCardList(cardList);
+					console.log(cardList);
+				})
+				.catch(console.error);
+		}).catch(error => {
+			if (error.status === 409) {
+				// show banner stating account already exists
+			}
+		});
 	};
 
 	const firstFormInput = [
