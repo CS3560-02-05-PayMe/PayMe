@@ -40,7 +40,7 @@ export default function AuthForm({ forms: { login = true, register = false }, re
 
 	return (
 		<>
-			{forms.login && <LoginForm onRelease={closeLoginForm} onAltRelease={openRegisterForm} apply={resetConditional}/>}
+			{forms.login && <LoginForm onRelease={closeLoginForm} onAltRelease={openRegisterForm} apply={resetConditional} />}
 			{forms.register && <RegisterForm onRelease={closeRegisterForm} onAltRelease={openLoginForm} apply={resetConditional} />}
 		</>
 	);

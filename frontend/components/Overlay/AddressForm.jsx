@@ -1,20 +1,27 @@
 import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
+import { useAccount } from "../providers/AccountProvider";
 
 import Form from "./Form";
 
 import clsx from "clsx";
 import { useState } from "react";
+import { numberify } from "../util/helpers";
 
 /**
- * 
- * @param addresses List of saved addresses
+ *
  * @param apply 	Updates primary address
  * @param onRelease Closes Address Form
- * 
+ *
  */
-export default function AddressForm({ addresses, apply, onRelease }) {
-	const [address, setAddress] = useState({});
+export default function AddressForm({ apply, onRelease }) {
+	const { addressList } = useAccount();
+
+	const [address, setAddress] = useState("");
+	const [city, setCity] = useState("");
+	const [state, setState] = useState("");
+	const [zipCode, setZipCode] = useState("");
+	const [country, setCountry] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	const formInputs = [
@@ -22,7 +29,35 @@ export default function AddressForm({ addresses, apply, onRelease }) {
 			type="text"
 			placeholder="Address"
 			onChange={(event) => {
-				setAddress({ street: event.target.value });
+				setAddress(event.target.value);
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="City"
+			onChange={(event) => {
+				setCity(event.target.value);
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="State"
+			onChange={(event) => {
+				setState(event.target.value);
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="Zip Code"
+			onChange={(event) => {
+				setZipCode(numberify(event.target.value));
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="Country"
+			onChange={(event) => {
+				setCountry(event.target.value);
 			}}
 		/>,
 	];
@@ -35,7 +70,7 @@ export default function AddressForm({ addresses, apply, onRelease }) {
 	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		let updatedAddress = selectedIndex === -1 ? address : addresses.at(selectedIndex);
+		let updatedAddress = selectedIndex === -1 ? { primaryAddress: address, cityName: city, stateName: state, zipCode, country } : addressList.at(selectedIndex);
 		apply(updatedAddress);
 	};
 
@@ -43,10 +78,10 @@ export default function AddressForm({ addresses, apply, onRelease }) {
 		<Form formType={"Change Address"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
 			<fieldset>
 				<div className="d-flex flex-column w-100 px-3 pb-3 justify-content-start">
-					{addresses.map((item, index) => (
+					{addressList.map((item, index) => (
 						<label key={index} className="d-flex w-100">
-							<input type="radio" name="addressRadio" defaultChecked={item.primary} onClick={() => handleRadioChange(index)} />
-							<span className={clsx("ms-2", typingStyles.fontType7)}>{item.street}</span>
+							<input type="radio" name="addressRadio" defaultChecked={item.isPriority} onClick={() => handleRadioChange(index)} />
+							<span className={clsx("ms-2", typingStyles.fontType7)}>{item.primaryAddress}</span>
 						</label>
 					))}
 				</div>

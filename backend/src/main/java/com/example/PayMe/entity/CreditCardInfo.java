@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.YearMonth;
 import java.util.Date;
 import java.util.UUID;
 
@@ -25,6 +26,10 @@ public class CreditCardInfo {
      * for this project, we will only have one card active
      */
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "card_id", updatable = false, nullable = false)
+    private UUID cardId;
+
     @Column(name = "card_number", updatable = false, nullable = false)
     private String cardNumber; // should only contain numbers (no '-' or ' ')
 
@@ -37,8 +42,11 @@ public class CreditCardInfo {
     @Column(name = "cvv_number")
     private int cvvNumber;
 
+    // YearMonth type but value is received as String from frontend
+    // saved value is "YY-MM"
+    // can use YearMonth.parse()
     @Column(name = "exp_date")
-    private Date expDate;
+    private String expDate;
 
     @Column(name = "first_name")
     private String firstName;
@@ -58,7 +66,7 @@ public class CreditCardInfo {
         return cvvNumber;
     }
 
-    public Date getExpDate() {
+    public String getExpDate() {
         return expDate;
     }
 
@@ -70,7 +78,7 @@ public class CreditCardInfo {
         return lastName;
     }
 
-    public boolean isPriority() {
+    public boolean getIsPriority() {
         return isPriority;
     }
 
@@ -87,7 +95,7 @@ public class CreditCardInfo {
         this.cvvNumber = cvvNumber;
     }
 
-    public void setExpDate(Date expDate) {
+    public void setExpDate(String expDate) {
         this.expDate = expDate;
     }
 

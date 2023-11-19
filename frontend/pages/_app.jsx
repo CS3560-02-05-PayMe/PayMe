@@ -8,6 +8,7 @@ import { Poppins } from "next/font/google";
 import React, { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { WindowSizeProvider } from "../components/providers/WindowSizeProvider";
+import { AccountProvider } from "../components/providers/AccountProvider";
 
 // default font
 const fontPoppins = Poppins({
@@ -64,25 +65,27 @@ const App = ({ Component, pageProps }) => {
 			</Head>
 			<QueryClientProvider client={queryClient}>
 				<WindowSizeProvider>
-					{/* sets default font for all antd objects to Poppins */}
-					<ConfigProvider
-						theme={{
-							token: {
-								fontFamily: fontPoppins.style.fontFamily,
-							},
-						}}
-					>
-						{/* adds variable for font family */}
-						<style jsx global>
-							{`
-								html {
-									--font-Poppins: ${fontPoppins.style.fontFamily};
-								}
-							`}
-						</style>
-						<Component {...pageProps} />
-						{/* add loading screen */}
-					</ConfigProvider>
+					<AccountProvider>
+						{/* sets default font for all antd objects to Poppins */}
+						<ConfigProvider
+							theme={{
+								token: {
+									fontFamily: fontPoppins.style.fontFamily,
+								},
+							}}
+						>
+							{/* adds variable for font family */}
+							<style jsx global>
+								{`
+									html {
+										--font-Poppins: ${fontPoppins.style.fontFamily};
+									}
+								`}
+							</style>
+							<Component {...pageProps} />
+							{/* add loading screen */}
+						</ConfigProvider>
+					</AccountProvider>
 				</WindowSizeProvider>
 			</QueryClientProvider>
 		</>

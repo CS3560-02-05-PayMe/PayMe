@@ -1,3 +1,8 @@
+// helper function to remove numerical values
+export function letterify(value) {
+	return value.replace(/[^a-zA-Z]/g, "");
+}
+
 // helper function to remove non-numerical values
 export function numberify(value) {
 	return value.replace(/\D/g, "");
@@ -32,6 +37,12 @@ export function formatExpirationDate(value) {
 	return value.replace(/(\d{2})(\d{0,2})/g, (match, p1, p2) => `${p1}${p2 ? "/" + p2 : ""}`);
 }
 
+export function formatYearMonth(value) {
+	const [month, year] = value.split("/");
+
+	return `${year}-${month}`;
+}
+
 export function formatPhoneNumber(value) {
 	value = numberify(value);
 
@@ -44,4 +55,51 @@ export function formatPhoneNumber(value) {
 
 export function fullName({ firstName, lastName }) {
 	return firstName + " " + lastName;
+}
+
+export async function postPM(mapping = "/", body, ...pathVariables) {
+	return fetch(formatMapping(mapping, pathVariables), {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(body),
+	})
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error(response.status);
+			}
+			return response.json();
+		})
+		.catch(console.error);
+}
+
+export async function fetchPM(mapping = "/", ...pathVariables) {
+	return fetch(formatMapping(mapping, pathVariables), { method: "GET" })
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error(response.status);
+			}
+			return response.json();
+		})
+		.catch(console.error);
+}
+
+// ???
+export function formatMapping(mapping, ...pathVariables) {
+	// const lastIndex = mapping.lastIndexOf("/");
+
+	// if (lastIndex !== 21) mapping = mapping.substring(0, lastIndex);
+	// return mapping;
+
+	pathVariables[0].forEach((pathVariable) => {
+		mapping = mapping.concat("/").concat(pathVariable);
+	});
+
+	console.log(mapping);
+	return "http://localhost:8080" + mapping;
+}
+
+// helper function to shorten/hide card number
+export function shorten(input) {
+	if (input.length <= 4) return input;
+	return input.slice(input.length - 4);
 }

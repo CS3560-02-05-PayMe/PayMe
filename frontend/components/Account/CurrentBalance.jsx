@@ -8,6 +8,7 @@ import RequestInbox from "./RequestInbox";
 import { Card } from "antd";
 import clsx from "clsx";
 import { useState } from "react";
+import { useAccount } from "../providers/AccountProvider";
 
 /**
  *
@@ -15,11 +16,11 @@ import { useState } from "react";
  * @param handleRequest 		Pays the request from other user
  * @param handleRequestRemove 	Removes the request from other user
  * @param loading 				Whether data is still being loaded
- * @param dollarBalance 		Current user account balance
  * @param requests 				All request data for current user
  *
  */
-export default function CurrentBalance({ loggedIn, handleRequest, handleRequestRemove, loading, dollarBalance, requests }) {
+export default function CurrentBalance({ loggedIn, handleRequest, handleRequestRemove, loading, requests }) {
+	const { account } = useAccount();
 	// moderation for login/register form
 	const [loginFormOpen, setLoginFormOpen] = useState(false);
 
@@ -28,8 +29,8 @@ export default function CurrentBalance({ loggedIn, handleRequest, handleRequestR
 			<div className="currentBalanceRow d-flex flex-column">
 				{loggedIn && (
 					<>
-						<span className={clsx("currentBalance text-center", typingStyles.fontTypeHeading1)}>${dollarBalance}</span>
-						<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} dollarBalance={dollarBalance} requests={requests} />
+						<span className={clsx("currentBalance text-center", typingStyles.fontTypeHeading1)}>${account?.balance}</span>
+						<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} requests={requests} />
 					</>
 				)}
 				{!loggedIn && (
