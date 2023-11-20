@@ -357,6 +357,11 @@
 	display: none;
 }
 
+.accountError {
+	background-color: rgba(253, 59, 59, 0.6);
+	
+}
+
 @media only screen and (max-width: 767px) {
 	.headerNavItems {
 		position: absolute;

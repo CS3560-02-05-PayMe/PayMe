@@ -18,6 +18,8 @@ import { useState } from "react";
 export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 	const { updateAccount, updateAddressList, updateCardList } = useAccount();
 
+	const [error, setError] = useState(-1);
+
 	const [step, setStep] = useState(1);
 	const totalSteps = 3;
 
@@ -55,7 +57,6 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		console.log({ name, username, password, phoneNumber, emailAddress, address, cardNumber, cvvNumber, cardExpDate, city, state, zipCode, country });
-		apply();
 
 		const tokenizedName = name.split(/\s+/g);
 		const accountBody = {
@@ -68,45 +69,50 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 			balance: 1000,
 		};
 
-		await postPM("/addAccount", accountBody).then((account) => {
-			updateAccount(account);
+		await postPM("/addAccount", accountBody)
+			.then((account) => {
+				updateAccount(account);
 
-			const addressBody = {
-				primaryAddress: address,
-				cityName: city,
-				stateName: state,
-				zipCode,
-				country,
-				isPriority: true,
-			};
+				const addressBody = {
+					primaryAddress: address,
+					cityName: city,
+					stateName: state,
+					zipCode,
+					country,
+					isPriority: true,
+				};
 
-			postPM("/addAddress", addressBody, account.accountID)
-				.then((addressList) => {
-					updateAddressList(addressList);
-					console.log(addressList);
-				})
-				.catch(console.error);
+				postPM("/addAddress", addressBody, account.accountID)
+					.then((addressList) => {
+						updateAddressList(addressList);
+						console.log(addressList);
+					})
+					.catch(console.error);
 
-			const cardBody = {
-				firstName: tokenizedName[0],
-				lastName: tokenizedName[1],
-				cardNumber,
-				cvvNumber,
-				expDate: cardExpDate,
-				isPriority: true,
-			};
+				const cardBody = {
+					firstName: tokenizedName[0],
+					lastName: tokenizedName[1],
+					cardNumber,
+					cvvNumber,
+					expDate: cardExpDate,
+					isPriority: true,
+				};
 
-			postPM("/addCreditCard", cardBody, account.accountID)
-				.then((cardList) => {
-					updateCardList(cardList);
-					console.log(cardList);
-				})
-				.catch(console.error);
-		}).catch(error => {
-			if (error.status === 409) {
-				// show banner stating account already exists
-			}
-		});
+				postPM("/addCreditCard", cardBody, account.accountID)
+					.then((cardList) => {
+						updateCardList(cardList);
+						console.log(cardList);
+					})
+					.catch(console.error);
+
+				apply(); // ensure all data is correctly sent/data is not duplicate before closing form
+			})
+			.catch((error) => {
+				if (error.status === 409) {
+					// show banner stating account already exists
+					setError(error.status);
+				}
+			});
 	};
 
 	const firstFormInput = [
@@ -291,6 +297,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 					</button>
 				</div>
 			</fieldset>
+			{/* {<div className={clsx("mt-2 mx-2", styles.accountError)}>Account already exists</div>} */}
 			<div className={clsx("my-2", styles.formRegister)}>
 				<span>
 					Already have an account?{" "}

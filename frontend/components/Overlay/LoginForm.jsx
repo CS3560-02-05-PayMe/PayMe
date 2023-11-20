@@ -24,7 +24,6 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		console.log(username, password);
-		apply();
 
 		const accountPromise = fetchPM("/getAccount", username, password);
 
@@ -40,6 +39,7 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 					updateCardList(cardList);
 				});
 			})
+			.then(apply) // ensure all data is correctly retrieved before closing form
 			.catch(console.error);
 	};
 
