@@ -13,6 +13,8 @@ import React, { useEffect, useState } from "react";
 import { configureChains, mainnet, WagmiConfig, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
+import { fetchPM, postPM } from "../components/util/helpers";
+import { useAccount } from "../components/providers/AccountProvider";
 
 /**
  * Default location Next.js checks to render website
@@ -37,19 +39,14 @@ const randomElement = (data) => {
 
 export default function PayMeApp() {
 	const [loading, setLoading] = useState(true);
-	const [loggedIn, setLoggedIn] = useState(false);
 	// User Account (name/username/pass(?)/address/phone)
-	const [account, setAccount] = useState({ name: null });
+	const { account, updateAccount, loggedIn, updateLoggedIn, addressList, updateAddressList, cardList, updateCardList } = useAccount();
 	// User balance
 	const [balance, setBalance] = useState(0);
 	// User RecentActivity (send/receive money)
 	const [history, setHistory] = useState([]);
 	// Requests from other people asking for money
 	const [requests, setRequests] = useState([]);
-	// User primary credit card (changeable)
-	const [cards, setCards] = useState([]);
-	// User primary address
-	const [addresses, setAddresses] = useState([]);
 	// User extra addresses
 
 	// TEMPORARY TO TEST LOADING SCREEN ----------------------
@@ -59,8 +56,7 @@ export default function PayMeApp() {
 	// -------------------------------------------------------
 
 	const handleLogout = () => {
-		setAccount({ name: null });
-		setLoggedIn(false);
+		updateAccount(null);
 	};
 
 	// account object with property amount
@@ -145,30 +141,32 @@ export default function PayMeApp() {
 		// sendRequest(name, amount)
 	};
 
-	const handleAddressUpdate = ({ street }) => {
-		const knownAddress = addresses.findIndex((a) => a.street.toLowerCase().trim() === street.toLowerCase().trim());
+	const handleAddressUpdate = (address) => {
+		const knownAddress = addressList.findIndex((a) => a.primaryAddress.toLowerCase().trim() === address.primaryAddress.toLowerCase().trim());
 		let updatedAddresses;
 
 		if (knownAddress !== -1) {
-			updatedAddresses = addresses.map((a, index) => ({ ...a, primary: index === knownAddress }));
+			updatedAddresses = addressList.map((a, index) => ({ ...a, isPriority: index === knownAddress }));
 		} else {
-			updatedAddresses = [{ street, primary: true }, ...addresses.map((a) => ({ ...a, primary: false }))];
+			updatedAddresses = [{ ...address, isPriority: true }, ...addressList.map((a) => ({ ...a, isPriority: false }))];
 		}
 
-		setAddresses(updatedAddresses);
+		updateAddressList(updatedAddresses);
+		postPM("/updateAddressList", updatedAddresses, account.accountID).then((updatedList) => console.log(updatedList));
 	};
 
-	const handleCardUpdate = ({ cardNumber }) => {
-		const knownCards = cards.findIndex((c) => c.cardNumber === cardNumber);
+	const handleCardUpdate = (card) => {
+		const knownCards = cardList.findIndex((c) => c.cardNumber === card.cardNumber);
 		let updatedCards;
 
 		if (knownCards !== -1) {
-			updatedCards = cards.map((c, index) => ({ ...c, primary: index === knownCards }));
+			updatedCards = cardList.map((c, index) => ({ ...c, isPriority: index === knownCards }));
 		} else {
-			updatedCards = [{ cardNumber, primary: true }, ...cards.map((c) => ({ ...c, primary: false }))];
+			updatedCards = [{ ...card, isPriority: true }, ...cardList.map((c) => ({ ...c, isPriority: false }))];
 		}
 
-		setCards(updatedCards);
+		updateCardList(updatedCards);
+		postPM("/updateCreditCardList", updatedCards, account.accountID).then((updatedList) => console.log(updatedList));
 	};
 
 	useEffect(() => {
@@ -197,13 +195,12 @@ export default function PayMeApp() {
 
 		setBalance((Math.random() * 1000).toFixed(2));
 
-		setAddresses([{ street: "3400 Poly Vista", primary: true }]);
+		// setAddresses([{ street: "3400 Poly Vista", primary: true }]);
 
-		setCards([{ cardNumber: "0040", primary: true }]);
+		// setCards([{ cardNumber: "0040", primary: true }]);
 
-		setAccount({ name: "Simon Ly", username: "simonly" });
-
-		setLoggedIn(true);
+		// initial login
+		updateAccount(null);
 
 		// Temporary buffer
 		// Will be replaced in the future when we need to wait for
@@ -215,11 +212,11 @@ export default function PayMeApp() {
 
 	return (
 		<WagmiConfig config={config}>
-			<Header loggedIn={loggedIn} account={account} handleLogout={handleLogout} />
+			<Header loggedIn={loggedIn} handleLogout={handleLogout} />
 			<div className={clsx("contentContainer d-flex h-100 p-md-3 p-xl-5", styles.transparentContainer)}>
 				<div className={clsx("accountContainer p-2", styles.leftContainer)}>
 					{/* <Switch checked={!loading} onChange={onChange} /> */}
-					<CurrentBalance loggedIn={loggedIn} loading={loading} dollarBalance={balance} requests={requests} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
+					<CurrentBalance loggedIn={loggedIn} loading={loading} requests={requests} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
 					<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
 						<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
 							<Pay apply={handlePay} />
@@ -228,10 +225,10 @@ export default function PayMeApp() {
 							<Request apply={handleRequest} />
 						</div>
 					</div>
-					<AccountDetails loggedIn={loggedIn} loading={loading} addresses={addresses} account={account} cards={cards} changeAddress={handleAddressUpdate} changeCard={handleCardUpdate} />
+					<AccountDetails loggedIn={loggedIn} loading={loading} changeAddress={handleAddressUpdate} changeCard={handleCardUpdate} />
 				</div>
 				<div className={clsx("activityContainer p-2 pb-3 pb-md-2", styles.rightContainer)}>
-					<RecentActivity loading={loading} history={history} />
+					<RecentActivity loggedIn={loggedIn} loading={loading} history={history} />
 				</div>
 			</div>
 		</WagmiConfig>

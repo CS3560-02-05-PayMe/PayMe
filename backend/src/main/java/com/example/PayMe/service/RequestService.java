@@ -10,26 +10,30 @@ import java.util.UUID;
 public class RequestService {
     private RequestRepository repo;
 
-    public Request saveRequest(Request request) { return repo.save(request);}
+    public Request saveRequest(Request request) {
+        return repo.save(request);
+    }
 
-
-    public Request retrieveRequest(UUID uuid) { return repo.getReferenceById(uuid);}
+    public Request retrieveRequest(UUID uuid) {
+        return repo.getReferenceById(uuid);
+    }
 
     public void deleteRequest(UUID uuid) {
         repo.deleteById(uuid);
     }
 
-    public Request updateRequest(UUID uuid, Request updatedRequest){
+    public Request updateRequest(UUID uuid, Request updatedRequest) {
         Request existingRequest = repo.findById(uuid).orElse(null);
 
-        if(existingRequest != null){
-            existingRequest.setSettled(updatedRequest.isSettled());
+        if (existingRequest != null) {
             existingRequest.setRequestDate(updatedRequest.getRequestDate());
-            existingRequest.setMessage(updatedRequest.getMessage());
+//            existingRequest.setRequestType(updatedAddress.getRequestType());
+//            existingRequest.setRequestAmount(updatedAddress.getRequestAmount());
+//            existingRequest.setIsSettled(isSettled());
+//            existingRequest.setIsRecurring(isRecurring());
 
             return repo.save(existingRequest);
-        }
-        else
+        } else
             return null; //Return null if request id doesn't return request
     }
 }

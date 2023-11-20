@@ -72,6 +72,11 @@
 	background-color: #06345c;
 }
 
+.historyTable {
+	min-width: 100%;
+	min-height: 100%;
+}
+
 @media screen and (max-width: 768px) {
 	.transparentContainer {
 		flex-wrap: wrap;
@@ -90,6 +95,10 @@
         background: white;
         border: 2px solid #06345c;
     } */
+
+	.historyTable {
+		min-height: 50%;
+	}
 }
 
 @media screen and (min-width: 1024px) {

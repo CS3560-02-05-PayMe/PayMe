@@ -1,30 +1,40 @@
 import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
+import { useAccount } from "../providers/AccountProvider";
 
-import { numberify, formatCardNumber, formatExpirationDate, formatPhoneNumber } from "../util/helpers";
+import { numberify, formatCardNumber, formatExpirationDate, formatPhoneNumber, postPM } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
 import { useState } from "react";
 
 /**
- * 
+ *
  * @param apply 	   Calls provided function from parent (ensure conditional state is correct)
  * @param onRelease    Closes register form
  * @param onAltRelease Opens login form
- * 
+ *
  */
-export default function RegisterForm({ apply, onRelease, onAltRelease}) {
+export default function RegisterForm({ apply, onRelease, onAltRelease }) {
+	const { updateAccount, updateAddressList, updateCardList } = useAccount();
+
+	const [error, setError] = useState(-1);
+
 	const [step, setStep] = useState(1);
-	const totalSteps = 2;
+	const totalSteps = 3;
 
 	const [name, setName] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const [phone, setPhone] = useState("");
-	const [email, setEmail] = useState("");
+	const [phoneNumber, setPhoneNumber] = useState("");
+	const [emailAddress, setEmailAddress] = useState("");
 
 	const [address, setAddress] = useState("");
+	const [city, setCity] = useState("");
+	const [state, setState] = useState("");
+	const [zipCode, setZipCode] = useState("");
+	const [country, setCountry] = useState("");
+
 	const [cardNumber, setCardNumber] = useState("");
 	const [cvvNumber, setCvvNumber] = useState("");
 	const [cardExpDate, setCardExpDate] = useState("");
@@ -46,26 +56,63 @@ export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 	// create new user account
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log({ name, username, password, phone, email, address, cardNumber, cvvNumber, cardExpDate });
-		// fetch(`http://localhost:8080/addAccount`, {
-		// 	method: "POST",
-		// 	headers: { "Content-Type": "application/json" },
-		// 	body: JSON.stringify({ emailAddress: email, firstName: name, lastName: name, username, password, phoneNumber: phone, balance: 100 }),
-		// })
-		// 	.then((response) => response.json())
-		// 	.then((data) => {
-		// 		console.log(data);
-		// 	})
-		// 	.catch(console.error);
+		console.log({ name, username, password, phoneNumber, emailAddress, address, cardNumber, cvvNumber, cardExpDate, city, state, zipCode, country });
 
-		fetch("http://localhost:8080/getAccount/377a5cb5-f1a1-4aef-bf65-f0fea4995aba", {
-			method: "GET",
-		})
-			.then((response) => response.json())
+		const tokenizedName = name.split(/\s+/g);
+		const accountBody = {
+			firstName: tokenizedName[0],
+			lastName: tokenizedName[1],
+			username,
+			password,
+			emailAddress,
+			phoneNumber,
+			balance: 1000,
+		};
+
+		await postPM("/addAccount", accountBody)
 			.then((account) => {
-				console.log(account);
+				updateAccount(account);
+
+				const addressBody = {
+					primaryAddress: address,
+					cityName: city,
+					stateName: state,
+					zipCode,
+					country,
+					isPriority: true,
+				};
+
+				postPM("/addAddress", addressBody, account.accountID)
+					.then((addressList) => {
+						updateAddressList([addressList]);
+						console.log(addressList);
+					})
+					.catch(console.error);
+
+				const cardBody = {
+					firstName: tokenizedName[0],
+					lastName: tokenizedName[1],
+					cardNumber,
+					cvvNumber,
+					expDate: cardExpDate,
+					isPriority: true,
+				};
+
+				postPM("/addCreditCard", cardBody, account.accountID)
+					.then((cardList) => {
+						updateCardList(cardList);
+						console.log(cardList);
+					})
+					.catch(console.error);
+
+				apply(); // ensure all data is correctly sent/data is not duplicate before closing form
 			})
-			.catch(console.error);
+			.catch((error) => {
+				if (error.status === 409) {
+					// show banner stating account already exists
+					setError(error.status);
+				}
+			});
 	};
 
 	const firstFormInput = [
@@ -101,7 +148,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 			onChange={(event) => {
 				const formattedNumber = formatPhoneNumber(event.target.value);
 				event.target.value = formattedNumber;
-				setPhone(formattedNumber);
+				setPhoneNumber(numberify(formattedNumber));
 			}}
 		/>,
 		<input
@@ -109,7 +156,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 			placeholder="Email Address"
 			required
 			onChange={(event) => {
-				setEmail(event.target.value);
+				setEmailAddress(event.target.value);
 			}}
 		/>,
 	];
@@ -125,13 +172,48 @@ export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 		/>,
 		<input
 			type="text"
+			placeholder="City"
+			required
+			onChange={(event) => {
+				setCity(event.target.value);
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="State"
+			required
+			onChange={(event) => {
+				setState(event.target.value);
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="Zip Code"
+			required
+			onChange={(event) => {
+				setZipCode(numberify(event.target.value));
+			}}
+		/>,
+		<input
+			type="text"
+			placeholder="Country"
+			required
+			onChange={(event) => {
+				setCountry(event.target.value);
+			}}
+		/>,
+	];
+
+	const thirdFormInput = [
+		<input
+			type="text"
 			placeholder="Credit Card Number"
 			required
 			maxLength={19}
 			onChange={(event) => {
 				const formattedNumber = formatCardNumber(event.target.value);
 				event.target.value = formattedNumber;
-				setCardNumber(formattedNumber);
+				setCardNumber(numberify(formattedNumber));
 			}}
 		/>,
 		<input
@@ -175,11 +257,31 @@ export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 					Next
 				</button>
 			</fieldset>
-			<fieldset className={clsx("w-100", { ["d-inline-block"]: step > 1 })}>
+			<fieldset className={clsx("w-100", { ["d-inline-block"]: step === 2 })}>
+				<div className={clsx("d-flex w-100 justify-content-center")}>
+					<span className={clsx(typingStyles.fontType7)}>Address Details</span>
+				</div>
+				{secondFormInput.map((item, index) => {
+					return (
+						<div key={index} className={clsx("my-3", styles.formInput)}>
+							{item}
+						</div>
+					);
+				})}
+				<div className={clsx("d-flex w-100 justify-content-between", styles.registerButtonWrapper)}>
+					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handlePreviousStep}>
+						Previous
+					</button>
+					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
+						Next
+					</button>
+				</div>
+			</fieldset>
+			<fieldset className={clsx("w-100", { ["d-inline-block"]: step > 2 })}>
 				<div className={clsx("d-flex w-100 justify-content-center")}>
 					<span className={clsx(typingStyles.fontType7)}>Payment Details</span>
 				</div>
-				{secondFormInput.map((item, index) => {
+				{thirdFormInput.map((item, index) => {
 					return (
 						<div key={index} className={clsx("my-3", styles.formInput)}>
 							{item}
@@ -195,6 +297,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease}) {
 					</button>
 				</div>
 			</fieldset>
+			{/* {<div className={clsx("mt-2 mx-2", styles.accountError)}>Account already exists</div>} */}
 			<div className={clsx("my-2", styles.formRegister)}>
 				<span>
 					Already have an account?{" "}

@@ -1,3 +1,5 @@
+import { useAccount } from "./providers/AccountProvider";
+
 import styles from "../styles/heading.module.css";
 import typingStyles from "../styles/typing.module.css";
 
@@ -7,7 +9,8 @@ import { LoginOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
 
-export default function Header({ loggedIn, account, handleLogout }) {
+export default function Header({ loggedIn, handleLogout }) {
+	const { account } = useAccount();
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 	const [loginFormOpen, setLoginFormOpen] = useState(false);
 
@@ -37,9 +40,7 @@ export default function Header({ loggedIn, account, handleLogout }) {
 		};
 	}, []);
 
-	useEffect(() => {
-
-	}, [loginFormOpen]);
+	useEffect(() => {}, [loginFormOpen]);
 
 	return (
 		<header className={clsx("headerContainer py-3 py-md-2 px-md-3 px-xl-5", styles.header)}>
@@ -84,7 +85,7 @@ export default function Header({ loggedIn, account, handleLogout }) {
 							onClick={toggleDropdown}
 							ref={dropdownRef}
 						>
-							<span className={clsx(styles.profileNameWrapper, typingStyles.fontType7)}>{account.name}</span>
+							<span className={clsx(styles.profileNameWrapper, typingStyles.fontType7)}>{account?.firstName}</span>
 							<span className={clsx("align-self-center", styles.dropdownArrow)} />
 							{dropdownOpen && (
 								<ul className={clsx("w-100 px-2", styles.dropdownItems)}>

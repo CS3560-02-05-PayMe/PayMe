@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.Date;
 import java.util.UUID;
 
+/** This is the entity class Payment which contains information for payments to other users.
+ * Payments must be associated with one Transaction, which contains the information
+ * required to execute the payment. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
@@ -42,9 +45,16 @@ public class Payment {
     @Column(name = "message")
     private String message;
 
+    /** Retrieves the transactionID within the Transaction associated with this Payment.
+     * @return The transactionID (UUID) of the associated Transaction. */
     public UUID getTransactionID() {
         return transaction.getTransactionID();
     }
+
+    /** A toString method that prints the information stored in Payment,
+     * as well as the associated Transaction's transactionID
+     * (rather than the information stored in the Transaction).
+     * @return A string containing the information stored in Payment. */
     @Override
     public String toString() {
         return "Payment{" +

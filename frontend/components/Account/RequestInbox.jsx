@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
  * @param requests 		All request data for current user
  * 
  */
-export default function RequestInbox({ loggedIn, apply, remove, dollarBalance, requests }) {
+export default function RequestInbox({ loggedIn, apply, remove, requests }) {
 	const [requestInboxOpen, setRequestInboxOpen] = useState(false);
 
 	const openRequestInbox = (event) => {
@@ -39,7 +39,7 @@ export default function RequestInbox({ loggedIn, apply, remove, dollarBalance, r
 					Request Inbox{loggedIn && requests.length > 0 && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requests.length}</span>}
 				</div>
 			</div>
-			{requestInboxOpen && <RequestInboxForm apply={apply} remove={remove} dollarBalance={dollarBalance} requests={requests} onRelease={closeRequestInbox} />}
+			{requestInboxOpen && <RequestInboxForm apply={apply} remove={remove} requests={requests} onRelease={closeRequestInbox} />}
 		</>
 	);
 }

@@ -4,7 +4,7 @@ import { useWindowSize } from "../providers/WindowSizeProvider";
 
 import { Card, Table } from "antd";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // table columns shown on different viewport devices
 const smColumns = [
@@ -64,26 +64,37 @@ const lgColumns = [
 	},
 ];
 
-// viewheight breakpoints for table page size
-const pageBreakpoints = {
-	768: 6,
-	1024: 10,
-	1440: 16,
-};
 
-export default function RecentActivity({ loading, history = [] }) {
+export default function RecentActivity({ loggedIn, loading, history = [] }) {
 	const { width, height } = useWindowSize();
-	const [pageBreakpoint, setPageBreakpoint] = useState(0);
-	
+	// 55px per row in table
+	const [pageSize, setPageSize] = useState(Math.floor(height / 55));
+
+	const tableContainerRef = useRef(null);
+
 	useEffect(() => {
-		// helper function to set page size
-		setPageBreakpoint(
-			Object.keys(pageBreakpoints)
-				.map(Number)
-				.sort((a, b) => a - b)
-				.find((breakpoint) => height <= breakpoint)
-		);
-	}, [width]);
+		const handleResize = () => {
+			// helper function to set page size
+			if (tableContainerRef.current) {
+				// 55px 			 table row size
+				// --
+				// 56px 			 card title
+				// 103px =
+				// + 48px = 24px * 2 card body padding-y
+				// + 55px 			 table column title row
+				// 32px 			 table pagination size
+				setPageSize(Math.floor((tableContainerRef.current.clientHeight - 56 - 103 - 32) / 55) || 0);
+				console.log(pageSize);
+			}
+		};
+
+		handleResize();
+
+		window.addEventListener("resize", handleResize);
+		return () => {
+			window.removeEventListener("resize", handleResize);
+		};
+	}, []);
 
 	return (
 		<Card
@@ -91,16 +102,19 @@ export default function RecentActivity({ loading, history = [] }) {
 			className={clsx("h-100 w-100 mx-2 mx-md-0", styles.containerShadow)}
 			headStyle={{ background: "#A8C1D1" }}
 			bodyStyle={{ height: "calc(100% - 56px)" }}
+			ref={tableContainerRef}
 		>
-			{history && (
-				<Table
-					className="d-flex d-md-block h-100 align-items-center justify-content-center"
-					dataSource={history}
-					columns={width >= 768 ? lgColumns : smColumns}
-					pagination={{ position: ["bottomCenter"], pageSize: pageBreakpoints[pageBreakpoint] }}
-					loading={loading}
-				/>
-			)}
+			<div className="d-flex w-100 h-100">
+				{history && (
+					<Table
+						className={clsx("d-block align-items-center justify-content-center", styles.historyTable)}
+						dataSource={loggedIn ? history : []}
+						columns={width >= 768 ? lgColumns : smColumns}
+						pagination={{ position: ["bottomCenter"], pageSize }}
+						loading={loading}
+					/>
+				)}
+			</div>
 		</Card>
 	);
 }

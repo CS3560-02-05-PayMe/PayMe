@@ -9,19 +9,21 @@ import { Card, Skeleton } from "antd";
 import { CreditCardOutlined, HomeOutlined, UserOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useState } from "react";
+import { useAccount } from "../providers/AccountProvider";
+import { shorten } from "../util/helpers";
 
 /**
- * 
- * @param loggedIn 		Whether user is logged in 
+ *
+ * @param loggedIn 		Whether user is logged in
  * @param loading 		Whether data is still being loaded
- * @param addresses 	List of user addresses
  * @param account 		User account
- * @param cards 		List of user credit cards
  * @param changeAddress Helper function to change primary address
  * @param changeCard 	Helper function to change primary card
- * 
+ *
  */
-export default function AccountDetails({ loggedIn, loading, addresses, account: { name, username }, cards, pointsBalance, changeAddress, changeCard }) {
+export default function AccountDetails({ loggedIn, loading, pointsBalance, changeAddress, changeCard }) {
+	const { account, addressList, cardList } = useAccount();
+
 	// helper function to shorten/hide account address
 	const abbreviate = (input, prefixLength = 3, suffixLength = 3) => {
 		if (input.length <= prefixLength + suffixLength) return input;
@@ -32,31 +34,26 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 		return `${prefix}...${suffix}`;
 	};
 
-	// helper function to shorten/hide card number
-	const shorten = (input) => {
-		if (input.length <= 4) return input;
-		return input.slice(input.length - 4);
-	};
-
 	// helper function to find primary address/card
 	const findPrimary = (array) => {
-		return array.find((ele) => ele.primary);
+		console.log(array, addressList, cardList);
+		return array.find((ele) => ele.isPriority);
 	};
 
 	// items to populate Account Details Card
 	const accountDetails = [
 		{
 			icon: <UserOutlined className="accountUserIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
-			detail: loggedIn ? name : "Please log in to view account",
+			detail: loggedIn ? account?.firstName : "Please log in to view account",
 		},
 		{
 			icon: <HomeOutlined className="accountAddressIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
-			detail: loggedIn ? findPrimary(addresses).street : "Unavailable",
+			detail: loggedIn ? findPrimary(addressList)?.primaryAddress : "Unavailable",
 			apply: changeAddress,
 		},
 		{
 			icon: <CreditCardOutlined className="accountCreditCardIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
-			detail: loggedIn ? `Ends in ${shorten(findPrimary(cards).cardNumber)}` : "Unavailable",
+			detail: loggedIn ? `Ends in ${shorten(findPrimary(cardList)?.cardNumber)}` : "Unavailable",
 			apply: changeCard,
 		},
 	];
@@ -98,20 +95,22 @@ export default function AccountDetails({ loggedIn, loading, addresses, account: 
 							<div className={clsx("d-flex ms-3")}>{item.icon}</div>
 							<div className={clsx("d-flex h-100 w-100 flex-column align-items-start")}>
 								<span className="accountDetail">{item.detail}</span>
-								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{username || "unavailable"}</span>}
+								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{account?.username || "unavailable"}</span>}
 							</div>
 							{index > 0 && (
 								<div className={clsx("d-flex w-100 justify-content-end")}>
-									<span className={clsx("py-1 px-3", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={index === 1 ? openAddressForm : openCardForm}>
-										Change
-									</span>
+									{account !== null && (
+										<span className={clsx("py-1 px-3", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={index === 1 ? openAddressForm : openCardForm}>
+											Change
+										</span>
+									)}
 								</div>
 							)}
 						</div>
 					);
 				})}
-				{forms["addressFormOpen"] && <AddressForm addresses={addresses} apply={changeAddress} onRelease={closeAddressForm} />}
-				{forms["cardFormOpen"] && <CardForm cards={cards} apply={changeCard} onRelease={closeCardForm} />}
+				{forms["addressFormOpen"] && <AddressForm apply={changeAddress} onRelease={closeAddressForm} />}
+				{forms["cardFormOpen"] && <CardForm apply={changeCard} onRelease={closeCardForm} />}
 			</Skeleton>
 		</Card>
 	);

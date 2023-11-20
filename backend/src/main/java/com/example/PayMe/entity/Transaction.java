@@ -10,6 +10,12 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * This is the entity class Transaction which contains information for executing payments and requests.
+ * Transactions can be associated with up to one Request and one or more Payments.
+ * While a Transaction does not have to be associated with a Request, if it is not then it may only
+ * be associated with one Payment (due to the nature of the creation of Payments and Requests)
+ */
 @Data
 @Getter
 @AllArgsConstructor
@@ -41,9 +47,31 @@ public class Transaction {
     @JsonIgnore
     private Account payer;
 
-    public UUID getRecipientID() {return recipient.getAccountID();}
+    /**
+     * Retrieves the accountID within the recipient Account associated with this Transaction.
+     *
+     * @return The transactionID (UUID) of the associated recipient Account.
+     */
+    public UUID getRecipientID() {
+        return recipient.getAccountID();
+    }
 
-    public UUID getPayerID() {return payer.getAccountID();}
+    /**
+     * Retrieves the accountID within the payer Account associated with this Transaction.
+     *
+     * @return The transactionID (UUID) of the associated payer Account.
+     */
+    public UUID getPayerID() {
+        return payer.getAccountID();
+    }
+
+    /**
+     * A toString method that prints the information stored in Transaction,
+     * as well as the associated payer and recipient Accounts' accountIDs
+     * (rather than the information stored in each Account).
+     *
+     * @return A string containing the information stored in Transaction.
+     */
     public String toString() {
         return "Transaction{" +
                 "transactionID=" + getTransactionID() +
@@ -51,5 +79,16 @@ public class Transaction {
                 ", recipientID=" + recipient.getAccountID() +
                 ", payerID=" + payer.getAccountID() +
                 '}';
+    }
+
+    public boolean containsUser(UUID userId) {
+        return containsUser(userId, null);
+    }
+
+    public boolean containsUser(UUID userId, UUID otherId) {
+        return payer.getAccountID().equals(userId) ||
+                payer.getAccountID().equals(otherId) ||
+                recipient.getAccountID().equals(userId) ||
+                recipient.getAccountID().equals(otherId);
     }
 }

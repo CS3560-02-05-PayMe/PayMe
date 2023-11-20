@@ -19,7 +19,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Address {
     @Id
-    //@GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "address_id", updatable = false, nullable = false)
     private UUID addressID;
 
@@ -47,30 +47,43 @@ public class Address {
     @Column(name = "country")
     private String country;
 
+    @Column(name = "is_priority")
+    private boolean isPriority;
+
+    //Getters
     public UUID getAddressID() {
-        return addressID;
+        return this.addressID;
+    }
+
+    public Account getAccount() {
+        return account;
     }
 
     public String getPrimaryAddress() {
-        return primaryAddress;
+        return this.primaryAddress;
     }
 
     public String getCityName() {
-        return cityName;
+        return this.cityName;
     }
 
     public String getStateName() {
-        return stateName;
+        return this.stateName;
     }
 
     public String getZipCode() {
-        return zipCode;
+        return this.zipCode;
     }
 
     public String getCountry() {
-        return country;
+        return this.country;
     }
 
+    public boolean getIsPriority() {
+        return isPriority;
+    }
+
+    //Setters
     public void setPrimaryAddress(String primaryAddress) {
         this.primaryAddress = primaryAddress;
     }
