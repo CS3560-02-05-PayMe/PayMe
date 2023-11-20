@@ -84,7 +84,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 
 				postPM("/addAddress", addressBody, account.accountID)
 					.then((addressList) => {
-						updateAddressList(addressList);
+						updateAddressList([addressList]);
 						console.log(addressList);
 					})
 					.catch(console.error);
