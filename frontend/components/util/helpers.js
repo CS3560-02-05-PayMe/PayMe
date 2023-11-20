@@ -106,6 +106,6 @@ export function formatMapping(mapping, ...pathVariables) {
 
 // helper function to shorten/hide card number
 export function shorten(input) {
-	if (input.length <= 4) return input;
+	if (!input || input?.length <= 4) return input;
 	return input.slice(input.length - 4);
 }
