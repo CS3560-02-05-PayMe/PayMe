@@ -19,11 +19,13 @@ public class TransactionService {
 
     // This method retrieves all transactions from the database and sorts them in descending order by date.
     public List<Transaction> getAllTransactions(UUID userId) {
-        return repository.findAll(Sort.by(Sort.Direction.DESC, "date"))
-                .parallelStream()
-                // filters all transactions for specified account
-                .filter(transaction -> transaction.containsUser(userId))
-                .collect(Collectors.toList());
+        return repository.findAllByAccount_AccountID(userId);
+
+//        return repository.findAll(Sort.by(Sort.Direction.DESC, "date"))
+//                .parallelStream()
+//                // filters all transactions for specified account
+//                .filter(transaction -> transaction.containsUser(userId))
+//                .collect(Collectors.toList());
     }
 
     // This method creates a new transaction in the database.
