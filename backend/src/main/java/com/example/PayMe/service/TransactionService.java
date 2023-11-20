@@ -19,7 +19,12 @@ public class TransactionService {
 
     // This method retrieves all transactions from the database and sorts them in descending order by date.
     public List<Transaction> getAllTransactions(UUID userId) {
-        return repository.findAllByAccount_AccountID(userId);
+        List<Transaction> recipientList = repository.findAllByRecipient_AccountID(userId);
+        List<Transaction> payerList = repository.findAllByPayer_AccountID(userId);
+
+        recipientList.addAll(payerList);
+
+        return recipientList;
 
 //        return repository.findAll(Sort.by(Sort.Direction.DESC, "date"))
 //                .parallelStream()
