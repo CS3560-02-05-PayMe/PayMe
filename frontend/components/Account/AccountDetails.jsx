@@ -36,6 +36,7 @@ export default function AccountDetails({ loggedIn, loading, pointsBalance, chang
 
 	// helper function to find primary address/card
 	const findPrimary = (array) => {
+		console.log(array, addressList, cardList);
 		return array.find((ele) => ele.isPriority);
 	};
 
