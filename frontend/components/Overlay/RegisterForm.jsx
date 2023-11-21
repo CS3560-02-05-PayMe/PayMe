@@ -100,7 +100,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 
 				postPM("/addCreditCard", cardBody, account.accountID)
 					.then((cardList) => {
-						updateCardList(cardList);
+						updateCardList([cardList]);
 						console.log(cardList);
 					})
 					.catch(console.error);
