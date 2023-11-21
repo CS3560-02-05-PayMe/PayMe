@@ -21,11 +21,9 @@ public class AccountController {
     // Now Write all the REST endpoints,
     // which are presents in service, give the url
 
-    // ------------------------------------------------
-    // POST
 
     //    ResponseEntity returns the class in a JSON object to frontend
-//    This makes it easier for frontend to parse and read data
+    //    This makes it easier for frontend to parse and read data
     @PostMapping("/addAccount")
     public ResponseEntity<Account> addAccount(@RequestBody Account account) {
         // service.saveAccount will receive account object passed inputted by user
@@ -42,9 +40,6 @@ public class AccountController {
         return new ResponseEntity<>(service.retrieveAccount(uuid), HttpStatus.OK);
     }
 
-    // ------------------------------------------------------------------------------------------
-    // Functionality added on Nov 14
-    // ------------------------------------------------------------------------------------------
     // get Account by username
     @GetMapping("/getAccount/{username}")
     public ResponseEntity<Account> getAccount(@PathVariable("username") String username) {
