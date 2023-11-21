@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { useState } from "react";
 
 export default function DepositForm({ apply, onRelease }) {
-	const [card, setDebtor] = useState("");
+	const [card, setCard] = useState("");
 	const [amount, setAmount] = useState(0);
 
 	const formInputs = [
