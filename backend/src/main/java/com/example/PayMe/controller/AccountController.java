@@ -36,8 +36,8 @@ public class AccountController {
         return new ResponseEntity<>(account, account == null ? HttpStatus.CONFLICT : HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAccount/{uuid}")
-    public ResponseEntity<Account> getAccount(@PathVariable("uuid") UUID uuid) {
+    @GetMapping("/getAccountByUuid/{uuid}")
+    public ResponseEntity<Account> getAccountById(@PathVariable("uuid") UUID uuid) {
         System.out.println("Accessing account with uuid: " + uuid.toString());
         return new ResponseEntity<>(service.retrieveAccount(uuid), HttpStatus.OK);
     }
@@ -84,11 +84,11 @@ public class AccountController {
         return new ResponseEntity<>("Account deleted successfully", HttpStatus.OK);
     }
 
-    @PutMapping("/updateAccount/{uuid}")
+    @PostMapping("/updateAccount/{uuid}")
     public ResponseEntity<Account> updateAccount(
-            @PathVariable UUID uuid,
+            @PathVariable String uuid,
             @RequestBody Account updatedAccount) {
-        Account result = service.updateAccount(uuid, updatedAccount);
+        Account result = service.updateAccount(UUID.fromString(uuid), updatedAccount);
 
         if (result != null) {
             return new ResponseEntity<>(result, HttpStatus.OK);

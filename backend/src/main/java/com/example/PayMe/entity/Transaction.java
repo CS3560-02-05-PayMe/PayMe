@@ -34,6 +34,14 @@ public class Transaction {
     private double transactionAmount;
 
     @Setter
+    @Getter
+    @Column(name = "transaction_date")
+    //    provided as isoDateString
+    //    use DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    //    LocalDateTime date = LocalDateTime.parse(isoDateString, formatter);
+    private String transactionDate;
+
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "transaction_recipient_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -46,6 +54,11 @@ public class Transaction {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Account payer;
+
+    @Setter
+    @Getter
+    @Column(name = "message")
+    private String message;
 
     /**
      * Retrieves the accountID within the recipient Account associated with this Transaction.

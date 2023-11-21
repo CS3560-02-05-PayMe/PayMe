@@ -36,19 +36,21 @@ export default function AccountDetails({ loggedIn, loading, pointsBalance, chang
 
 	// helper function to find primary address/card
 	const findPrimary = (array) => {
-		console.log(array, addressList, cardList);
 		return array.find((ele) => ele.isPriority);
 	};
 
 	// items to populate Account Details Card
+	const primaryAddress = findPrimary(addressList);
 	const accountDetails = [
 		{
 			icon: <UserOutlined className="accountUserIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
 			detail: loggedIn ? account?.firstName : "Please log in to view account",
+			subDetail: `@${account?.username || "unavailable"}`
 		},
 		{
 			icon: <HomeOutlined className="accountAddressIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
-			detail: loggedIn ? findPrimary(addressList)?.primaryAddress : "Unavailable",
+			detail: loggedIn ? primaryAddress?.primaryAddress : "Unavailable",
+			subDetail: loggedIn ? `${primaryAddress?.cityName}, ${primaryAddress?.stateName}` : "",
 			apply: changeAddress,
 		},
 		{
@@ -95,7 +97,7 @@ export default function AccountDetails({ loggedIn, loading, pointsBalance, chang
 							<div className={clsx("d-flex ms-3")}>{item.icon}</div>
 							<div className={clsx("d-flex h-100 w-100 flex-column align-items-start")}>
 								<span className="accountDetail">{item.detail}</span>
-								{index === 0 && <span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{account?.username || "unavailable"}</span>}
+								<span className={clsx(typingStyles.fontType4, typingStyles.white9)}>{item.subDetail}</span>
 							</div>
 							{index > 0 && (
 								<div className={clsx("d-flex w-100 justify-content-end")}>

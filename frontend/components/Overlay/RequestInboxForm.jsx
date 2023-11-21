@@ -55,7 +55,12 @@ export default function RequestInboxForm({ apply, remove, requests, onRelease })
 			)}
 			{requests.length > 0 && (
 				<div className="d-flex flex-column w-100">
-					<div className={clsx("d-flex align-items-start py-2 mx-2", styles.listCheckable, { [styles.listChecked]: listState === "listChecked", [styles.removeChecked]: listState === "removeChecked" })}>
+					<div
+						className={clsx("d-flex align-items-start py-2 mx-2", styles.listCheckable, {
+							[styles.listChecked]: listState === "listChecked",
+							[styles.removeChecked]: listState === "removeChecked",
+						})}
+					>
 						<div
 							className={clsx(styles.requestListCheckable)}
 							onClick={() => {
@@ -97,8 +102,8 @@ export default function RequestInboxForm({ apply, remove, requests, onRelease })
 										checked={checkedItems[index]}
 										onClick={() => handleItemClicked(index)}
 									/>
-									<div className={clsx("d-flex flex-column h-100 w-100 align-items-start")} onClick={() => handleItemClicked(index)}>
-										<span className={clsx(typingStyles.fontType6)}>{item.name}</span>
+									<div className={clsx("d-flex flex-column h-100 align-items-start", styles.requestDetail)} onClick={() => handleItemClicked(index)}>
+										<span className={clsx("text-start", styles.requestDetail, typingStyles.fontType6)}>{item.name}</span>
 										<span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{item.username}</span>
 									</div>
 									<div className={clsx("d-flex align-items-center")}>

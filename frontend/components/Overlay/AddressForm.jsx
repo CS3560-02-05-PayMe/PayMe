@@ -6,7 +6,8 @@ import Form from "./Form";
 
 import clsx from "clsx";
 import { useState } from "react";
-import { numberify } from "../util/helpers";
+import { emptyFields, numberify } from "../util/helpers";
+import FormSubmitted from "./PostOverlay/FormSubmitted";
 
 /**
  *
@@ -17,12 +18,13 @@ import { numberify } from "../util/helpers";
 export default function AddressForm({ apply, onRelease }) {
 	const { addressList } = useAccount();
 
+	const [selectedIndex, setSelectedIndex] = useState(-1);
+
 	const [address, setAddress] = useState("");
 	const [city, setCity] = useState("");
 	const [state, setState] = useState("");
 	const [zipCode, setZipCode] = useState("");
 	const [country, setCountry] = useState("");
-	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	const formInputs = [
 		<input
@@ -70,12 +72,21 @@ export default function AddressForm({ apply, onRelease }) {
 	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		let updatedAddress = selectedIndex === -1 ? { primaryAddress: address, cityName: city, stateName: state, zipCode, country } : addressList.at(selectedIndex);
-		apply(updatedAddress);
+		let updatedAddress =
+			// if same address is selected and all fields are empty, save current address
+			// ALL fields must be filled in order to update address
+			//
+			// later will be changed to "Add new address" form
+			selectedIndex === -1 && !emptyFields(address, city, state, zipCode, country)
+				? { primaryAddress: address, cityName: city, stateName: state, zipCode, country }
+				: addressList.at(selectedIndex);
+
+		// only update address if new address is entered or different address is selected
+		if (selectedIndex !== -1 || !emptyFields(address, city, state, zipCode, country)) apply(updatedAddress);
 	};
 
 	return (
-		<Form formType={"Change Address"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
+		<Form formType={"Change Address"} formAltType={"Updated Address"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"updateAddress"}>
 			<fieldset>
 				<div className="d-flex flex-column w-100 px-3 pb-3 justify-content-start">
 					{addressList.map((item, index) => (
