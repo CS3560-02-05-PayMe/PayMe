@@ -28,7 +28,7 @@ public class AccountController {
 //    This makes it easier for frontend to parse and read data
     @PostMapping("/addAccount")
     public ResponseEntity<Account> addAccount(@RequestBody Account account) {
-        // service.saveAccount will receive account object passed inputed from user
+        // service.saveAccount will receive account object passed inputted by user
         System.out.println(account);
         account = service.saveAccount(account);
         // if account does not exist, new row is added
