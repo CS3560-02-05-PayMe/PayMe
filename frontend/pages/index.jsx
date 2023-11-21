@@ -136,6 +136,36 @@ export default function PayMeApp() {
 		setHistory(tempHistory);
 	};
 
+	const handleTransfer = ({ uuid, transfer }) => {
+		if (balance < transfer) {
+			console.log("UNABLE TO RESOLVE TRANSFER :: INSUFFICIENT BALANCE");
+			console.log(`Current Balance: ${balance}, Needed: ${transfer}`);
+			return;
+		}
+
+		setBalance((balance - transfer).toFixed(2));
+		setRequests(requests.filter((request) => request.uuid !== uuid));
+
+		const tempHistory = history.map((transaction) => ({
+			...transaction,
+			key: transaction.key + 1,
+		}));
+		tempHistory.unshift({ key: 0, subject: "cc", type: "Transfer", address: "N/A", message: randomElement(sampleMessage), transfer });
+		setHistory(tempHistory);
+	};
+
+	const handleDeposit = ({ uuid, deposit }) => {
+		setBalance((balance + deposit).toFixed(2));
+		setRequests(requests.filter((request) => request.uuid !== uuid));
+
+		const tempHistory = history.map((transaction) => ({
+			...transaction,
+			key: transaction.key + 1,
+		}));
+		tempHistory.unshift({ key: 0, subject: "cc", type: "Deposit", address: "N/A", message: randomElement(sampleMessage), deposit });
+		setHistory(tempHistory);
+	};
+
 	const handleRequest = ({ name, amount }) => {
 		// sends request to backend to push request to their inbox
 		// sendRequest(name, amount)
