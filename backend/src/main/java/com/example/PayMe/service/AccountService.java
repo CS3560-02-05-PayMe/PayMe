@@ -80,7 +80,7 @@ public class AccountService {
             existingAccount.setPassword(updatedAccount.getPassword());
 
             // Save the updated account
-            return saveAccount(updatedAccount);
+            return repo.save(existingAccount);
         }
 
         // If the account with the specified UUID doesn't exist, return null or throw an exception

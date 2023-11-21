@@ -7,10 +7,10 @@ import clsx from "clsx";
 import { useState } from "react";
 
 /**
- * 
+ *
  * @param apply 	Calls provided function from parent (sends request to mentioned account)
  * @param onRelease Closes request form
- * 
+ *
  */
 export default function RequestForm({ apply, onRelease }) {
 	const [debtor, setDebtor] = useState("");
@@ -45,7 +45,7 @@ export default function RequestForm({ apply, onRelease }) {
 	};
 
 	return (
-		<Form formType={"Request"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
+		<Form formType={"Request"} formAltType={"Request Sent"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"requestSent"}>
 			<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
 				Request
 			</button>

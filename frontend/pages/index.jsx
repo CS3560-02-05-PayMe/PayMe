@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { configureChains, mainnet, WagmiConfig, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
-import { fetchPM, postPM } from "../components/util/helpers";
+import { fetchPM, getOtherPartyUUID, isRecipient, postPM } from "../components/util/helpers";
 import { useAccount } from "../components/providers/AccountProvider";
 
 /**
@@ -40,11 +40,9 @@ const randomElement = (data) => {
 export default function PayMeApp() {
 	const [loading, setLoading] = useState(true);
 	// User Account (name/username/pass(?)/address/phone)
-	const { account, updateAccount, loggedIn, updateLoggedIn, addressList, updateAddressList, cardList, updateCardList } = useAccount();
+	const { account, updateAccount, loggedIn, updateLoggedIn, addressList, updateAddressList, cardList, updateCardList, historyList, updateHistoryList } = useAccount();
 	// User balance
 	const [balance, setBalance] = useState(0);
-	// User RecentActivity (send/receive money)
-	const [history, setHistory] = useState([]);
 	// Requests from other people asking for money
 	const [requests, setRequests] = useState([]);
 	// User extra addresses
@@ -96,44 +94,6 @@ export default function PayMeApp() {
 			updatedRequests.splice(requestIndex, 1);
 			setRequests(updatedRequests);
 		}
-	};
-
-	const handlePay = ({ name = null, username = null, amount }) => {
-		if (!!name && !!username) {
-			console.log("Invalid user");
-			return;
-		}
-
-		if (balance < amount) {
-			console.log("UNABLE TO RESOLVE REQUEST :: INSUFFICIENT BALANCE");
-			console.log(`Current Balance: ${balance}, Needed: ${amount}`);
-			return;
-		}
-
-		if (!!name) {
-			// send to getAccount by fullName
-		} else {
-			// send to getAccount by user handle
-		}
-
-		setBalance((balance - amount).toFixed(2));
-
-		const requestFilter = (r) => (r.username === username || r.name === name) && r.amount === amount;
-		// check if pay amount/recipient matches any in inbox
-		const requestFiltered = requests.filter(requestFilter);
-		if (!!requestFiltered.length) {
-			// find index of request to remove
-			const requestIndex = requests.findIndex(requestFilter);
-			requests.splice(requestIndex, 1);
-			setRequests(requests);
-		}
-
-		const tempHistory = history.map((transaction) => ({
-			...transaction,
-			key: transaction.key + 1,
-		}));
-		tempHistory.unshift({ key: 0, subject: name || "@" + username, type: "Send", address: "0x12...2345", message: randomElement(sampleMessage), amount });
-		setHistory(tempHistory);
 	};
 
 	const handleTransfer = ({ uuid, transfer }) => {
@@ -213,7 +173,6 @@ export default function PayMeApp() {
 			});
 		}
 		// ---------------------------------------------------
-		setHistory(tempHistory);
 
 		setRequests([
 			{ uuid: 1, name: "John Doe", username: "joster", amount: 19.94 },
@@ -230,7 +189,42 @@ export default function PayMeApp() {
 		// setCards([{ cardNumber: "0040", primary: true }]);
 
 		// initial login
-		updateAccount(null);
+		// updateAccount(null);
+		const accountPromise = fetchPM("/getAccount", "u1", "p1");
+
+		accountPromise
+			.then(async (account) => {
+				const addressListPromise = fetchPM("/getAddressList", account.accountID);
+				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
+				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
+
+				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise]).then(async ([account, addressList, cardList, historyList]) => {
+					updateAccount(account);
+					updateAddressList(addressList);
+					updateCardList(cardList);
+
+					const history = [];
+
+					for (let i = 0; i < historyList.length; i++) {
+						const record = historyList[i];
+
+						const otherPartyUUID = getOtherPartyUUID(record, account);
+						const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
+						const historyActivity = {
+							key: i,
+							subject: otherParty.firstName,
+							username: otherParty.username,
+							type: isRecipient(record, account) ? "Receive" : "Send",
+							message: record.message,
+							amount: record.transactionAmount,
+						};
+						history.unshift(historyActivity);
+					}
+
+					updateHistoryList(history);
+				});
+			})
+			.catch(console.error);
 
 		// Temporary buffer
 		// Will be replaced in the future when we need to wait for
@@ -249,7 +243,7 @@ export default function PayMeApp() {
 					<CurrentBalance loggedIn={loggedIn} loading={loading} requests={requests} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
 					<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
 						<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
-							<Pay apply={handlePay} />
+							<Pay />
 						</div>
 						<div className={clsx("mb-3 ms-md-2", styles.buttonContainer)}>
 							<Request apply={handleRequest} />
@@ -258,7 +252,7 @@ export default function PayMeApp() {
 					<AccountDetails loggedIn={loggedIn} loading={loading} changeAddress={handleAddressUpdate} changeCard={handleCardUpdate} />
 				</div>
 				<div className={clsx("activityContainer p-2 pb-3 pb-md-2", styles.rightContainer)}>
-					<RecentActivity loggedIn={loggedIn} loading={loading} history={history} />
+					<RecentActivity loggedIn={loggedIn} loading={loading} history={historyList} />
 				</div>
 			</div>
 		</WagmiConfig>

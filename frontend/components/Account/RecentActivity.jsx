@@ -1,71 +1,16 @@
 import styles from "../../styles/main.module.css";
+import typingStyles from "../../styles/typing.module.css";
 
 import { useWindowSize } from "../providers/WindowSizeProvider";
 
 import { Card, Table } from "antd";
 import clsx from "clsx";
 import { useEffect, useRef, useState } from "react";
-
-// table columns shown on different viewport devices
-const smColumns = [
-	{
-		title: "Payment Subject",
-		dataIndex: "subject",
-		key: "subject",
-	},
-	{
-		title: "Message",
-		dataIndex: "message",
-		key: "message",
-	},
-	{
-		title: "Amount",
-		key: "amount",
-		render: (_, record) => (
-			<div style={record.type === "Send" ? { color: "red" } : { color: "green" }}>
-				{record.type === "Send" ? "-" : "+"}
-				{record.amount}
-			</div>
-		),
-	},
-];
-
-const lgColumns = [
-	{
-		title: "Payment Subject",
-		dataIndex: "subject",
-		key: "subject",
-	},
-	{
-		title: "Type",
-		dataIndex: "type",
-		key: "type",
-	},
-	{
-		title: "Address",
-		dataIndex: "address",
-		key: "address",
-	},
-
-	{
-		title: "Message",
-		dataIndex: "message",
-		key: "message",
-	},
-	{
-		title: "Amount",
-		key: "amount",
-		render: (_, record) => (
-			<div style={record.type === "Send" ? { color: "red" } : { color: "green" }}>
-				{record.type === "Send" ? "-" : "+"}
-				{record.amount}
-			</div>
-		),
-	},
-];
-
+import { useAccount } from "../providers/AccountProvider";
+import { fullName, isRecipient } from "../util/helpers";
 
 export default function RecentActivity({ loggedIn, loading, history = [] }) {
+	const { account } = useAccount();
 	const { width, height } = useWindowSize();
 	// 55px per row in table
 	const [pageSize, setPageSize] = useState(Math.floor(height / 55));
@@ -73,6 +18,7 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 	const tableContainerRef = useRef(null);
 
 	useEffect(() => {
+
 		const handleResize = () => {
 			// helper function to set page size
 			if (tableContainerRef.current) {
@@ -91,10 +37,73 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 		handleResize();
 
 		window.addEventListener("resize", handleResize);
+
 		return () => {
 			window.removeEventListener("resize", handleResize);
 		};
 	}, []);
+
+	// table columns shown on different viewport devices
+	const smColumns = [
+		{
+			title: "Payment Subject",
+			key: "subject",
+			render: (_, record) => (
+				<div className="d-flex flex-column">
+					<span>{record.subject}</span>
+					<span className={clsx(typingStyles.gray)}>@{record.username}</span>
+				</div>
+			),
+		},
+		{
+			title: "Message",
+			dataIndex: "message",
+			key: "message",
+		},
+		{
+			title: "Amount",
+			key: "transactionAmount",
+			render: (_, record) => (
+				<div style={isRecipient(record, account) ? { color: "green" } : { color: "red" }}>
+					{isRecipient(record, account) ? "+" : "-"}
+					{record.amount}
+				</div>
+			),
+		},
+	];
+
+	const lgColumns = [
+		{
+			title: "Payment Subject",
+			key: "subject",
+			render: (_, record) => (
+				<div className="d-flex flex-column">
+					<span>{record.subject}</span>
+					<span className={clsx(typingStyles.gray)}>@{record.username}</span>
+				</div>
+			),
+		},
+		{
+			title: "Type",
+			dataIndex: "type",
+			key: "type",
+		},
+		{
+			title: "Message",
+			dataIndex: "message",
+			key: "message",
+		},
+		{
+			title: "Amount",
+			key: "transactionAmount",
+			render: (_, record) => (
+				<div style={isRecipient(record, account) ? { color: "green" } : { color: "red" }}>
+					{isRecipient(record, account) ? "+" : "-"}
+					{record.amount}
+				</div>
+			),
+		},
+	];
 
 	return (
 		<Card
@@ -105,7 +114,7 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 			ref={tableContainerRef}
 		>
 			<div className="d-flex w-100 h-100">
-				{history && (
+				{!loading && (
 					<Table
 						className={clsx("d-block align-items-center justify-content-center", styles.historyTable)}
 						dataSource={loggedIn ? history : []}

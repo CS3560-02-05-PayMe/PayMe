@@ -242,7 +242,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 	// formInputs={formInputs}
 	return (
 		<Form formType={"Register"} onSubmit={handleSubmit} onRelease={onRelease} outsideClick={apply}>
-			<fieldset className={clsx("w-100", { ["d-none"]: step > 1 })}>
+			<fieldset className={clsx("w-100", { [styles.hide]: step > 1 })}>
 				<div className={clsx("d-flex w-100 justify-content-center")}>
 					<span className={clsx(typingStyles.fontType7)}>Personal Details</span>
 				</div>
@@ -257,7 +257,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 					Next
 				</button>
 			</fieldset>
-			<fieldset className={clsx("w-100", { ["d-inline-block"]: step === 2 })}>
+			<fieldset className={clsx("w-100", { [styles.show]: step === 2 })}>
 				<div className={clsx("d-flex w-100 justify-content-center")}>
 					<span className={clsx(typingStyles.fontType7)}>Address Details</span>
 				</div>
@@ -277,7 +277,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 					</button>
 				</div>
 			</fieldset>
-			<fieldset className={clsx("w-100", { ["d-inline-block"]: step > 2 })}>
+			<fieldset className={clsx("w-100", { [styles.show]: step > 2 })}>
 				<div className={clsx("d-flex w-100 justify-content-center")}>
 					<span className={clsx(typingStyles.fontType7)}>Payment Details</span>
 				</div>
@@ -297,7 +297,7 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 					</button>
 				</div>
 			</fieldset>
-			{/* {<div className={clsx("mt-2 mx-2", styles.accountError)}>Account already exists</div>} */}
+			{error === 409 && <div className={clsx("mt-2 mx-2", styles.accountError)}>Account already exists</div>}
 			<div className={clsx("my-2", styles.formRegister)}>
 				<span>
 					Already have an account?{" "}

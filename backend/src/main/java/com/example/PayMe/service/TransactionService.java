@@ -1,21 +1,22 @@
 package com.example.PayMe.service;
 
+import com.example.PayMe.entity.Account;
 import com.example.PayMe.entity.Transaction;
 import com.example.PayMe.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Sort;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class TransactionService {
-    
+
     @Autowired
     private TransactionRepository repository;
+    @Autowired
+    private AccountService accountService;
 
     // This method retrieves all transactions from the database and sorts them in descending order by date.
     public List<Transaction> getAllTransactions(UUID userId) {
@@ -23,6 +24,7 @@ public class TransactionService {
         List<Transaction> payerList = repository.findAllByPayer_AccountID(userId);
 
         recipientList.addAll(payerList);
+        recipientList.sort(Comparator.comparing(this::parseDate));
 
         return recipientList;
 
@@ -33,13 +35,33 @@ public class TransactionService {
 //                .collect(Collectors.toList());
     }
 
+    private Date parseDate(Transaction transaction) {
+        String dateString = transaction.getTransactionDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        try {
+            return dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // This method creates a new transaction in the database.
-    public Transaction createTransaction(Transaction transaction) {
+    public Transaction createTransaction(UUID payerId, UUID recipientId, Transaction transaction) {
+        Account payer = accountService.retrieveAccount(payerId);
+        Account recipient = accountService.retrieveAccount(recipientId);
+
+        if (payer == null || recipient == null) return null;
+
+        transaction.setPayer(payer);
+        transaction.setRecipient(recipient);
+
         return repository.save(transaction);
     }
 
     // This method retrieves a transaction from the database by its ID.
-    public Optional<Transaction> getTransactionById(UUID transactionId) {
-        return repository.findById(transactionId);
+    public Transaction getTransactionById(UUID transactionId) {
+        return repository.findByTransactionID(transactionId);
     }
 }

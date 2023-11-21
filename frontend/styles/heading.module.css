@@ -104,7 +104,7 @@
 	color: black;
 }
 
-.loginFormContainer {
+.formContainer {
 	z-index: 100;
 	width: 100vw;
 	height: 100vh;
@@ -112,12 +112,13 @@
 	will-change: opacity;
 }
 
-.loginForm {
+.formWrapper {
 	width: 90vw;
 	color: black;
 	background-color: white;
 	transform: translate(-50%, -50%);
 	border-radius: 20px;
+	overflow: hidden;
 }
 
 /* .formHeading {
@@ -255,7 +256,8 @@
 	color: white;
 }
 
-.requestInboxButton {
+.requestInboxButton,
+.closeFormButton {
 	width: fit-content;
 }
 
@@ -264,7 +266,7 @@
 	border: 2px solid #06345c;
 }
 
-.requestInboxButton:hover {
+:is(.requestInboxButton, .closeFormButton):hover {
 	color: white;
 	background-color: #06345c;
 }
@@ -286,6 +288,13 @@
 
 .requestInboxItem.selectedItem {
 	background-color: #fafafa;
+}
+
+.requestDetail {
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .requestItemCheckable,
@@ -353,13 +362,49 @@
 	color: rgba(255, 0, 0, 0.5);
 }
 
+.formFields {
+	overflow: hidden;
+}
+
+.formFields .hide {
+	display: none;
+	/* opacity: 0.5; */
+}
+
+.formFields .show {
+	display: inline-block!important;
+	transform: translateX(0)!important;
+}
+
 .formFields fieldset:not(:first-of-type) {
 	display: none;
 }
 
+.minimize {
+	/* max-height: 0; */
+	/* transform: scale(0.8); */
+	opacity: 0;
+}
+
 .accountError {
-	background-color: rgba(253, 59, 59, 0.6);
-	
+	color: rgb(217,48,37);
+}
+
+.fadeIn {
+	will-change: opacity;
+	animation: fadeIn 365ms ease-in-out;
+}
+
+.fadeOut {
+	/* opacity: 0; */
+	max-height: 0;
+	will-change: opacity, max-height;
+	/* transition: opacity 365ms ease-in-out, max-height 365ms ease-in-out; */
+}
+
+.formCheckmark {
+	border-radius: 50%;
+	box-shadow: 0 0 0 10px rgba(0,0,0,0.03), 0 0 0 10px rgba(255,255,255,0.22) inset;
 }
 
 @media only screen and (max-width: 767px) {
@@ -464,19 +509,17 @@
 		transition: color 265ms ease-in-out;
 	}
 
-	.loginForm {
-		width: 50vw !important;
+	.formWrapper {
+		width: 20em;
 	}
 }
 
-@media only screen and (min-width: 1024px) {
-	.loginForm {
-		width: 30vw !important;
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
 	}
-}
 
-@media only screen and (min-width: 1440px) {
-	.loginForm {
-		width: 20vw !important;
+	100% {
+		opacity: 1;
 	}
 }
