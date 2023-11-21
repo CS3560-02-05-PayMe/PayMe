@@ -7,5 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FriendRepository extends JpaRepository<Friend, UUID> {
-    List<Friend> findAllByAccountID(UUID accountID);
+    // was: findAllByAccountID, now: findAllByFriend1_AccountID
+    List<Friend> findAllByFriend1_AccountID(UUID accountID);
 }

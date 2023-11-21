@@ -2,7 +2,6 @@ package com.example.PayMe.controller;
 
 
 import com.example.PayMe.entity.Friend;
-import com.example.PayMe.service.AccountService;
 import com.example.PayMe.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class FriendController {
     @GetMapping("/getFriendList/{userId}")
     public ResponseEntity<List<Friend>> getFriendList(@PathVariable("userId") UUID userId) {
         System.out.println("Accessing friends from account with uuid: " + userId);
-        return new ResponseEntity<>(service.retrieveFriend(userId), HttpStatus.OK);
+        return new ResponseEntity<>(service.retrieveFriends(userId), HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteFriend/{uuid}")
@@ -51,7 +50,7 @@ public class FriendController {
         }
     }
 
-    @PostMapping("/updateAddressList/{userId}")
+    @PostMapping("/updateFriendList/{userId}")
     public ResponseEntity<List<Friend>> updateFriendList(@PathVariable("userId") String userId, @RequestBody List<Friend> updatedFriendList) {
         System.out.println(updatedFriendList);
         List<Friend> result = service.updateFriendList(UUID.fromString(userId), updatedFriendList);

@@ -36,7 +36,8 @@ public class FriendService {
     }
 
     // get friend associated with user
-    public List<Friend> retrieveFriend(UUID userID) {
+    // Fixed referencing AddressService retrieveAddress
+    public Friend retrieveFriend(UUID userID, UUID friendID) {
         return retrieveFriends(userID)
                 .parallelStream()
                 .filter(friend -> friend.getFriend1ID().equals(friendID))
@@ -46,13 +47,14 @@ public class FriendService {
 
     // get all friends associated with user
     public List<Friend> retrieveFriends(UUID userID) {
-        return repo.findAllByAccountID(userID);
+        return repo.findAllByFriend1_AccountID(userID);
     }
 
     public void deleteFriend(UUID friendId) {
         repo.deleteById(friendId);
     }
 
+    // swaps friend2 accountID for new/updated one
     public Friend updateFriend(UUID userId, UUID friendId, Friend updatedFriend) {
         List<Friend> existingList = retrieveFriends(userId);
 
@@ -62,9 +64,10 @@ public class FriendService {
 
         Friend existingFriend;
 
+        //was: setFriendName & getFriendName, now: setFriend2 & getFriend2
         if (optionalFriend.isPresent()) {
             existingFriend = optionalFriend.get();
-            existingFriend.setFriendName(updatedFriend.getFriendName());
+            existingFriend.setFriend2(updatedFriend.getFriend2());
 
             updatedFriend = existingFriend;
         }
@@ -85,7 +88,8 @@ public class FriendService {
         // update existing list with new friend list
         existingList.clear();
         updatedFriendList.parallelStream().forEach(friend -> {
-            friend.setAccount(account);
+            //friend.setAccount(account);
+            friend.setFriend1(account);
             existingList.add(friend);
         });
 
