@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FriendRepository extends JpaRepository<Friend, UUID> {
-    List<Friend> findAllByAccount_AddressID(UUID addressID);
+    List<Friend> findAllByAccountID(UUID accountID);
 }

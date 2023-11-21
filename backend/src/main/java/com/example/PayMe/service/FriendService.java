@@ -18,22 +18,35 @@ public class FriendService {
     @Autowired
     private AccountService accountService;
 
+    // This method creates a new friend in the database.
+    public Friend createFriend(UUID friend1ID, UUID friend2ID, Friend friend) {
+        Account friend1 = accountService.retrieveAccount(friend1ID);
+        Account friend2 = accountService.retrieveAccount(friend2ID);
+
+        if (friend1 == null || friend2 == null) return null;
+
+        friend.setFriend1(friend1);
+        friend.setFriend2(friend2);
+
+        return repo.save(friend);
+    }
+
     public Friend saveFriend(Friend friend) {
-        return repo.saveAndFlush(friend);
+        return repo.save(friend);
     }
 
     // get friend associated with user
-    public Friend retrieveFriend(UUID userID, UUID friendID) {
+    public List<Friend> retrieveFriend(UUID userID) {
         return retrieveFriends(userID)
                 .parallelStream()
-                .filter(friend -> friend.getAccount().equals(friendID))
+                .filter(friend -> friend.getFriend1ID().equals(friendID))
                 .findFirst()
                 .orElse(null);
     }
 
     // get all friends associated with user
     public List<Friend> retrieveFriends(UUID userID) {
-        return repo.findAllByAccount_AddressID(userID);
+        return repo.findAllByAccountID(userID);
     }
 
     public void deleteFriend(UUID friendId) {
@@ -44,7 +57,7 @@ public class FriendService {
         List<Friend> existingList = retrieveFriends(userId);
 
         Optional<Friend> optionalFriend = existingList.parallelStream()
-                .filter(friend -> friend.getAccount().equals(friendId))
+                .filter(friend -> friend.getFriend1ID().equals(friendId))
                 .findFirst();
 
         Friend existingFriend;
