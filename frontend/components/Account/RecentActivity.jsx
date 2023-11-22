@@ -18,7 +18,6 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 	const tableContainerRef = useRef(null);
 
 	useEffect(() => {
-
 		const handleResize = () => {
 			// helper function to set page size
 			if (tableContainerRef.current) {
@@ -97,8 +96,8 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 			title: "Amount",
 			key: "transactionAmount",
 			render: (_, record) => (
-				<div style={isRecipient(record, account) ? { color: "green" } : { color: "red" }}>
-					{isRecipient(record, account) ? "+" : "-"}
+				<div style={record.type === "Receive" ? { color: "green" } : record.type === "Pending Request" ? { color: "blue" } : { color: "red" }}>
+					{record.type === "Send" ? "-" : "+"}
 					{record.amount}
 				</div>
 			),
@@ -116,7 +115,7 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 			<div className="d-flex w-100 h-100">
 				{!loading && (
 					<Table
-						className={clsx("d-block align-items-center justify-content-center", styles.historyTable)}
+						className={clsx("d-block", styles.historyTable)}
 						dataSource={loggedIn ? history : []}
 						columns={width >= 768 ? lgColumns : smColumns}
 						pagination={{ position: ["bottomCenter"], pageSize }}

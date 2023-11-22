@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { configureChains, mainnet, WagmiConfig, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
-import { fetchPM, getOtherPartyUUID, isRecipient, postPM } from "../components/util/helpers";
+import { fetchPM, fullName, getOtherPartyUUID, isRecipient, postPM } from "../components/util/helpers";
 import { useAccount } from "../components/providers/AccountProvider";
 
 /**
@@ -40,7 +40,8 @@ const randomElement = (data) => {
 export default function PayMeApp() {
 	const [loading, setLoading] = useState(true);
 	// User Account (name/username/pass(?)/address/phone)
-	const { account, updateAccount, loggedIn, updateLoggedIn, addressList, updateAddressList, cardList, updateCardList, historyList, updateHistoryList } = useAccount();
+	const { account, updateAccount, loggedIn, updateLoggedIn, addressList, updateAddressList, cardList, updateCardList, historyList, updateHistoryList, requestInList, updateRequestInList } =
+		useAccount();
 	// User balance
 	const [balance, setBalance] = useState(0);
 	// Requests from other people asking for money
@@ -57,29 +58,74 @@ export default function PayMeApp() {
 		updateAccount(null);
 	};
 
+	const handlePay = async ({ recipient, amount, message }) => {
+		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
+
+		return accountPromise.then(async (recipientAccount) => {
+			const transactionBody = {
+				message,
+				transactionDate: new Date().toISOString(),
+				transactionAmount: amount,
+				isSettled: true
+			};
+			const transactionPromise = postPM("/addTransaction", transactionBody, account.accountID, recipientAccount.accountID);
+
+			const paymentBody = {
+				paymentAmount: amount,
+			};
+			const paymentPromise = transactionPromise.then((transaction) => postPM("/addPayment", paymentBody, transaction.transactionID));
+
+			return Promise.all([accountPromise, transactionPromise, paymentPromise]).then(([recipientAccount, transaction, payment]) => {
+				const tempHistory = [...historyList];
+				tempHistory.unshift({
+					key: historyList.length,
+					subject: recipientAccount.firstName,
+					username: recipientAccount.username,
+					type: "Send",
+					message,
+					amount,
+				});
+				updateHistoryList(tempHistory);
+
+				const tempAccount = { ...account, balance: (account.balance - amount).toFixed(2) };
+				updateAccount(tempAccount);
+				postPM("/updateAccount", tempAccount, account.accountID);
+
+				const tempRecipientAccount = { ...recipientAccount, balance: (recipientAccount.balance + amount).toFixed(2) };
+				postPM("/updateAccount", tempRecipientAccount, recipientAccount.accountID);
+			});
+		});
+	};
+
 	// account object with property amount
-	const handleRequestPay = ({ uuid, name, amount }) => {
-		if (balance < amount) {
-			console.log("UNABLE TO RESOLVE REQUEST :: INSUFFICIENT BALANCE");
-			console.log(`Current Balance: ${balance}, Needed: ${amount}`);
-			return;
-		}
+	const handleRequestPay = async ({ recipient, amount, message, transactionId }) => {
+		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
-		setBalance((balance - amount).toFixed(2));
+		return accountPromise.then(async (recipient) => {
+			const transactionPromise = fetchPM("/getTransaction", transactionId);
+			
+			
 
-		const requestIndex = requests.findIndex((request) => request.uuid === uuid && request.amount === amount);
-		if (requestIndex !== -1) {
-			const updatedRequests = [...requests];
-			updatedRequests.splice(requestIndex, 1);
-			setRequests(updatedRequests);
-		}
+			return Promise.all([accountPromise, transactionPromise]).then(([payerAccount, transaction]) => {
+				const tempHistory = [...historyList];
+				tempHistory.unshift({
+					key: historyList.length,
+					subject: payerAccount.firstName,
+					username: payerAccount.username,
+					type: "Send",
+					message,
+					amount,
+				});
+				updateHistoryList(tempHistory);
 
-		const tempHistory = history.map((transaction) => ({
-			...transaction,
-			key: transaction.key + 1,
-		}));
-		tempHistory.unshift({ key: 0, subject: name, type: "Send", address: "0x12...2345", message: randomElement(sampleMessage), amount });
-		setHistory(tempHistory);
+				const tempAccount = { ...account, balance: (account.balance + amount).toFixed(2) };
+				updateAccount(tempAccount);
+				postPM("/updateAccount", tempAccount, account.accountID);
+
+				const tempRecipientAccount = { ...payerAccount, balance: (payerAccount.balance - amount).toFixed(2) };
+				postPM("/updateAccount", tempRecipientAccount, payerAccount.accountID);
+			});
+		});
 	};
 
 	const handleRequestRemove = ({ uuid, name, amount, updatedList = [] }) => {
@@ -126,9 +172,36 @@ export default function PayMeApp() {
 		setHistory(tempHistory);
 	};
 
-	const handleRequest = ({ name, amount }) => {
-		// sends request to backend to push request to their inbox
-		// sendRequest(name, amount)
+	const handleRequest = ({ payer, amount, message }) => {
+		const accountPromise = fetchPM("/getAccount", payer.replace("@", ""));
+
+		accountPromise.then((payerAccount) => {
+			const transactionBody = {
+				message,
+				transactionDate: new Date().toISOString(),
+				transactionAmount: amount,
+			};
+			const transactionPromise = postPM("/addTransaction", transactionBody, payerAccount.accountID, account.accountID);
+
+			const requestBody = {
+				requestAmount: amount,
+				isSettled: false,
+			};
+			const requestPromise = transactionPromise.then((transaction) => postPM("/addRequest", requestBody, transaction.transactionID));
+
+			return Promise.all([accountPromise, transactionPromise, requestPromise]).then(([payerAccount, transaction, request]) => {
+				const tempHistory = [...historyList];
+				tempHistory.unshift({
+					key: historyList.length,
+					subject: payerAccount.firstName,
+					username: payerAccount.username,
+					type: "Pending Request",
+					message,
+					amount,
+				});
+				updateHistoryList(tempHistory);
+			});
+		});
 	};
 
 	const handleAddressUpdate = (address) => {
@@ -174,13 +247,13 @@ export default function PayMeApp() {
 		}
 		// ---------------------------------------------------
 
-		setRequests([
-			{ uuid: 1, name: "John Doe", username: "joster", amount: 19.94 },
-			{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 25 },
-			{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 20.23 },
-			{ uuid: 3, name: "Sam Oh", username: "fakes0m", amount: 17.38 },
-			{ uuid: 4, name: "Caitlyn Kiramman", username: "kuppcake", amount: 17.38 },
-		]);
+		// setRequests([
+		// 	{ uuid: 1, name: "John Doe", username: "joster", amount: 19.94 },
+		// 	{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 25 },
+		// 	{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 20.23 },
+		// 	{ uuid: 3, name: "Sam Oh", username: "fakes0m", amount: 17.38 },
+		// 	{ uuid: 4, name: "Caitlyn Kiramman", username: "kuppcake", amount: 17.38 },
+		// ]);
 
 		setBalance((Math.random() * 1000).toFixed(2));
 
@@ -197,32 +270,56 @@ export default function PayMeApp() {
 				const addressListPromise = fetchPM("/getAddressList", account.accountID);
 				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
 				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
+				const requestInListPromise = historyListPromise.then(() => fetchPM("/getRequestInList", account.accountID));
 
-				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise]).then(async ([account, addressList, cardList, historyList]) => {
-					updateAccount(account);
-					updateAddressList(addressList);
-					updateCardList(cardList);
+				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise]).then(
+					async ([account, addressList, cardList, historyList, requestInList]) => {
+						updateAccount(account);
+						updateAddressList(addressList);
+						updateCardList(cardList);
 
-					const history = [];
+						const history = [];
 
-					for (let i = 0; i < historyList.length; i++) {
-						const record = historyList[i];
+						for (let i = 0; i < historyList.length; i++) {
+							const record = historyList[i];
 
-						const otherPartyUUID = getOtherPartyUUID(record, account);
-						const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
-						const historyActivity = {
-							key: i,
-							subject: otherParty.firstName,
-							username: otherParty.username,
-							type: isRecipient(record, account) ? "Receive" : "Send",
-							message: record.message,
-							amount: record.transactionAmount,
-						};
-						history.unshift(historyActivity);
+							const otherPartyUUID = getOtherPartyUUID(record, account);
+							const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
+							console.log(record)
+							const historyActivity = {
+								key: i,
+								subject: otherParty.firstName,
+								username: otherParty.username,
+								type: !record.settled ? "Pending Request" : isRecipient(record, account) ? "Receive" : "Send",
+								message: record.message,
+								amount: record.transactionAmount,
+							};
+							history.unshift(historyActivity);
+						}
+
+						updateHistoryList(history);
+
+						const requests = [];
+
+						for (let i = 0; i < requestInList.length; i++) {
+							const request = requestInList[i];
+							console.log(request);
+
+							const transaction = await fetchPM("/getTransaction", request.transactionID);
+							const otherParty = await fetchPM("/getAccountByUuid", transaction.recipientID);
+							const requestDetails = {
+								key: i,
+								transactionId: transaction.transactionID,
+								subject: fullName(otherParty),
+								username: otherParty.username,
+								message: transaction.message,
+								amount: transaction.transactionAmount,
+							};
+							requests.push(requestDetails);
+						}
+						updateRequestInList(requests);
 					}
-
-					updateHistoryList(history);
-				});
+				);
 			})
 			.catch(console.error);
 
@@ -240,10 +337,10 @@ export default function PayMeApp() {
 			<div className={clsx("contentContainer d-flex h-100 p-md-3 p-xl-5", styles.transparentContainer)}>
 				<div className={clsx("accountContainer p-2", styles.leftContainer)}>
 					{/* <Switch checked={!loading} onChange={onChange} /> */}
-					<CurrentBalance loggedIn={loggedIn} loading={loading} requests={requests} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
+					<CurrentBalance loggedIn={loggedIn} loading={loading} requests={requestInList} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
 					<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
 						<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
-							<Pay />
+							<Pay handlePay={handlePay} />
 						</div>
 						<div className={clsx("mb-3 ms-md-2", styles.buttonContainer)}>
 							<Request apply={handleRequest} />

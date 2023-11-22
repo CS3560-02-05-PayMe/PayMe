@@ -1,6 +1,6 @@
 import styles from "../../styles/heading.module.css";
 import { useAccount } from "../providers/AccountProvider";
-import { fetchPM } from "../util/helpers";
+import { fetchPM, fullName, getOtherPartyUUID, isRecipient } from "../util/helpers";
 
 import Form from "./Form";
 
@@ -15,7 +15,7 @@ import { useState } from "react";
  *
  */
 export default function LoginForm({ apply, onRelease, onAltRelease }) {
-	const { account, updateAccount, updateAddressList, updateCardList } = useAccount();
+	const { account, updateAccount, updateAddressList, updateCardList, updateHistoryList, updateRequestInList } = useAccount();
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -28,16 +28,60 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 		const accountPromise = fetchPM("/getAccount", username, password);
 
 		accountPromise
-			.then((account) => {
+			.then(async (account) => {
 				const addressListPromise = fetchPM("/getAddressList", account.accountID);
 				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
+				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
+				const requestInListPromise = historyListPromise.then(() => fetchPM("/getRequestInList", account.accountID));
 
-				return Promise.all([accountPromise, addressListPromise, cardListPromise]).then(([account, addressList, cardList]) => {
-					console.log(account, addressList, cardList);
-					updateAccount(account);
-					updateAddressList(addressList);
-					updateCardList(cardList);
-				});
+				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise]).then(
+					async ([account, addressList, cardList, historyList, requestInList]) => {
+						updateAccount(account);
+						updateAddressList(addressList);
+						updateCardList(cardList);
+
+						const history = [];
+
+						for (let i = 0; i < historyList.length; i++) {
+							const record = historyList[i];
+
+							const otherPartyUUID = getOtherPartyUUID(record, account);
+							const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
+							const historyActivity = {
+								key: i,
+								subject: otherParty.firstName,
+								username: otherParty.username,
+								type: isRecipient(record, account) ? "Receive" : "Send",
+								message: record.message,
+								amount: record.transactionAmount,
+							};
+							history.unshift(historyActivity);
+						}
+
+						updateHistoryList(history);
+
+						const requests = [];
+
+						for (let i = 0; i < requestInList.length; i++) {
+							const request = requestInList[i];
+							console.log(request);
+
+							const transaction = await fetchPM("/getTransaction", request.transactionID);
+							console.log(transaction)
+							const otherParty = await fetchPM("/getAccountByUuid", transaction.recipientID);
+							console.log(otherParty)
+							const requestDetails = {
+								key: i,
+								subject: fullName(otherParty),
+								username: otherParty.username,
+								message: transaction.message,
+								amount: transaction.transactionAmount,
+							};
+							requests.push(requestDetails);
+						}
+						updateRequestInList(requests);
+					}
+				);
 			})
 			.then(apply) // ensure all data is correctly retrieved before closing form
 			.catch(console.error);

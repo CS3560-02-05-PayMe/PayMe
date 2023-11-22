@@ -68,7 +68,7 @@ export async function postPM(mapping = "/", body, ...pathVariables) {
 		body: JSON.stringify(body),
 	})
 		.then((response) => {
-			console.log(response)
+			console.log(response);
 			if (response.status > 409) {
 				throw new Error(response.status);
 			}
@@ -122,7 +122,7 @@ export function emptyFields(...fields) {
 }
 
 export function isRecipient(record, account) {
-	return record.recipientID === account.accountID;
+	return record.recipientID === account.accountID || record.username === account.username;
 }
 
 export function getOtherPartyUUID(record, account) {
