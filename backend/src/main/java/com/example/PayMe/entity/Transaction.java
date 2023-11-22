@@ -33,7 +33,6 @@ public class Transaction {
     private double transactionAmount;
 
     @Setter
-    @Getter
     @Column(name = "transaction_date")
     //    provided as isoDateString
     //    use DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -55,7 +54,6 @@ public class Transaction {
     private Account payer;
 
     @Setter
-    @Getter
     @Column(name = "message")
     private String message;
 
