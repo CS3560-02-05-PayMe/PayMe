@@ -57,6 +57,10 @@ public class Transaction {
     @Column(name = "message")
     private String message;
 
+    @Setter
+    @Column(name = "is_settled", columnDefinition = "boolean default false")
+    private boolean isSettled;
+
     /**
      * Retrieves the accountID within the recipient Account associated with this Transaction.
      *

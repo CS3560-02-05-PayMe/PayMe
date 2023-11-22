@@ -47,7 +47,11 @@ public class FriendService {
 
     // get all friends associated with user
     public List<Friend> retrieveFriends(UUID userID) {
-        return repo.findAllByFriend1_AccountID(userID);
+        List<Friend> friend1List = repo.findAllByFriend1_AccountID(userID); //Collect all friend instances where user is friend1
+        List<Friend> friend2List = repo.findAllByFriend2_AccountID(userID); //Collect all friend instances where user is friend2
+        friend1List.addAll(friend2List);    //Combine instances to get complete friendList
+
+        return friend1List;
     }
 
     public void deleteFriend(UUID friendId) {

@@ -11,4 +11,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     List<Transaction> findAllByRecipient_AccountID(UUID accountID);
     List<Transaction> findAllByPayer_AccountID(UUID accountID);
+
+//    List<Transaction> findAllByRecipient_AccountIDOrderByDateDesc(UUID accountID);
+//    List<Transaction> findAllByPayer_AccountIDOrderByDateDesc(UUID accountID);
 }

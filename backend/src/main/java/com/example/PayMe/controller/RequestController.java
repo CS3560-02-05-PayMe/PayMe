@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,17 +22,23 @@ public class RequestController {
     //Response Entities used to allow easier front end
 
     //Add Request
-    @PostMapping("/addRequest")
-    public ResponseEntity<Request> addRequest(@RequestBody Request request) {
+    @PostMapping("/addRequest/{transactionId}")
+    public ResponseEntity<Request> addRequest(@PathVariable("transactionId") String transactionId, @RequestBody Request request) {
+        request = service.saveRequest(UUID.fromString(transactionId), request);
         System.out.println("Added request :: " + request.toString());
-        return new ResponseEntity<>(service.saveRequest(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(request, HttpStatus.CREATED);
     }
 
     //Get Request
-    @GetMapping("/getRequest/{uuid}")
-    public ResponseEntity<Request> getRequest(@PathVariable("uuid") UUID uuid) {
-        System.out.println("Accessing request with uuid: " + uuid.toString());
-        return new ResponseEntity<>(service.retrieveRequest(uuid), HttpStatus.OK);
+    @GetMapping("/getRequest/{transactionId}")
+    public ResponseEntity<Request> getRequest(@PathVariable("transactionId") String transactionId) {
+        System.out.println("Accessing request with uuid: " + transactionId);
+        return new ResponseEntity<>(service.retrieveRequest(UUID.fromString(transactionId)), HttpStatus.OK);
+    }
+
+    @GetMapping("/getRequestInList/{userId}")
+    public ResponseEntity<List<Request>> getRequestList(@PathVariable("userId") String userId) {
+        return new ResponseEntity<>(service.retrieveRequestInbox(UUID.fromString(userId)), HttpStatus.OK);
     }
 
     //Delete Request

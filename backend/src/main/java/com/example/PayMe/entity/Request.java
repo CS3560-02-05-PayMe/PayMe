@@ -33,6 +33,10 @@ public class Request {
     private Transaction transaction;
 
     @Setter
+    @Column(name = "request_amount")
+    private double requestAmount;
+
+    @Setter
     @Column(name = "is_settled", columnDefinition = "boolean default false")
     private boolean isSettled;
 

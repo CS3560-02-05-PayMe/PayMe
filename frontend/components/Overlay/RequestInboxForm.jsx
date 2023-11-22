@@ -103,7 +103,7 @@ export default function RequestInboxForm({ apply, remove, requests, onRelease })
 										onClick={() => handleItemClicked(index)}
 									/>
 									<div className={clsx("d-flex flex-column h-100 align-items-start", styles.requestDetail)} onClick={() => handleItemClicked(index)}>
-										<span className={clsx("text-start", styles.requestDetail, typingStyles.fontType6)}>{item.name}</span>
+										<span className={clsx("text-start", styles.requestDetail, typingStyles.fontType6)}>{item.subject}</span>
 										<span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{item.username}</span>
 									</div>
 									<div className={clsx("d-flex align-items-center")}>
@@ -111,7 +111,11 @@ export default function RequestInboxForm({ apply, remove, requests, onRelease })
 										<span
 											className={clsx("ms-2 py-2 px-3", styles.payNowButton)}
 											onClick={() => {
-												apply(item);
+												const { amount, message, transactionId } = item;
+												apply({ recipient: item.username, amount, message, transactionId }).then(() => {
+													// remove request
+													console.log(item);
+												});
 											}}
 										>
 											Pay
