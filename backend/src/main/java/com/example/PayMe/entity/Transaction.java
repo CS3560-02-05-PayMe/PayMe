@@ -105,13 +105,4 @@ public class Transaction {
                 getRecipientID().equals(userId) ||
                 getRecipientID().equals(otherId);
     }
-
-    public boolean isSettled() {
-        return isSettled;
-    }
-
-
-    public void setSettled(boolean settled) {
-        isSettled = settled;
-    }
 }

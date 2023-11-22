@@ -64,14 +64,14 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 
 						for (let i = 0; i < requestInList.length; i++) {
 							const request = requestInList[i];
+							if (request.settled) continue;
 							console.log(request);
 
 							const transaction = await fetchPM("/getTransaction", request.transactionID);
-							console.log(transaction)
 							const otherParty = await fetchPM("/getAccountByUuid", transaction.recipientID);
-							console.log(otherParty)
 							const requestDetails = {
 								key: i,
+								transactionId: transaction.transactionID,
 								subject: fullName(otherParty),
 								username: otherParty.username,
 								message: transaction.message,

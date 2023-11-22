@@ -25,7 +25,7 @@ public class TransactionService {
         List<Transaction> payerList = repository.findAllByPayer_AccountID(userId);
 
         recipientList.addAll(payerList);
-        recipientList = recipientList.parallelStream().filter(transaction -> transaction.isSettled(updatedTransaction.isSettled())).collect(Collectors.toList());
+        recipientList = recipientList.parallelStream().filter(Transaction::isSettled).collect(Collectors.toList());
         recipientList.sort(Comparator.comparing(this::parseDate));
 
         return recipientList;
@@ -37,18 +37,10 @@ public class TransactionService {
 //                .collect(Collectors.toList());
     }
 
-    public Transaction getTransaction(UUID transactionID)
-    {
-        Transaction transaction = repository.findByTransactionID(transactionID);
-
-        if (transaction != null){
-            return transaction;
-        }
-        else{
-            return null;
-        }
+    // This method retrieves a transaction from the database by its ID.
+    public Transaction getTransactionById(UUID transactionId) {
+        return repository.findByTransactionID(transactionId);
     }
-
 
     private Date parseDate(Transaction transaction) {
         String dateString = transaction.getTransactionDate();
@@ -75,16 +67,10 @@ public class TransactionService {
         return repository.save(transaction);
     }
 
-    // This method retrieves a transaction from the database by its ID.
-    public Transaction getTransactionById(UUID transactionId) {
-        return repository.findByTransactionID(transactionId);
-    }
-
-    public Transaction updateTransaction(UUID uuid, Transaction updatedTransaction)
-    {
+    public Transaction updateTransaction(UUID uuid, Transaction updatedTransaction) {
         Transaction existingTransaction = getTransactionById(uuid);
 
-        if (existingTransaction != null){
+        if (existingTransaction != null) {
             // update the existing transaction such as isSettle
             existingTransaction.setSettled(updatedTransaction.isSettled());
 
@@ -97,7 +83,4 @@ public class TransactionService {
         // if transaction is not found, return null
         return null;
     }
-
-
-
 }
