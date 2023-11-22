@@ -13,6 +13,7 @@ export const AccountProvider = ({ children }) => {
 	const [addressList, setAddressList] = useState([]);
 	const [cardList, setCardList] = useState([]);
 	const [historyList, setHistoryList] = useState([]);
+	const [requestInList, setRequestInList] = useState([]);
 
 	const updateLoggedIn = (status) => {
 		setLoggedIn(status);
@@ -35,8 +36,12 @@ export const AccountProvider = ({ children }) => {
 		setHistoryList(list);
 	};
 
+	const updateRequestInList = (list) => {
+		setRequestInList(list);
+	}
+
 	return (
-		<AccountContext.Provider value={{ loggedIn, updateLoggedIn, account, updateAccount, addressList, updateAddressList, cardList, updateCardList, historyList, updateHistoryList }}>
+		<AccountContext.Provider value={{ loggedIn, updateLoggedIn, account, updateAccount, addressList, updateAddressList, cardList, updateCardList, historyList, updateHistoryList, requestInList, updateRequestInList }}>
 			{children}
 		</AccountContext.Provider>
 	);

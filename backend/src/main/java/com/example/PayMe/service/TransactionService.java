@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
@@ -24,6 +25,7 @@ public class TransactionService {
         List<Transaction> payerList = repository.findAllByPayer_AccountID(userId);
 
         recipientList.addAll(payerList);
+        recipientList = recipientList.parallelStream().filter(Transaction::isSettled).collect(Collectors.toList());
         recipientList.sort(Comparator.comparing(this::parseDate));
 
         return recipientList;

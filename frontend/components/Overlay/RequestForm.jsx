@@ -1,6 +1,6 @@
 import styles from "../../styles/heading.module.css";
 
-import { doubleify, toFloat } from "../util/helpers";
+import { doubleify, formatUsername, toFloat } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -15,6 +15,7 @@ import { useState } from "react";
 export default function RequestForm({ apply, onRelease }) {
 	const [debtor, setDebtor] = useState("");
 	const [amount, setAmount] = useState(0);
+	const [message, setMessage] = useState("");
 
 	const formInputs = [
 		<input
@@ -22,7 +23,9 @@ export default function RequestForm({ apply, onRelease }) {
 			placeholder="Request From"
 			required
 			onChange={(event) => {
-				setDebtor(event.target.value);
+				const formattedPayer = formatUsername(event.target.value);
+				event.target.value = formattedPayer;
+				setDebtor(formattedPayer);
 			}}
 		/>,
 		<input
@@ -35,13 +38,21 @@ export default function RequestForm({ apply, onRelease }) {
 				setAmount(toFloat(formattedNumber));
 			}}
 		/>,
+		<input
+			type="text"
+			placeholder="Message"
+			required
+			onChange={(event) => {
+				setMessage(event.target.value);
+			}}
+		/>,
 	];
 
 	// send request to mentioned account's inbox
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log(debtor, amount);
-		apply({ name: debtor, amount });
+
+		apply({ payer: debtor, amount, message });
 	};
 
 	return (
