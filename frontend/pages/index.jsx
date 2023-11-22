@@ -299,7 +299,7 @@ export default function PayMeApp() {
 								key: i,
 								subject: otherParty.firstName,
 								username: otherParty.username,
-								type: !record.settled ? "Pending Request" : isRecipient(record, account) ? "Receive" : "Send",
+								type: isRecipient(record, account) ? "Receive" : "Send",
 								message: record.message,
 								amount: record.transactionAmount,
 							};
