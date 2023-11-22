@@ -49,9 +49,9 @@ public class RequestController {
     }
 
     //Update Request
-    @PutMapping("/updateRequest/{uuid}")
-    public ResponseEntity<Request> updateRequest(@PathVariable UUID uuid, @RequestBody Request updatedRequest) {
-        Request result = service.updateRequest(uuid, updatedRequest);
+    @PostMapping("/updateRequest/{requestId}/{transactionId}")
+    public ResponseEntity<Request> updateRequest(@PathVariable("requestId") String requestId, @PathVariable("transactionId") String transactionId, @RequestBody Request updatedRequest) {
+        Request result = service.updateRequest(UUID.fromString(requestId), UUID.fromString(transactionId), updatedRequest);
 
         if (result != null) {
             return new ResponseEntity<>(result, HttpStatus.OK);

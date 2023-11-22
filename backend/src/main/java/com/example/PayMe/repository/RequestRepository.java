@@ -8,6 +8,9 @@ import java.util.UUID;
 
 //Extending JpaRepository allows interaction with database
 public interface RequestRepository extends JpaRepository<Request, UUID> {
+    Request findByRequestID(UUID requestID);
+    Request findByTransaction_TransactionID(UUID transactionID);
+
     List<Request> findAllByTransaction_Recipient_AccountID(UUID accountID);
     List<Request> findAllByTransaction_Payer_AccountID(UUID accountID);
 }

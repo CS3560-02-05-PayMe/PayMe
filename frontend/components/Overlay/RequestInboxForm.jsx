@@ -112,9 +112,9 @@ export default function RequestInboxForm({ apply, remove, requests, onRelease })
 											className={clsx("ms-2 py-2 px-3", styles.payNowButton)}
 											onClick={() => {
 												const { amount, message, transactionId } = item;
+												console.log(item);
 												apply({ recipient: item.username, amount, message, transactionId }).then(() => {
 													// remove request
-													console.log(item);
 												});
 											}}
 										>
