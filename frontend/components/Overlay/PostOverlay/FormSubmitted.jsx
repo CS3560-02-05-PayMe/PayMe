@@ -1,4 +1,4 @@
-//import anime from "animejs";
+import anime from "animejs";
 import styles from "../../../styles/heading.module.css";
 import typingStyles from "../../../styles/typing.module.css";
 

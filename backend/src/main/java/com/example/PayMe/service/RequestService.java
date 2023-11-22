@@ -31,12 +31,11 @@ public class RequestService {
     }
 
     public Request retrieveRequest(UUID uuid) {
-        return repo.getReferenceById(uuid);
+        return repo.findByTransaction_TransactionID(uuid);
     }
 
     public List<Request> retrieveRequestInbox(UUID userId) {
         List<Request> requestList = repo.findAllByTransaction_Payer_AccountID(userId);
-        System.out.println(requestList);
         return requestList
                 .parallelStream()
                 .filter(request -> !request.isSettled())
@@ -47,14 +46,18 @@ public class RequestService {
         repo.deleteById(uuid);
     }
 
-    public Request updateRequest(UUID uuid, Request updatedRequest) {
-        Request existingRequest = repo.findById(uuid).orElse(null);
+    public Request updateRequest(UUID requestId, UUID transactionId, Request updatedRequest) {
+
+        Request existingRequest = repo.findByRequestID(requestId);
+
+        Transaction transaction = transactionService.getTransactionById(transactionId);
+        updatedRequest.setTransaction(transaction);
 
         if (existingRequest != null) {
-//            existingRequest.setRequestType(updatedAddress.getRequestType());
-//            existingRequest.setRequestAmount(updatedAddress.getRequestAmount());
-//            existingRequest.setIsSettled(isSettled());
-//            existingRequest.setIsRecurring(isRecurring());
+            existingRequest.setSettled(updatedRequest.isSettled());
+            transaction.setSettled(updatedRequest.isSettled());
+
+            transactionRepo.save(transaction);
 
             return repo.save(existingRequest);
         } else

@@ -96,8 +96,8 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 			title: "Amount",
 			key: "transactionAmount",
 			render: (_, record) => (
-				<div style={record.type === "Receive" ? { color: "green" } : record.type === "Pending Request" ? { color: "blue" } : { color: "red" }}>
-					{record.type === "Send" ? "-" : "+"}
+				<div style={record.type === "Receive" ? { color: "green" } : { color: "red" }}>
+					{record.type === "Receive" ? "+" : "-"}
 					{record.amount}
 				</div>
 			),

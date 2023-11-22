@@ -32,8 +32,8 @@ public class TransactionController {
     
     // This method retrieves a transaction from the database by its ID.
     @GetMapping("/getTransaction/{uuid}")
-    public Transaction getTransactionById(@PathVariable("uuid") UUID id) {
-        return service.getTransactionById(id);
+    public Transaction getTransactionById(@PathVariable("uuid") String id) {
+        return service.getTransactionById(UUID.fromString(id));
     }
 
     @PostMapping("/updateTransaction/{uuid}")
