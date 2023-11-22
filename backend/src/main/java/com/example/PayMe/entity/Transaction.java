@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -34,7 +33,6 @@ public class Transaction {
     private double transactionAmount;
 
     @Setter
-    @Getter
     @Column(name = "transaction_date")
     //    provided as isoDateString
     //    use DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -56,7 +54,6 @@ public class Transaction {
     private Account payer;
 
     @Setter
-    @Getter
     @Column(name = "message")
     private String message;
 
@@ -93,8 +90,8 @@ public class Transaction {
         return "Transaction{" +
                 "transactionID=" + getTransactionID() +
                 ", transactionAmount=" + getTransactionAmount() +
-                ", recipientID=" + recipient.getAccountID() +
-                ", payerID=" + payer.getAccountID() +
+                ", recipientID=" + getRecipientID() +
+                ", payerID=" + getPayerID() +
                 '}';
     }
 
@@ -103,9 +100,9 @@ public class Transaction {
     }
 
     public boolean containsUser(UUID userId, UUID otherId) {
-        return payer.getAccountID().equals(userId) ||
-                payer.getAccountID().equals(otherId) ||
-                recipient.getAccountID().equals(userId) ||
-                recipient.getAccountID().equals(otherId);
+        return getPayerID().equals(userId) ||
+                getPayerID().equals(otherId) ||
+                getRecipientID().equals(userId) ||
+                getRecipientID().equals(otherId);
     }
 }

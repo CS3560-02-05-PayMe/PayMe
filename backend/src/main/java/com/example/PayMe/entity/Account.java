@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -119,7 +117,7 @@ public class Account {
     }
 
     // attributes added on Nov 15
-    public String getFullname(){
+    public String getFullName(){
         return this.firstName + " " + this.lastName;
     }
 }
