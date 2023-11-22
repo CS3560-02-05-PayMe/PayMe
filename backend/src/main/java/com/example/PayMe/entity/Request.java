@@ -33,16 +33,12 @@ public class Request {
     private Transaction transaction;
 
     @Setter
+    @Column(name = "request_amount")
+    private double requestAmount;
+
+    @Setter
     @Column(name = "is_settled", columnDefinition = "boolean default false")
     private boolean isSettled;
-
-    @Setter
-    @Column(name = "request_date")
-    private Date requestDate;
-
-    @Setter
-    @Column(name = "message")
-    private String message;
 
     /** Retrieves the transactionID within the Transaction associated with this Request.
      * @return The transactionID (UUID) of the associated Transaction. */
@@ -59,8 +55,6 @@ public class Request {
         return "Request{" +
                 "transactionID=" + getTransactionID() +
                 ", isSettled=" + isSettled() +
-                ", requestDate=" + getRequestDate() +
-                ", message=" + getMessage() +
                 '}';
     }
 }

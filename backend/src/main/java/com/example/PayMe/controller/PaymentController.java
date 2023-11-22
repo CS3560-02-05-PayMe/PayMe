@@ -20,10 +20,11 @@ public class PaymentController {
     //ResponseEntities are used here to allow easier front end development
 
     //Add Payment
-    @PostMapping("/addPayment")
-    public ResponseEntity<Payment> addPayment(@RequestBody Payment payment) {
+    @PostMapping("/addPayment/{transactionId}")
+    public ResponseEntity<Payment> addPayment(@PathVariable("transactionId") String transactionId, @RequestBody Payment payment) {
+        payment = service.savePayment(UUID.fromString(transactionId), payment);
         System.out.println("Added Payment: " + payment.toString());
-        return new ResponseEntity<>(service.savePayment(payment), HttpStatus.CREATED);
+        return new ResponseEntity<>(payment, HttpStatus.CREATED);
     }
 
     //Get Payment

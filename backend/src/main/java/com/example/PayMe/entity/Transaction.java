@@ -7,7 +7,6 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -34,6 +33,13 @@ public class Transaction {
     private double transactionAmount;
 
     @Setter
+    @Column(name = "transaction_date")
+    //    provided as isoDateString
+    //    use DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    //    LocalDateTime date = LocalDateTime.parse(isoDateString, formatter);
+    private String transactionDate;
+
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "transaction_recipient_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -46,6 +52,14 @@ public class Transaction {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private Account payer;
+
+    @Setter
+    @Column(name = "message")
+    private String message;
+
+    @Setter
+    @Column(name = "is_settled", columnDefinition = "boolean default false")
+    private boolean isSettled;
 
     /**
      * Retrieves the accountID within the recipient Account associated with this Transaction.
@@ -76,8 +90,8 @@ public class Transaction {
         return "Transaction{" +
                 "transactionID=" + getTransactionID() +
                 ", transactionAmount=" + getTransactionAmount() +
-                ", recipientID=" + recipient.getAccountID() +
-                ", payerID=" + payer.getAccountID() +
+                ", recipientID=" + getRecipientID() +
+                ", payerID=" + getPayerID() +
                 '}';
     }
 
@@ -86,9 +100,9 @@ public class Transaction {
     }
 
     public boolean containsUser(UUID userId, UUID otherId) {
-        return payer.getAccountID().equals(userId) ||
-                payer.getAccountID().equals(otherId) ||
-                recipient.getAccountID().equals(userId) ||
-                recipient.getAccountID().equals(otherId);
+        return getPayerID().equals(userId) ||
+                getPayerID().equals(otherId) ||
+                getRecipientID().equals(userId) ||
+                getRecipientID().equals(otherId);
     }
 }

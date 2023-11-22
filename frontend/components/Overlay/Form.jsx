@@ -2,7 +2,8 @@ import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 
 import clsx from "clsx";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import FormSubmitted from "./PostOverlay/FormSubmitted";
 
 /**
  *
@@ -14,8 +15,11 @@ import { useEffect, useRef } from "react";
  * @param outsideClick Calls provided function from parent
  *
  */
-export default function Form({ children, formType, formInputs = [], onSubmit: handleSubmit = () => {}, onRelease: apply, outsideClick = () => {} }) {
+export default function Form({ children, formType, formAltType = undefined, formInputs = [], onSubmit: handleSubmit = () => {}, onRelease: apply, outsideClick = () => {}, formAltSrc }) {
 	const formRef = useRef(null);
+
+	const [formTitle, setFormTitle] = useState("");
+	const [showFields, setShowFields] = useState(true);
 
 	useEffect(() => {
 		//
@@ -28,20 +32,23 @@ export default function Form({ children, formType, formInputs = [], onSubmit: ha
 
 		document.addEventListener("click", handleFormClick);
 
+		setFormTitle(formType);
+
 		return () => {
 			document.removeEventListener("click", handleFormClick);
 		};
 	}, []);
 
 	return (
-		<div className={clsx("position-fixed top-0 start-0", styles.loginFormContainer)}>
-			<div className={clsx("d-flex flex-column position-relative top-50 start-50 p-4", styles.loginForm, typingStyles.fontType5)} ref={formRef}>
-				<span className={clsx("w-100 text-center", styles.formHeading, typingStyles.fontTypeHeading1)}>{formType}</span>
+		<div className={clsx("position-fixed top-0 start-0", styles.formContainer)}>
+			<div className={clsx("d-flex flex-column position-relative top-50 start-50 p-4", styles.formWrapper, typingStyles.fontType5)} ref={formRef}>
+				{showFields && <span className={clsx("w-100 text-center", styles.formHeading, typingStyles.fontTypeHeading1)}>{formTitle}</span>}
 				<form
-					className={clsx("w-100 text-center", styles.formFields)}
+					className={clsx("w-100 text-center overflow-hidden", styles.formFields, { [styles.fadeOut]: !showFields })}
 					onSubmit={(event) => {
 						handleSubmit(event);
-						apply();
+						setFormTitle(formAltType);
+						if (!!formAltType) setShowFields(false);
 					}}
 				>
 					{formInputs.map((item, index) => (
@@ -51,6 +58,7 @@ export default function Form({ children, formType, formInputs = [], onSubmit: ha
 					))}
 					{children}
 				</form>
+				{!showFields && <FormSubmitted message={formAltType} imageSrc={`/images/${formAltSrc}.png`} onRelease={apply} />}
 			</div>
 		</div>
 	);

@@ -2,7 +2,7 @@ import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 import { useAccount } from "../providers/AccountProvider";
 
-import { formatCardNumber, formatExpirationDate, formatYearMonth, numberify, shorten } from "../util/helpers";
+import { emptyFields, formatCardNumber, formatExpirationDate, formatYearMonth, numberify, shorten } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -66,12 +66,21 @@ export default function CardForm({ apply, onRelease }) {
 	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		let updatedCard = selectedIndex === -1 ? { firstName, lastName, cardNumber, cvvNumber, expDate: cardExpDate } : cardList.at(selectedIndex);
-		apply(updatedCard);
+		let updatedCard =
+			// if same card is selected and all fields are empty, save current card
+			// ALL fields must be filled in order to update card
+			//
+			// later will be changed to "Add new card" form
+			selectedIndex === -1 && !emptyFields(cardNumber, cvvNumber, cardExpDate)
+				? { firstName, lastName, cardNumber, cvvNumber, expDate: cardExpDate }
+				: cardList.at(selectedIndex);
+
+		// only update card if new card is entered or different card is selected
+		if (selectedIndex !== -1 || !emptyFields(cardNumber, cvvNumber, cardExpDate)) apply(updatedCard);
 	};
 
 	return (
-		<Form formType={"Change Card"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
+		<Form formType={"Change Card"} formAltType={"Updated Card"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"updateCard"}>
 			<fieldset>
 				<div className="d-flex flex-column w-100 px-3 pb-3 justify-content-start">
 					{cardList.map((item, index) => (

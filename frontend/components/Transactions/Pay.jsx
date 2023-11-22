@@ -7,12 +7,7 @@ import { DollarOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 import { useState } from "react";
 
-/**
- * 
- * @param apply Function passed from parent to child > child
- * 
- */
-export default function Pay({ apply }) {
+export default function Pay({ handlePay }) {
 	const [payFormOpen, setPayFormOpen] = useState(false);
 
 	const openPayForm = (event) => {
@@ -34,7 +29,7 @@ export default function Pay({ apply }) {
 					<span className={clsx("h-100 align-self-center", typingStyles.fontType7)}>Pay</span>
 				</div>
 			</div>
-			{payFormOpen && <PayForm apply={apply} onRelease={closePayForm} />}
+			{payFormOpen && <PayForm apply={handlePay} onRelease={closePayForm} />}
 		</>
 	);
 }

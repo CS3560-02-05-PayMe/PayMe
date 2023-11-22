@@ -25,6 +25,10 @@ export function toFloat(value) {
 	return parseFloat(doubleify(value));
 }
 
+export function formatUsername(value) {
+	return value.startsWith("@") ? value : `@${value}`;
+}
+
 export function formatCardNumber(value) {
 	value = numberify(value);
 	// ensures there is a space between every 4 digits
@@ -64,7 +68,8 @@ export async function postPM(mapping = "/", body, ...pathVariables) {
 		body: JSON.stringify(body),
 	})
 		.then((response) => {
-			if (!response.ok) {
+			console.log(response);
+			if (response.status > 409) {
 				throw new Error(response.status);
 			}
 			return response.json();
@@ -108,4 +113,18 @@ export function formatMapping(mapping, ...pathVariables) {
 export function shorten(input) {
 	if (!input || input?.length <= 4) return input;
 	return input.slice(input.length - 4);
+}
+
+// helper function to check if form is empty
+// return true if all fields are empty
+export function emptyFields(...fields) {
+	return fields.every((field) => field === "");
+}
+
+export function isRecipient(record, account) {
+	return record.recipientID === account.accountID || record.username === account.username;
+}
+
+export function getOtherPartyUUID(record, account) {
+	return isRecipient(record, account) ? record.payerID : record.recipientID;
 }

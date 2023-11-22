@@ -18,13 +18,14 @@ public class TransactionController {
     private TransactionService service;
 
     // This method handles POST requests to create a new transaction in the database.
-    @PostMapping("/addTransaction")
-    public Transaction createTransaction(@RequestBody Transaction transaction) {
-        return service.createTransaction(transaction);
+    @PostMapping("/addTransaction/{payerId}/{recipientId}")
+    public ResponseEntity<Transaction> createTransaction(@PathVariable("payerId") String payerId, @PathVariable("recipientId") String recipientId, @RequestBody Transaction transaction) {
+        transaction = service.createTransaction(UUID.fromString(payerId), UUID.fromString(recipientId), transaction);
+        return new ResponseEntity<>(transaction, transaction == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 
     // This method retrieves all transactions from the database and sorts them in descending order by date.
-    @GetMapping("/getTransactions/{userId}")
+    @GetMapping("/getTransactionList/{userId}")
     public ResponseEntity<List<Transaction>> getAllTransactions(@PathVariable("userId") UUID userId) {
         return new ResponseEntity<>(service.getAllTransactions(userId), HttpStatus.OK);
     }
@@ -32,6 +33,6 @@ public class TransactionController {
     // This method retrieves a transaction from the database by its ID.
     @GetMapping("/getTransaction/{uuid}")
     public Transaction getTransactionById(@PathVariable("uuid") UUID id) {
-        return service.getTransactionById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id " + id));
+        return service.getTransactionById(id);
     }
 }

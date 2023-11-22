@@ -27,23 +27,16 @@ public class Payment {
     @Column(name = "payment_id", updatable = false, nullable = false)
     private UUID paymentID;
 
+    @Setter
     @ManyToOne( fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "transaction_id", updatable = false, nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private final Transaction transaction;
+    private Transaction transaction;
 
     @Setter
     @Column(name = "payment_amount")
     private double paymentAmount;
-
-    @Setter
-    @Column(name = "payment_date")
-    private Date paymentDate;
-
-    @Setter
-    @Column(name = "message")
-    private String message;
 
     /** Retrieves the transactionID within the Transaction associated with this Payment.
      * @return The transactionID (UUID) of the associated Transaction. */
@@ -61,8 +54,6 @@ public class Payment {
                 "transactionID=" + getTransactionID() +
                 ", paymentID=" + getPaymentID() +
                 ", paymentAmount=" + getPaymentAmount() +
-                ", paymentDate=" + getPaymentDate() +
-                ", message=" + getMessage() +
                 '}';
     }
 }

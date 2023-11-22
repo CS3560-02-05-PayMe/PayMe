@@ -21,14 +21,12 @@ public class AccountController {
     // Now Write all the REST endpoints,
     // which are presents in service, give the url
 
-    // ------------------------------------------------
-    // POST
 
     //    ResponseEntity returns the class in a JSON object to frontend
-//    This makes it easier for frontend to parse and read data
+    //    This makes it easier for frontend to parse and read data
     @PostMapping("/addAccount")
     public ResponseEntity<Account> addAccount(@RequestBody Account account) {
-        // service.saveAccount will receive account object passed inputed from user
+        // service.saveAccount will receive account object passed inputted by user
         System.out.println(account);
         account = service.saveAccount(account);
         // if account does not exist, new row is added
@@ -36,15 +34,12 @@ public class AccountController {
         return new ResponseEntity<>(account, account == null ? HttpStatus.CONFLICT : HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAccount/{uuid}")
-    public ResponseEntity<Account> getAccount(@PathVariable("uuid") UUID uuid) {
+    @GetMapping("/getAccountByUuid/{uuid}")
+    public ResponseEntity<Account> getAccountById(@PathVariable("uuid") UUID uuid) {
         System.out.println("Accessing account with uuid: " + uuid.toString());
         return new ResponseEntity<>(service.retrieveAccount(uuid), HttpStatus.OK);
     }
 
-    // ------------------------------------------------------------------------------------------
-    // Functionality added on Nov 14
-    // ------------------------------------------------------------------------------------------
     // get Account by username
     @GetMapping("/getAccount/{username}")
     public ResponseEntity<Account> getAccount(@PathVariable("username") String username) {
@@ -84,11 +79,11 @@ public class AccountController {
         return new ResponseEntity<>("Account deleted successfully", HttpStatus.OK);
     }
 
-    @PutMapping("/updateAccount/{uuid}")
+    @PostMapping("/updateAccount/{uuid}")
     public ResponseEntity<Account> updateAccount(
-            @PathVariable UUID uuid,
+            @PathVariable String uuid,
             @RequestBody Account updatedAccount) {
-        Account result = service.updateAccount(uuid, updatedAccount);
+        Account result = service.updateAccount(UUID.fromString(uuid), updatedAccount);
 
         if (result != null) {
             return new ResponseEntity<>(result, HttpStatus.OK);
