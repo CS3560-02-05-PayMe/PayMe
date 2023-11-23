@@ -37,6 +37,11 @@ public class TransactionService {
 //                .collect(Collectors.toList());
     }
 
+    // This method retrieves a transaction from the database by its ID.
+    public Transaction getTransactionById(UUID transactionId) {
+        return repository.findByTransactionID(transactionId);
+    }
+
     private Date parseDate(Transaction transaction) {
         String dateString = transaction.getTransactionDate();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -62,8 +67,20 @@ public class TransactionService {
         return repository.save(transaction);
     }
 
-    // This method retrieves a transaction from the database by its ID.
-    public Transaction getTransactionById(UUID transactionId) {
-        return repository.findByTransactionID(transactionId);
+    public Transaction updateTransaction(UUID uuid, Transaction updatedTransaction) {
+        Transaction existingTransaction = getTransactionById(uuid);
+
+        if (existingTransaction != null) {
+            // update the existing transaction such as isSettle
+            existingTransaction.setSettled(updatedTransaction.isSettled());
+
+            // save the updated transaction
+            // save??
+            return repository.save(existingTransaction);
+
+        }
+
+        // if transaction is not found, return null
+        return null;
     }
 }

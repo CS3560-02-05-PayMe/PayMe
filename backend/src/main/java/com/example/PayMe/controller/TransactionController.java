@@ -32,7 +32,21 @@ public class TransactionController {
     
     // This method retrieves a transaction from the database by its ID.
     @GetMapping("/getTransaction/{uuid}")
-    public Transaction getTransactionById(@PathVariable("uuid") UUID id) {
-        return service.getTransactionById(id);
+    public Transaction getTransactionById(@PathVariable("uuid") String id) {
+        return service.getTransactionById(UUID.fromString(id));
     }
+
+    @PostMapping("/updateTransaction/{uuid}")
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable String transactionID, @RequestBody Transaction updatedTransaction)
+    {
+        Transaction update = service.updateTransaction(UUID.fromString(transactionID), updatedTransaction);
+
+        if (update != null){
+            return new ResponseEntity<>(update, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+    }
+
 }

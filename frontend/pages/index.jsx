@@ -66,7 +66,7 @@ export default function PayMeApp() {
 				message,
 				transactionDate: new Date().toISOString(),
 				transactionAmount: amount,
-				isSettled: true
+				isSettled: true,
 			};
 			const transactionPromise = postPM("/addTransaction", transactionBody, account.accountID, recipientAccount.accountID);
 
@@ -103,27 +103,36 @@ export default function PayMeApp() {
 
 		return accountPromise.then(async (recipient) => {
 			const transactionPromise = fetchPM("/getTransaction", transactionId);
-			
-			
+			const requestPromise = transactionPromise.then(() => fetchPM("/getRequest", transactionId));
 
-			return Promise.all([accountPromise, transactionPromise]).then(([payerAccount, transaction]) => {
+			return Promise.all([accountPromise, transactionPromise, requestPromise]).then(([recipientAccount, transaction, request]) => {
 				const tempHistory = [...historyList];
 				tempHistory.unshift({
 					key: historyList.length,
-					subject: payerAccount.firstName,
-					username: payerAccount.username,
+					subject: recipientAccount.firstName,
+					username: recipientAccount.username,
 					type: "Send",
 					message,
 					amount,
 				});
 				updateHistoryList(tempHistory);
 
-				const tempAccount = { ...account, balance: (account.balance + amount).toFixed(2) };
+				const requestBody = {
+					...request,
+					settled: true,
+				};
+				postPM("/updateRequest", requestBody, request.requestID, transactionId).then((r) => {
+					const tempRequestInList = [...requestInList];
+					console.log(tempRequestInList)
+					updateRequestInList(tempRequestInList.filter(request => request.transactionId !== transactionId));
+				});
+
+				const tempAccount = { ...account, balance: (account.balance - amount).toFixed(2) };
 				updateAccount(tempAccount);
 				postPM("/updateAccount", tempAccount, account.accountID);
 
-				const tempRecipientAccount = { ...payerAccount, balance: (payerAccount.balance - amount).toFixed(2) };
-				postPM("/updateAccount", tempRecipientAccount, payerAccount.accountID);
+				const tempRecipientAccount = { ...recipientAccount, balance: (recipientAccount.balance + amount).toFixed(2) };
+				postPM("/updateAccount", tempRecipientAccount, recipientAccount.accountID);
 			});
 		});
 	};
@@ -285,12 +294,12 @@ export default function PayMeApp() {
 
 							const otherPartyUUID = getOtherPartyUUID(record, account);
 							const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
-							console.log(record)
+							console.log(record);
 							const historyActivity = {
 								key: i,
 								subject: otherParty.firstName,
 								username: otherParty.username,
-								type: !record.settled ? "Pending Request" : isRecipient(record, account) ? "Receive" : "Send",
+								type: isRecipient(record, account) ? "Receive" : "Send",
 								message: record.message,
 								amount: record.transactionAmount,
 							};
@@ -303,6 +312,7 @@ export default function PayMeApp() {
 
 						for (let i = 0; i < requestInList.length; i++) {
 							const request = requestInList[i];
+							if (request.settled) continue;
 							console.log(request);
 
 							const transaction = await fetchPM("/getTransaction", request.transactionID);

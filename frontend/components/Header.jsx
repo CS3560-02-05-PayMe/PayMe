@@ -16,7 +16,7 @@ export default function Header({ loggedIn, handleLogout }) {
 
 	const dropdownRef = useRef(null);
 
-	const navItems = ["Summary", "Activity", "Send/Request", "Wallet", "Help"];
+	const navItems = ["Summary", "Activity", "Wallet", "Help"];
 
 	const toggleDropdown = (event, forcedToggle = !dropdownOpen) => {
 		event?.stopPropagation();
