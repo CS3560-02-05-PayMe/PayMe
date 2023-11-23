@@ -55,7 +55,6 @@ public class RequestService {
     }
 
     public Request updateRequest(UUID requestId, UUID transactionId, Request updatedRequest) {
-
         Request existingRequest = repo.findByRequestID(requestId);
 
         Transaction transaction = transactionService.getTransactionById(transactionId);

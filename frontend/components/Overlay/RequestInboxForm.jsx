@@ -62,7 +62,7 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 		setRequestList(selected === 0 ? requestInList : requestOutList);
 		setCheckedItems(Array(requestList.length).fill(false));
 		setListState("default");
-	}, [selected, requestList]);
+	}, [selected, requestList, requestInList, requestOutList]);
 
 	return (
 		<Form
@@ -91,13 +91,16 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 						style={{ fontSize: "22.5px" }}
 						onClick={() => {
 							const listIndexRemove = checkedItems.reduce((indices, value, index) => {
+								// if value is true (request item is checked)
+								// index of item is pushed for removal
 								if (value) indices.push(index);
 								return indices;
 							}, []);
+					
+							const toRemove = requestList.filter((_, index) => listIndexRemove.includes(index));
+							const updatedRequests = requestList.filter((_, index) => !listIndexRemove.includes(index));
 
-							const updatedRequests = requestList.filter((request, index) => !listIndexRemove.includes(index));
-
-							remove({ selected, updatedList: updatedRequests });
+							remove({ selected, updatedRequests, toRemove });
 							setCheckedItems(Array(updatedRequests.length).fill(false));
 							setListState("default");
 						}}
@@ -168,7 +171,7 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 						<div className="py-2">
 							<img src="/images/emptyInbox.png" className="d-flex w-100" />
 						</div>
-						<span className={clsx(typingStyles.fontType5)}>Inbox Empty</span>
+						<span className={clsx(typingStyles.fontType5)}>{selected === 0 ? "Inbox" : "Outbox"} Empty</span>
 					</div>
 				)}
 			</div>

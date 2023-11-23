@@ -151,15 +151,23 @@ export default function PayMeApp() {
 		});
 	};
 
-	const handleRequestRemove = ({ selected, updatedList = [] }) => {
-		const requestList = selected === 0 ? requestInList : requestOutList;
-
-		console.log(selected, requestList, updatedList);
+	const handleRequestRemove = async ({ selected, updatedRequests = [], toRemove = [] }) => {
 		if (selected === 0) {
-			updateRequestOutList(requestList);
+			updateRequestInList(updatedRequests);
 		} else {
-			updateRequestInList(requestList);
+			updateRequestOutList(updatedRequests);
 		}
+
+		toRemove.forEach((request) => {
+			const { requestId, transactionId } = request;
+			const requestBody = {
+				...request,
+				settled: true,
+			};
+			postPM("/updateRequest", requestBody, requestId, transactionId);
+		});
+
+		return updatedRequests;
 	};
 
 	const handleTransfer = ({ uuid, transfer }) => {
@@ -322,6 +330,7 @@ export default function PayMeApp() {
 							const otherParty = await fetchPM("/getAccountByUuid", transaction.recipientID);
 							const requestDetails = {
 								key: i,
+								requestId: request.requestID,
 								transactionId: transaction.transactionID,
 								subject: fullName(otherParty),
 								username: otherParty.username,
@@ -343,6 +352,7 @@ export default function PayMeApp() {
 							const otherParty = await fetchPM("/getAccountByUuid", transaction.payerID);
 							const requestDetails = {
 								key: i,
+								requestId: request.requestID,
 								transactionId: transaction.transactionID,
 								subject: fullName(otherParty),
 								username: otherParty.username,
@@ -370,17 +380,19 @@ export default function PayMeApp() {
 			<Header loggedIn={loggedIn} handleLogout={handleLogout} />
 			<div className={clsx("contentContainer d-flex h-100 p-md-3 p-xl-5", styles.transparentContainer)}>
 				<div className={clsx("accountContainer p-2", styles.leftContainer)}>
-					{/* <Switch checked={!loading} onChange={onChange} /> */}
-					<CurrentBalance loggedIn={loggedIn} loading={loading} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
-					<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
-						<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
-							<Pay handlePay={handlePay} />
+					<div className={clsx("d-md-flex flex-md-column h-100 w-100 justify-content-md-between", styles.leftInnerContainer)}>
+						{/* <Switch checked={!loading} onChange={onChange} /> */}
+						<CurrentBalance loggedIn={loggedIn} loading={loading} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
+						<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
+							<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
+								<Pay handlePay={handlePay} />
+							</div>
+							<div className={clsx("mb-3 ms-md-2", styles.buttonContainer)}>
+								<Request apply={handleRequest} />
+							</div>
 						</div>
-						<div className={clsx("mb-3 ms-md-2", styles.buttonContainer)}>
-							<Request apply={handleRequest} />
-						</div>
+						<AccountDetails loggedIn={loggedIn} loading={loading} changeAddress={handleAddressUpdate} changeCard={handleCardUpdate} />
 					</div>
-					<AccountDetails loggedIn={loggedIn} loading={loading} changeAddress={handleAddressUpdate} changeCard={handleCardUpdate} />
 				</div>
 				<div className={clsx("activityContainer p-2 pb-3 pb-md-2", styles.rightContainer)}>
 					<RecentActivity loggedIn={loggedIn} loading={loading} history={historyList} />
