@@ -19,21 +19,6 @@ export default function PayForm({ apply, onRelease }) {
 	const [message, setMessage] = useState("None provided.");
 
 	const [step, setStep] = useState(1);
-	const totalSteps = 2;
-
-	const handleNextStep = (event) => {
-		event.preventDefault();
-		if (step < totalSteps) {
-			setStep(step + 1);
-		}
-	};
-
-	const handlePreviousStep = (event) => {
-		event.preventDefault();
-		if (step > 1) {
-			setStep(step - 1);
-		}
-	};
 
 	const firstFormInput = [
 		<input
@@ -46,7 +31,7 @@ export default function PayForm({ apply, onRelease }) {
 				setRecipient(formattedRecipient);
 			}}
 		/>,
-	]
+	];
 
 	const secondFormInput = [
 		<input
@@ -69,6 +54,11 @@ export default function PayForm({ apply, onRelease }) {
 		/>,
 	];
 
+	const toggleStep = (event) => {
+		event.preventDefault();
+		setStep((step === 1) + 1);
+	};
+
 	// update user balance and transaction history
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -77,50 +67,32 @@ export default function PayForm({ apply, onRelease }) {
 	};
 
 	return (
-		<Form formType={"Pay"} formAltType={"Payment Sent"} onSubmit={handleSubmit} onRelease={onRelease} outsideClick={apply}>
+		<Form formType={"Pay"} formAltType={"Payment Sent"} onSubmit={handleSubmit} onRelease={onRelease}>
 			<fieldset className={clsx("w-100", { [styles.hide]: step > 1 })}>
-				<div className={clsx("d-flex w-100 justify-content-center")}>
-					<span className={clsx(typingStyles.fontType7)}>Recipient Details</span>
-				</div>
-				{firstFormInput.map((item, index) => {
-					return (
-						<div key={index} className={clsx("my-3", styles.formInput)}>
-							{item}
-						</div>
-					);
-				})}
-				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
+				{firstFormInput.map((item, index) => (
+					<div key={index} className={clsx("my-3", styles.formInput)}>
+						{item}
+					</div>
+				))}
+				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 					Next
 				</button>
 			</fieldset>
 			<fieldset className={clsx("w-100", { [styles.show]: step === 2 })}>
-				<div className={clsx("d-flex w-100 justify-content-center")}>
-					<span className={clsx(typingStyles.fontType7)}>Payment Details</span>
-				</div>
-				{secondFormInput.map((item, index) => {
-					return (
-						<div key={index} className={clsx("my-3", styles.formInput)}>
-							{item}
-						</div>
-					);
-				})}
-				<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
-					Send
-				</button>
-				{/*<div className={clsx("d-flex w-100 justify-content-between", styles.registerButtonWrapper)}>
-					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handlePreviousStep}>
+				{secondFormInput.map((item, index) => (
+					<div key={index} className={clsx("my-3", styles.formInput)}>
+						{item}
+					</div>
+				))}
+				<div className={clsx("d-flex w-100 justify-content-between")}>
+					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 						Previous
 					</button>
-					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
-						Next
+					<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
+						Send
 					</button>
-				</div>*/}
+				</div>
 			</fieldset>
 		</Form>
-		// <Form formType={"Pay"} formAltType={"Payment Sent"} formInputs={firstFormInput} onSubmit={handleSubmit} onRelease={onRelease}>
-		// 	<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
-		// 		Send
-		// 	</button>
-		// </Form>
 	);
 }

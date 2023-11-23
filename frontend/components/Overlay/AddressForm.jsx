@@ -7,7 +7,6 @@ import Form from "./Form";
 import clsx from "clsx";
 import { useState } from "react";
 import { emptyFields, numberify } from "../util/helpers";
-import FormSubmitted from "./PostOverlay/FormSubmitted";
 
 /**
  *
@@ -17,6 +16,8 @@ import FormSubmitted from "./PostOverlay/FormSubmitted";
  */
 export default function AddressForm({ apply, onRelease }) {
 	const { addressList } = useAccount();
+
+	const [step, setStep] = useState(1);
 
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 
@@ -69,37 +70,55 @@ export default function AddressForm({ apply, onRelease }) {
 		setSelectedIndex(index);
 	};
 
+	const toggleStep = (event) => {
+		event.preventDefault();
+		setStep((step === 1) + 1);
+	};
+
 	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		const isEmptyForm = emptyFields(address, city, state, zipCode, country);
 		let updatedAddress =
 			// if same address is selected and all fields are empty, save current address
 			// ALL fields must be filled in order to update address
 			//
 			// later will be changed to "Add new address" form
-			selectedIndex === -1 && !emptyFields(address, city, state, zipCode, country)
+			!isEmptyForm
 				? { primaryAddress: address, cityName: city, stateName: state, zipCode, country }
 				: addressList.at(selectedIndex);
 
 		// only update address if new address is entered or different address is selected
-		if (selectedIndex !== -1 || !emptyFields(address, city, state, zipCode, country)) apply(updatedAddress);
+		if (selectedIndex !== -1 || !isEmptyForm) apply(updatedAddress);
 	};
 
 	return (
-		<Form formType={"Change Address"} formAltType={"Updated Address"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"updateAddress"}>
-			<fieldset>
-				<div className="d-flex flex-column w-100 px-3 pb-3 justify-content-start">
+		<Form formType={"Change Address"} formAltType={"Updated Address"} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"updateAddress"}>
+			<fieldset className={clsx({ [styles.hide]: step > 1 })}>
+				<div className="d-flex flex-column w-100 px-3 py-2 justify-content-start">
 					{addressList.map((item, index) => (
-						<label key={index} className="d-flex w-100">
+						<label key={index} className="d-flex w-100 pb-2">
 							<input type="radio" name="addressRadio" defaultChecked={item.isPriority} onClick={() => handleRadioChange(index)} />
 							<span className={clsx("ms-2", typingStyles.fontType7)}>{item.primaryAddress}</span>
 						</label>
 					))}
 				</div>
 			</fieldset>
-			<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
-				Save
-			</button>
+			<fieldset className={clsx({ [styles.show]: step === 2 })}>
+				{formInputs.map((item, index) => (
+					<div key={index} className={clsx("my-3", styles.formInput)}>
+						{item}
+					</div>
+				))}
+			</fieldset>
+			<div className={clsx("d-flex w-100 justify-content-between")}>
+				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
+					{step === 1 ? "Add new" : "Back"}
+				</button>
+				<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
+					Save
+				</button>
+			</div>
 		</Form>
 	);
 }

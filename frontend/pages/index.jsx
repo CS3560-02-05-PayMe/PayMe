@@ -198,18 +198,7 @@ export default function PayMeApp() {
 			};
 			const requestPromise = transactionPromise.then((transaction) => postPM("/addRequest", requestBody, transaction.transactionID));
 
-			return Promise.all([accountPromise, transactionPromise, requestPromise]).then(([payerAccount, transaction, request]) => {
-				const tempHistory = [...historyList];
-				tempHistory.unshift({
-					key: historyList.length,
-					subject: payerAccount.firstName,
-					username: payerAccount.username,
-					type: "Pending Request",
-					message,
-					amount,
-				});
-				updateHistoryList(tempHistory);
-			});
+			return Promise.all([accountPromise, transactionPromise, requestPromise]);
 		});
 	};
 

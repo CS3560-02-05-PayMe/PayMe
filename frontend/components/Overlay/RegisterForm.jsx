@@ -246,13 +246,11 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 				<div className={clsx("d-flex w-100 justify-content-center")}>
 					<span className={clsx(typingStyles.fontType7)}>Personal Details</span>
 				</div>
-				{firstFormInput.map((item, index) => {
-					return (
-						<div key={index} className={clsx("my-3", styles.formInput)}>
-							{item}
-						</div>
-					);
-				})}
+				{firstFormInput.map((item, index) => (
+					<div key={index} className={clsx("my-3", styles.formInput)}>
+						{item}
+					</div>
+				))}
 				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={handleNextStep}>
 					Next
 				</button>

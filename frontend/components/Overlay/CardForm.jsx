@@ -21,6 +21,8 @@ export default function CardForm({ apply, onRelease }) {
 		cardList,
 	} = useAccount();
 
+	const [step, setStep] = useState(1);
+
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	const [cardNumber, setCardNumber] = useState("");
@@ -63,37 +65,55 @@ export default function CardForm({ apply, onRelease }) {
 		setSelectedIndex(index);
 	};
 
+	const toggleStep = (event) => {
+		event.preventDefault();
+		setStep((step === 1) + 1);
+	};
+
 	// save changes and update database
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		const isEmptyForm = emptyFields(cardNumber, cvvNumber, cardExpDate);
 		let updatedCard =
 			// if same card is selected and all fields are empty, save current card
 			// ALL fields must be filled in order to update card
 			//
 			// later will be changed to "Add new card" form
-			selectedIndex === -1 && !emptyFields(cardNumber, cvvNumber, cardExpDate)
+			!isEmptyForm
 				? { firstName, lastName, cardNumber, cvvNumber, expDate: cardExpDate }
 				: cardList.at(selectedIndex);
 
 		// only update card if new card is entered or different card is selected
-		if (selectedIndex !== -1 || !emptyFields(cardNumber, cvvNumber, cardExpDate)) apply(updatedCard);
+		if (selectedIndex !== -1 || !isEmptyForm) apply(updatedCard);
 	};
 
 	return (
-		<Form formType={"Change Card"} formAltType={"Updated Card"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"updateCard"}>
-			<fieldset>
-				<div className="d-flex flex-column w-100 px-3 pb-3 justify-content-start">
+		<Form formType={"Change Card"} formAltType={"Updated Card"} onSubmit={handleSubmit} onRelease={onRelease} formAltSrc={"updateCard"}>
+			<fieldset className={clsx({ [styles.hide]: step > 1 })}>
+				<div className="d-flex flex-column w-100 px-3 py-2 justify-content-start">
 					{cardList.map((item, index) => (
-						<label key={index} className="d-flex w-100">
+						<label key={index} className="d-flex w-100 pb-2">
 							<input type="radio" name="cardRadio" defaultChecked={item.isPriority} onClick={() => handleRadioChange(index)} />
 							<span className={clsx("ms-2", typingStyles.fontType7)}>Ends in {shorten(item.cardNumber)}</span>
 						</label>
 					))}
 				</div>
 			</fieldset>
-			<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
-				Save
-			</button>
+			<fieldset className={clsx({ [styles.show]: step == 2 })}>
+				{formInputs.map((item, index) => (
+					<div key={index} className={clsx("my-3", styles.formInput)}>
+						{item}
+					</div>
+				))}
+			</fieldset>
+			<div className={clsx("d-flex w-100 justify-content-between")}>
+				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
+					{step === 1 ? "Add new" : "Back"}
+				</button>
+				<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
+					Save
+				</button>
+			</div>
 		</Form>
 	);
 }
