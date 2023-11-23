@@ -16,13 +16,10 @@ import { useAccount } from "../providers/AccountProvider";
  * @param handleRequest 		Pays the request from other user
  * @param handleRequestRemove 	Removes the request from other user
  * @param loading 				Whether data is still being loaded
- * @param requests 				All request data for current user
  *
  */
-export default function CurrentBalance({ loggedIn, handleRequest, handleRequestRemove, loading, requests }) {
+export default function CurrentBalance({ loggedIn, handleRequest, handleRequestRemove, loading }) {
 	const { account } = useAccount();
-	// moderation for login/register form
-	const [loginFormOpen, setLoginFormOpen] = useState(false);
 
 	return (
 		<Card title="Current Balance" className={clsx("w-100 mx-2 mx-md-0 mt-2 mt-md-0 mb-3 mb-lg-0", styles.containerShadow)} loading={loading} headStyle={{ background: "#A8C1D1" }}>
@@ -30,7 +27,7 @@ export default function CurrentBalance({ loggedIn, handleRequest, handleRequestR
 				{loggedIn && (
 					<>
 						<span className={clsx("currentBalance text-center", typingStyles.fontTypeHeading1)}>${account?.balance}</span>
-						<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} requests={requests} />
+						<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} />
 					</>
 				)}
 				{!loggedIn && (
@@ -48,7 +45,6 @@ export default function CurrentBalance({ loggedIn, handleRequest, handleRequestR
 						<span className={clsx(typingStyles.fontType7)}>Please log in to see balance</span>
 					</div>
 				)}
-				{loginFormOpen && <AuthForm forms={{ login: true }} resetConditional={() => setLoginFormOpen(false)} />}
 			</div>
 		</Card>
 	);

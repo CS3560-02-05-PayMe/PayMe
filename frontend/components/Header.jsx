@@ -85,7 +85,7 @@ export default function Header({ loggedIn, handleLogout }) {
 							onClick={toggleDropdown}
 							ref={dropdownRef}
 						>
-							<span className={clsx(styles.profileNameWrapper, typingStyles.fontType7)}>{account?.firstName}</span>
+							<span className={clsx(styles.profileNameWrapper, typingStyles.fontType7)}>{account?.firstName} {account?.lastName[0]}.</span>
 							<span className={clsx("align-self-center", styles.dropdownArrow)} />
 							{dropdownOpen && (
 								<ul className={clsx("w-100 px-2", styles.dropdownItems)}>

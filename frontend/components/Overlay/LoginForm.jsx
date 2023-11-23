@@ -15,7 +15,7 @@ import { useState } from "react";
  *
  */
 export default function LoginForm({ apply, onRelease, onAltRelease }) {
-	const { account, updateAccount, updateAddressList, updateCardList, updateHistoryList, updateRequestInList } = useAccount();
+	const { account, updateAccount, updateAddressList, updateCardList, updateHistoryList, updateRequestInList, updateRequestOutList } = useAccount();
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -33,9 +33,10 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
 				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
 				const requestInListPromise = historyListPromise.then(() => fetchPM("/getRequestInList", account.accountID));
+				const requestOutListPromise = requestInListPromise.then(() => fetchPM("/getRequestOutList", account.accountID));
 
-				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise]).then(
-					async ([account, addressList, cardList, historyList, requestInList]) => {
+				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise, requestOutListPromise]).then(
+					async ([account, addressList, cardList, historyList, requestInList, requestOutList]) => {
 						updateAccount(account);
 						updateAddressList(addressList);
 						updateCardList(cardList);
@@ -60,7 +61,7 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 
 						updateHistoryList(history);
 
-						const requests = [];
+						var requests = [];
 
 						for (let i = 0; i < requestInList.length; i++) {
 							const request = requestInList[i];
@@ -80,6 +81,27 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 							requests.push(requestDetails);
 						}
 						updateRequestInList(requests);
+
+						requests = [];
+
+						for (let i = 0; i < requestOutList.length; i++) {
+							const request = requestOutList[i];
+							if (request.settled) continue;
+							console.log(request);
+
+							const transaction = await fetchPM("/getTransaction", request.transactionID);
+							const otherParty = await fetchPM("/getAccountByUuid", transaction.payerID);
+							const requestDetails = {
+								key: i,
+								transactionId: transaction.transactionID,
+								subject: fullName(otherParty),
+								username: otherParty.username,
+								message: transaction.message,
+								amount: transaction.transactionAmount,
+							};
+							requests.push(requestDetails);
+						}
+						updateRequestOutList(requests);
 					}
 				);
 			})

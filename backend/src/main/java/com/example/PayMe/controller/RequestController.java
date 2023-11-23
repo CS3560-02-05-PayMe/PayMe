@@ -37,8 +37,13 @@ public class RequestController {
     }
 
     @GetMapping("/getRequestInList/{userId}")
-    public ResponseEntity<List<Request>> getRequestList(@PathVariable("userId") String userId) {
+    public ResponseEntity<List<Request>> getRequestInList(@PathVariable("userId") String userId) {
         return new ResponseEntity<>(service.retrieveRequestInbox(UUID.fromString(userId)), HttpStatus.OK);
+    }
+
+    @GetMapping("/getRequestOutList/{userId}")
+    public ResponseEntity<List<Request>> getRequestOutList(@PathVariable("userId") String userId) {
+        return new ResponseEntity<>(service.retrieveRequestOutbox(UUID.fromString(userId)), HttpStatus.OK);
     }
 
     //Delete Request

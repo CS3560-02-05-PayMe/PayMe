@@ -42,12 +42,19 @@ public class RequestService {
                 .collect(Collectors.toList());
     }
 
+    public List<Request> retrieveRequestOutbox(UUID userId) {
+        List<Request> requestList = repo.findAllByTransaction_Recipient_AccountID(userId);
+        return requestList
+                .parallelStream()
+                .filter(request -> !request.isSettled())
+                .collect(Collectors.toList());
+    }
+
     public void deleteRequest(UUID uuid) {
         repo.deleteById(uuid);
     }
 
     public Request updateRequest(UUID requestId, UUID transactionId, Request updatedRequest) {
-
         Request existingRequest = repo.findByRequestID(requestId);
 
         Transaction transaction = transactionService.getTransactionById(transactionId);
