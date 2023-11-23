@@ -45,7 +45,7 @@ export default function AccountDetails({ loggedIn, loading, pointsBalance, chang
 		{
 			icon: <UserOutlined className="accountUserIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,
 			detail: loggedIn ? account?.firstName : "Please log in to view account",
-			subDetail: `@${account?.username || "unavailable"}`
+			subDetail: `@${account?.username || "unavailable"}`,
 		},
 		{
 			icon: <HomeOutlined className="accountAddressIcon p-2" style={{ color: "#06345c", fontSize: "30px" }} />,

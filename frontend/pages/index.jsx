@@ -40,8 +40,22 @@ const randomElement = (data) => {
 export default function PayMeApp() {
 	const [loading, setLoading] = useState(true);
 	// User Account (name/username/pass(?)/address/phone)
-	const { account, updateAccount, loggedIn, updateLoggedIn, addressList, updateAddressList, cardList, updateCardList, historyList, updateHistoryList, requestInList, updateRequestInList } =
-		useAccount();
+	const {
+		account,
+		updateAccount,
+		loggedIn,
+		updateLoggedIn,
+		addressList,
+		updateAddressList,
+		cardList,
+		updateCardList,
+		historyList,
+		updateHistoryList,
+		requestInList,
+		updateRequestInList,
+		requestOutList,
+		updateRequestOutList,
+	} = useAccount();
 	// User balance
 	const [balance, setBalance] = useState(0);
 	// Requests from other people asking for money
@@ -123,8 +137,8 @@ export default function PayMeApp() {
 				};
 				postPM("/updateRequest", requestBody, request.requestID, transactionId).then((r) => {
 					const tempRequestInList = [...requestInList];
-					console.log(tempRequestInList)
-					updateRequestInList(tempRequestInList.filter(request => request.transactionId !== transactionId));
+					console.log(tempRequestInList);
+					updateRequestInList(tempRequestInList.filter((request) => request.transactionId !== transactionId));
 				});
 
 				const tempAccount = { ...account, balance: (account.balance - amount).toFixed(2) };
@@ -137,17 +151,14 @@ export default function PayMeApp() {
 		});
 	};
 
-	const handleRequestRemove = ({ uuid, name, amount, updatedList = [] }) => {
-		if (!!updatedList) {
-			setRequests(updatedList);
-			return;
-		}
+	const handleRequestRemove = ({ selected, updatedList = [] }) => {
+		const requestList = selected === 0 ? requestInList : requestOutList;
 
-		const requestIndex = requests.findIndex((request) => request.uuid === uuid && request.amount === amount);
-		if (requestIndex !== -1) {
-			const updatedRequests = [...requests];
-			updatedRequests.splice(requestIndex, 1);
-			setRequests(updatedRequests);
+		console.log(selected, requestList, updatedList);
+		if (selected === 0) {
+			updateRequestOutList(requestList);
+		} else {
+			updateRequestInList(requestList);
 		}
 	};
 
@@ -198,7 +209,9 @@ export default function PayMeApp() {
 			};
 			const requestPromise = transactionPromise.then((transaction) => postPM("/addRequest", requestBody, transaction.transactionID));
 
-			return Promise.all([accountPromise, transactionPromise, requestPromise]);
+			return Promise.all([accountPromise, transactionPromise, requestPromise]).then(([account, transaction, request]) => {
+				updateRequestOutList([...requestOutList, request]);
+			});
 		});
 	};
 
@@ -269,9 +282,10 @@ export default function PayMeApp() {
 				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
 				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
 				const requestInListPromise = historyListPromise.then(() => fetchPM("/getRequestInList", account.accountID));
+				const requestOutListPromise = requestInListPromise.then(() => fetchPM("/getRequestOutList", account.accountID));
 
-				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise]).then(
-					async ([account, addressList, cardList, historyList, requestInList]) => {
+				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise, requestOutListPromise]).then(
+					async ([account, addressList, cardList, historyList, requestInList, requestOutList]) => {
 						updateAccount(account);
 						updateAddressList(addressList);
 						updateCardList(cardList);
@@ -297,7 +311,7 @@ export default function PayMeApp() {
 
 						updateHistoryList(history);
 
-						const requests = [];
+						var requests = [];
 
 						for (let i = 0; i < requestInList.length; i++) {
 							const request = requestInList[i];
@@ -317,6 +331,27 @@ export default function PayMeApp() {
 							requests.push(requestDetails);
 						}
 						updateRequestInList(requests);
+
+						requests = [];
+
+						for (let i = 0; i < requestOutList.length; i++) {
+							const request = requestOutList[i];
+							if (request.settled) continue;
+							console.log(request);
+
+							const transaction = await fetchPM("/getTransaction", request.transactionID);
+							const otherParty = await fetchPM("/getAccountByUuid", transaction.payerID);
+							const requestDetails = {
+								key: i,
+								transactionId: transaction.transactionID,
+								subject: fullName(otherParty),
+								username: otherParty.username,
+								message: transaction.message,
+								amount: transaction.transactionAmount,
+							};
+							requests.push(requestDetails);
+						}
+						updateRequestOutList(requests);
 					}
 				);
 			})
@@ -336,7 +371,7 @@ export default function PayMeApp() {
 			<div className={clsx("contentContainer d-flex h-100 p-md-3 p-xl-5", styles.transparentContainer)}>
 				<div className={clsx("accountContainer p-2", styles.leftContainer)}>
 					{/* <Switch checked={!loading} onChange={onChange} /> */}
-					<CurrentBalance loggedIn={loggedIn} loading={loading} requests={requestInList} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
+					<CurrentBalance loggedIn={loggedIn} loading={loading} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
 					<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
 						<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
 							<Pay handlePay={handlePay} />
