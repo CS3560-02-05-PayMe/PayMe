@@ -7,18 +7,18 @@ import clsx from "clsx";
 import { useState } from "react";
 
 export default function DepositForm({ apply, onRelease }) {
-	const [card, setCard] = useState("");
+	//const [card, setCard] = useState("");
 	const [amount, setAmount] = useState(0);
 
 	const formInputs = [
-		<input
-			type="text"
-			placeholder="Deposit to"
-			required
-			onChange={(event) => {
-				setCard(event.target.value);
-			}}
-		/>,
+		// <input
+		// 	type="text"
+		// 	placeholder="Deposit to"
+		// 	required
+		// 	onChange={(event) => {
+		// 		setCard(event.target.value);
+		// 	}}
+		// />,
 		<input
 			type="text"
 			placeholder="Amount"
@@ -33,12 +33,12 @@ export default function DepositForm({ apply, onRelease }) {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log(card, amount);
-		apply({ name: card, amount });
+		console.log(/*card, */amount);
+		apply({ amount });
 	};
 
 	return (
-		<Form formType={"Deposit"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
+		<Form formType={"Deposit"} formAltType={"Deposit Success"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease}>
 			<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
 				Deposit
 			</button>
