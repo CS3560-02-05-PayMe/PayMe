@@ -188,16 +188,26 @@ export default function PayMeApp() {
 		setHistory(tempHistory);
 	};
 
-	const handleDeposit = ({ uuid, deposit }) => {
-		setBalance((balance + deposit).toFixed(2));
-		setRequests(requests.filter((request) => request.uuid !== uuid));
+	const handleDeposit = ({ uuid, amount }) => {
+		// setBalance((balance + deposit).toFixed(2));
+		// setRequests(requests.filter((request) => request.uuid !== uuid));
 
-		const tempHistory = history.map((transaction) => ({
-			...transaction,
-			key: transaction.key + 1,
-		}));
-		tempHistory.unshift({ key: 0, subject: "cc", type: "Deposit", address: "N/A", message: randomElement(sampleMessage), deposit });
-		setHistory(tempHistory);
+		// Would be nice to see deposits in Recent Activity, looks right like this except amount is displayed as negative
+		// const tempHistory = [...historyList];
+		// tempHistory.unshift({
+		// 	key: historyList.length,
+		// 	subject: "Bank",
+		// 	username: "",
+		// 	type: "Deposit",
+		// 	message: "",
+		// 	amount,
+		// });
+		// updateHistoryList(tempHistory);
+
+		//This works once, then breaks. Fairly certain its due to how I am updating the actual balance value.
+		const tempAccount = { ...account, balance: (account.balance + amount).toFixed(2) };
+		updateAccount(tempAccount);
+		postPM("/updateAccount", tempAccount, account.accountID);
 	};
 
 	const handleRequest = ({ payer, amount, message }) => {
@@ -382,7 +392,7 @@ export default function PayMeApp() {
 				<div className={clsx("accountContainer p-2", styles.leftContainer)}>
 					<div className={clsx("d-md-flex flex-md-column h-100 w-100 justify-content-md-between", styles.leftInnerContainer)}>
 						{/* <Switch checked={!loading} onChange={onChange} /> */}
-						<CurrentBalance loggedIn={loggedIn} loading={loading} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} />
+						<CurrentBalance loggedIn={loggedIn} loading={loading} handleRequest={handleRequestPay} handleRequestRemove={handleRequestRemove} handleDeposit={handleDeposit} />
 						<div className={clsx("d-flex flex-column flex-md-row w-100 mx-2 mx-md-0", styles.buttonWrapper)}>
 							<div className={clsx("mb-3 me-md-2", styles.buttonContainer)}>
 								<Pay handlePay={handlePay} />
