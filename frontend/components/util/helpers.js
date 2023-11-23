@@ -128,3 +128,21 @@ export function isRecipient(record, account) {
 export function getOtherPartyUUID(record, account) {
 	return isRecipient(record, account) ? record.payerID : record.recipientID;
 }
+
+export async function checkRecipientExists(username) {
+	try {
+		const res = await fetchPM(`/getAccount/${username.replace("@", "")}`);
+		if (!res.ok) {
+		  // If the status is 404 (Not Found), the user does not exist
+		  if (res.status === 404) {
+			return false;
+		  }
+		  throw new Error(`Failed to check if user exists: ${res.statusText}`);
+		}
+		// If the request was successful, the user exists
+		return true;
+	  } catch (error) {
+		console.error(error);
+		return false;
+	  }
+  }

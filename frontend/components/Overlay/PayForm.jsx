@@ -1,6 +1,8 @@
 import styles from "../../styles/heading.module.css";
 
 import { doubleify, formatUsername, toFloat } from "../util/helpers";
+import { checkRecipientExists } from '../util/helpers';
+
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -54,8 +56,16 @@ export default function PayForm({ apply, onRelease }) {
 		/>,
 	];
 
-	const toggleStep = (event) => {
+	const toggleStep = async (event) => {
 		event.preventDefault();
+
+		// Check if the recipient is in the database
+		const recipientExists = await checkRecipientExists(recipient);
+
+		if (!recipientExists) {
+			alert('Recipient does not exist');
+			return;
+		}
 		setStep((step === 1) + 1);
 	};
 
