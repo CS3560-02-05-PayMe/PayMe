@@ -21,14 +21,14 @@ export default function RecentActivity({ loggedIn, loading, history = [] }) {
 		const handleResize = () => {
 			// helper function to set page size
 			if (tableContainerRef.current) {
-				// 55px 			 table row size
+				// 77px 			 table row size
 				// --
 				// 56px 			 card title
 				// 103px =
 				// + 48px = 24px * 2 card body padding-y
 				// + 55px 			 table column title row
 				// 32px 			 table pagination size
-				setPageSize(Math.floor((tableContainerRef.current.clientHeight - 56 - 103 - 32) / 55) || 0);
+				setPageSize(Math.floor((tableContainerRef.current.clientHeight - 56 - 103 - 32) / 77) || 0);
 				console.log(pageSize);
 			}
 		};
