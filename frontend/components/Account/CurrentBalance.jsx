@@ -4,6 +4,7 @@ import typingStyles from "../../styles/typing.module.css";
 
 import AuthForm from "../Overlay/AuthForm";
 import RequestInbox from "./RequestInbox";
+import Deposit from "./Deposit"
 
 import { Card } from "antd";
 import clsx from "clsx";
@@ -16,9 +17,10 @@ import { useAccount } from "../providers/AccountProvider";
  * @param handleRequest 		Pays the request from other user
  * @param handleRequestRemove 	Removes the request from other user
  * @param loading 				Whether data is still being loaded
+ * @param handleDeposit         Adds money from deposit to balance
  *
  */
-export default function CurrentBalance({ loggedIn, handleRequest, handleRequestRemove, loading }) {
+export default function CurrentBalance({ loggedIn, handleRequest, handleRequestRemove, loading, handleDeposit }) {
 	const { account } = useAccount();
 
 	return (
@@ -28,6 +30,7 @@ export default function CurrentBalance({ loggedIn, handleRequest, handleRequestR
 					<>
 						<span className={clsx("currentBalance text-center", typingStyles.fontTypeHeading1)}>${account?.balance}</span>
 						<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} />
+                        <Deposit loggedIn={loggedIn} apply={handleDeposit} />
 					</>
 				)}
 				{!loggedIn && (
