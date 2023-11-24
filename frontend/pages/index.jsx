@@ -80,7 +80,7 @@ export default function PayMeApp() {
 				message,
 				transactionDate: new Date().toISOString(),
 				transactionAmount: amount,
-				isSettled: true,
+				settled: true,
 			};
 			const transactionPromise = postPM("/addTransaction", transactionBody, account.accountID, recipientAccount.accountID);
 
