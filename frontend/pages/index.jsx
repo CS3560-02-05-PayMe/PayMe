@@ -101,11 +101,11 @@ export default function PayMeApp() {
 				});
 				updateHistoryList(tempHistory);
 
-				const tempAccount = { ...account, balance: (account.balance - amount).toFixed(2) };
+				const tempAccount = { ...account, balance: parseFloat((account.balance - amount).toFixed(2)) };
 				updateAccount(tempAccount);
 				postPM("/updateAccount", tempAccount, account.accountID);
 
-				const tempRecipientAccount = { ...recipientAccount, balance: (recipientAccount.balance + amount).toFixed(2) };
+				const tempRecipientAccount = { ...recipientAccount, balance: parseFloat((recipientAccount.balance + amount).toFixed(2)) };
 				postPM("/updateAccount", tempRecipientAccount, recipientAccount.accountID);
 			});
 		});
@@ -141,11 +141,11 @@ export default function PayMeApp() {
 					updateRequestInList(tempRequestInList.filter((request) => request.transactionId !== transactionId));
 				});
 
-				const tempAccount = { ...account, balance: (account.balance - amount).toFixed(2) };
+				const tempAccount = { ...account, balance: parseFloat((account.balance - amount).toFixed(2)) };
 				updateAccount(tempAccount);
 				postPM("/updateAccount", tempAccount, account.accountID);
 
-				const tempRecipientAccount = { ...recipientAccount, balance: (recipientAccount.balance + amount).toFixed(2) };
+				const tempRecipientAccount = { ...recipientAccount, balance: parseFloat((recipientAccount.balance + amount).toFixed(2)) };
 				postPM("/updateAccount", tempRecipientAccount, recipientAccount.accountID);
 			});
 		});
@@ -177,7 +177,7 @@ export default function PayMeApp() {
 			return;
 		}
 
-		setBalance((balance - transfer).toFixed(2));
+		setBalance(parseFloat((balance - transfer).toFixed(2)));
 		setRequests(requests.filter((request) => request.uuid !== uuid));
 
 		const tempHistory = history.map((transaction) => ({
@@ -205,7 +205,7 @@ export default function PayMeApp() {
 		// updateHistoryList(tempHistory);
 
 		//This works once, then breaks. Fairly certain its due to how I am updating the actual balance value.
-		const tempAccount = { ...account, balance: (account.balance + amount).toFixed(2) };
+		const tempAccount = { ...account, balance: parseFloat((account.balance + amount).toFixed(2)) };
 		updateAccount(tempAccount);
 		postPM("/updateAccount", tempAccount, account.accountID);
 	};
