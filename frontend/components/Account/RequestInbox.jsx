@@ -5,17 +5,19 @@ import RequestInboxForm from "../Overlay/RequestInboxForm";
 
 import clsx from "clsx";
 import { useEffect, useState } from "react";
+import { useAccount } from "../providers/AccountProvider";
 
 /**
- * 
- * @param loggedIn 		Whether user is logged in 
+ *
+ * @param loggedIn 		Whether user is logged in
  * @param apply 		Pays the request from other user
  * @param remove 		Removes the request from other user
  * @param dollarBalance Current user account balance
- * @param requests 		All request data for current user
- * 
+ *
  */
-export default function RequestInbox({ loggedIn, apply, remove, requests }) {
+export default function RequestInbox({ loggedIn, apply, remove }) {
+	const { requestInList } = useAccount();
+
 	const [requestInboxOpen, setRequestInboxOpen] = useState(false);
 
 	const openRequestInbox = (event) => {
@@ -27,7 +29,7 @@ export default function RequestInbox({ loggedIn, apply, remove, requests }) {
 		setRequestInboxOpen(false);
 	};
 
-    // not needed(?)
+	// not needed(?)
 	useEffect(() => {
 		// retrieve requests from other users
 	}, []);
@@ -36,10 +38,10 @@ export default function RequestInbox({ loggedIn, apply, remove, requests }) {
 		<>
 			<div className={clsx("w-100", styles.inboxContainer)}>
 				<div className={clsx("d-flex mt-2 mx-auto align-items-center justify-content-center", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={openRequestInbox}>
-					Request Inbox{loggedIn && requests.length > 0 && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requests.length}</span>}
+					Payment Requests{loggedIn && requestInList.length > 0 && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requestInList.length}</span>}
 				</div>
 			</div>
-			{requestInboxOpen && <RequestInboxForm apply={apply} remove={remove} requests={requests} onRelease={closeRequestInbox} />}
+			{requestInboxOpen && <RequestInboxForm apply={apply} remove={remove} onRelease={closeRequestInbox} />}
 		</>
 	);
 }
