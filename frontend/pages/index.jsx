@@ -13,7 +13,7 @@ import React, { useEffect, useState } from "react";
 import { configureChains, mainnet, WagmiConfig, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { polygonMumbai } from "wagmi/chains";
-import { fetchPM, fullName, getOtherPartyUUID, isRecipient, postPM } from "../components/util/helpers";
+import { checkSufficientBalance, fetchPM, fullName, getOtherPartyUUID, isRecipient, postPM } from "../components/util/helpers";
 import { useAccount } from "../components/providers/AccountProvider";
 
 /**
@@ -73,6 +73,7 @@ export default function PayMeApp() {
 	};
 
 	const handlePay = async ({ recipient, amount, message }) => {
+		checkSufficientBalance(account.balance, amount);
 		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
 		return accountPromise.then(async (recipientAccount) => {
@@ -113,6 +114,7 @@ export default function PayMeApp() {
 
 	// account object with property amount
 	const handleRequestPay = async ({ recipient, amount, message, transactionId }) => {
+		checkSufficientBalance(account.balance, amount);
 		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
 		return accountPromise.then(async (recipient) => {
@@ -227,7 +229,16 @@ export default function PayMeApp() {
 			};
 			const requestPromise = transactionPromise.then((transaction) => postPM("/addRequest", requestBody, transaction.transactionID));
 
-			return Promise.all([accountPromise, transactionPromise, requestPromise]).then(([account, transaction, request]) => {
+			return Promise.all([accountPromise, transactionPromise, requestPromise]).then(([payerAccount, transaction, request]) => {
+				request = {
+					key: requestOutList.length,
+					requestId: request.requestID,
+					transactionId: transaction.transactionID,
+					subject: fullName(payerAccount),
+					username: payerAccount.username,
+					message: transaction.message,
+					amount: transaction.transactionAmount,
+				};
 				updateRequestOutList([...requestOutList, request]);
 			});
 		});

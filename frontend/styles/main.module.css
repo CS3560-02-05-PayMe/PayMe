@@ -61,8 +61,18 @@
 .inboxSizeWrapper {
 	color: white;
 	background: red;
-	border-radius: 10px;
+	border-radius: 7px;
 }
+
+/* .inboxSizeWrapper::after {
+	content: "";
+	position: absolute;
+	background-color: red;
+	color: red;
+	height: 5px;
+	width: 5px;
+	border-radius: 50%;
+} */
 
 .balanceLogin > a {
 	border-color: #06345c;

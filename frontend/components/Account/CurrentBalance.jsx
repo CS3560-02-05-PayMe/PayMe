@@ -4,7 +4,7 @@ import typingStyles from "../../styles/typing.module.css";
 
 import AuthForm from "../Overlay/AuthForm";
 import RequestInbox from "./RequestInbox";
-import Deposit from "./Deposit"
+import Deposit from "./Deposit";
 
 import { Card } from "antd";
 import clsx from "clsx";
@@ -29,8 +29,10 @@ export default function CurrentBalance({ loggedIn, handleRequest, handleRequestR
 				{loggedIn && (
 					<>
 						<span className={clsx("currentBalance text-center", typingStyles.fontTypeHeading1)}>${account?.balance}</span>
-						<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} />
-                        <Deposit loggedIn={loggedIn} apply={handleDeposit} />
+						<div className="d-flex w-100 mt-2 justify-content-center">
+							<RequestInbox loggedIn={loggedIn} apply={handleRequest} remove={handleRequestRemove} />
+							<Deposit loggedIn={loggedIn} apply={handleDeposit} />
+						</div>
 					</>
 				)}
 				{!loggedIn && (

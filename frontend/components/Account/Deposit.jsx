@@ -27,9 +27,9 @@ export default function Deposit({ loggedIn, apply }) {
 
     return (
         <>
-            <div className={clsx("w-100", styles.inboxContainer)}>
-                <div className={clsx("d-flex mt-2 mx-auto align-items-center justify-content-center", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={openDeposit}>
-                    Deposit{loggedIn}
+            <div className={clsx("ms-2", styles.inboxContainer)}>
+                <div className={clsx("d-flex mx-auto align-items-center justify-content-center", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={openDeposit}>
+                    Deposit
                 </div>
             </div>
             {DepositOpen && <DepositForm apply={apply} onRelease={closeDeposit} />}
