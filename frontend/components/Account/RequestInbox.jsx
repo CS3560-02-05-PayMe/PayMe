@@ -36,9 +36,9 @@ export default function RequestInbox({ loggedIn, apply, remove }) {
 
 	return (
 		<>
-			<div className={clsx("w-100", styles.inboxContainer)}>
-				<div className={clsx("d-flex mt-2 mx-auto align-items-center justify-content-center", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={openRequestInbox}>
-					Payment Requests{loggedIn && requestInList.length > 0 && <span className={clsx("ms-2 px-2 py-1", styles.inboxSizeWrapper)}>{requestInList.length}</span>}
+			<div className={clsx("me-2", styles.inboxContainer)}>
+				<div className={clsx("d-flex mx-auto align-items-center justify-content-center", headingStyles.requestInboxButton, headingStyles.loginButton)} onClick={openRequestInbox}>
+					Requests{loggedIn && requestInList.length > 0 && <span className={clsx("ms-2 px-2 py-0", styles.inboxSizeWrapper)}>{requestInList.length}</span>}
 				</div>
 			</div>
 			{requestInboxOpen && <RequestInboxForm apply={apply} remove={remove} onRelease={closeRequestInbox} />}

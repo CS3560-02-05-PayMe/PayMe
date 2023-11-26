@@ -128,3 +128,7 @@ export function isRecipient(record, account) {
 export function getOtherPartyUUID(record, account) {
 	return isRecipient(record, account) ? record.payerID : record.recipientID;
 }
+
+export function checkSufficientBalance(balance, amount) {
+	if (balance < amount) throw new Error("Insufficient Balance");
+}
