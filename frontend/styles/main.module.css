@@ -64,15 +64,15 @@
 	border-radius: 7px;
 }
 
-/* .inboxSizeWrapper::after {
-	content: "";
-	position: absolute;
+.inboxNotification {
+	position: abs;
 	background-color: red;
 	color: red;
-	height: 5px;
-	width: 5px;
+	height: 7px;
+	width: 7px;
 	border-radius: 50%;
-} */
+	margin-left: 2px;
+}
 
 .balanceLogin > a {
 	border-color: #06345c;

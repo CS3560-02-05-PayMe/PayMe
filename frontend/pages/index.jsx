@@ -55,18 +55,8 @@ export default function PayMeApp() {
 		updateRequestInList,
 		requestOutList,
 		updateRequestOutList,
+		updateFriendList,
 	} = useAccount();
-	// User balance
-	const [balance, setBalance] = useState(0);
-	// Requests from other people asking for money
-	const [requests, setRequests] = useState([]);
-	// User extra addresses
-
-	// TEMPORARY TO TEST LOADING SCREEN ----------------------
-	const onChange = (checked) => {
-		setLoading(!checked);
-	};
-	// -------------------------------------------------------
 
 	const handleLogout = () => {
 		updateAccount(null);
@@ -74,6 +64,7 @@ export default function PayMeApp() {
 
 	const handlePay = async ({ recipient, amount, message }) => {
 		checkSufficientBalance(account.balance, amount);
+
 		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
 		return accountPromise.then(async (recipientAccount) => {
@@ -115,6 +106,7 @@ export default function PayMeApp() {
 	// account object with property amount
 	const handleRequestPay = async ({ recipient, amount, message, transactionId }) => {
 		checkSufficientBalance(account.balance, amount);
+
 		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
 		return accountPromise.then(async (recipient) => {
@@ -172,41 +164,15 @@ export default function PayMeApp() {
 		return updatedRequests;
 	};
 
-	const handleTransfer = ({ uuid, transfer }) => {
-		if (balance < transfer) {
-			console.log("UNABLE TO RESOLVE TRANSFER :: INSUFFICIENT BALANCE");
-			console.log(`Current Balance: ${balance}, Needed: ${transfer}`);
-			return;
-		}
+	const handleTransfer = ({ amount }) => {
+		checkSufficientBalance(account.balance, amount);
 
-		setBalance(parseFloat((balance - transfer).toFixed(2)));
-		setRequests(requests.filter((request) => request.uuid !== uuid));
-
-		const tempHistory = history.map((transaction) => ({
-			...transaction,
-			key: transaction.key + 1,
-		}));
-		tempHistory.unshift({ key: 0, subject: "cc", type: "Transfer", address: "N/A", message: randomElement(sampleMessage), transfer });
-		setHistory(tempHistory);
+		const tempAccount = { ...account, balance: parseFloat((account.balance - amount).toFixed(2)) };
+		updateAccount(tempAccount);
+		postPM("/updateAccount", tempAccount, account.accountID);
 	};
 
-	const handleDeposit = ({ uuid, amount }) => {
-		// setBalance((balance + deposit).toFixed(2));
-		// setRequests(requests.filter((request) => request.uuid !== uuid));
-
-		// Would be nice to see deposits in Recent Activity, looks right like this except amount is displayed as negative
-		// const tempHistory = [...historyList];
-		// tempHistory.unshift({
-		// 	key: historyList.length,
-		// 	subject: "Bank",
-		// 	username: "",
-		// 	type: "Deposit",
-		// 	message: "",
-		// 	amount,
-		// });
-		// updateHistoryList(tempHistory);
-
-		//This works once, then breaks. Fairly certain its due to how I am updating the actual balance value.
+	const handleDeposit = ({ amount }) => {
 		const tempAccount = { ...account, balance: parseFloat((account.balance + amount).toFixed(2)) };
 		updateAccount(tempAccount);
 		postPM("/updateAccount", tempAccount, account.accountID);
@@ -272,125 +238,74 @@ export default function PayMeApp() {
 		postPM("/updateCreditCardList", updatedCards, account.accountID).then((updatedList) => console.log(updatedList));
 	};
 
+	const login = async () => {
+		const account = await fetchPM("/getAccount", "u1", "p1");
+		updateAccount(account);
+
+		const [addressList, cardList, historyList, requestInList, requestOutList, friendList] = await Promise.all([
+			fetchPM("/getAddressList", account.accountID),
+			fetchPM("/getCreditCardList", account.accountID),
+			fetchPM("/getTransactionList", account.accountID),
+			fetchPM("/getRequestInList", account.accountID),
+			fetchPM("/getRequestOutList", account.accountID),
+			fetchPM("/getFriendList", account.accountID),
+		]);
+
+		updateAddressList(addressList);
+		updateCardList(cardList);
+
+		const history = await Promise.all(
+			historyList.map(async (record, index) => {
+				const otherPartyUUID = getOtherPartyUUID(record, account);
+				const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
+				return {
+					key: index,
+					subject: otherParty.firstName,
+					username: otherParty.username,
+					type: isRecipient(record, account) ? "Receive" : "Send",
+					message: record.message,
+					amount: record.transactionAmount,
+				};
+			})
+		);
+
+		updateHistoryList(history);
+
+		const updateRequests = async (requestList, updateFunction, isPayer) => {
+			const requests = await Promise.all(
+				requestList.map(async (request, index) => {
+					if (request.settled) return null;
+
+					const transaction = await fetchPM("/getTransaction", request.transactionID);
+					const otherParty = await fetchPM("/getAccountByUuid", isPayer ? transaction.recipientID : transaction.payerID);
+
+					return {
+						key: index,
+						transactionId: transaction.transactionID,
+						requestId: request.requestID,
+						subject: fullName(otherParty),
+						username: otherParty.username,
+						message: transaction.message,
+						amount: transaction.transactionAmount,
+					};
+				})
+			);
+
+			updateFunction(requests.filter(Boolean));
+		};
+
+		await updateRequests(requestInList, updateRequestInList, true);
+		await updateRequests(requestOutList, updateRequestOutList, false);
+
+		updateFriendList(friendList);
+	}
+
 	useEffect(() => {
-		// TEMPORARY FOR SAMPLE DATA GENERATOR ---------------
-		const tempHistory = [];
-		for (let i = 0; i < 23; i++) {
-			tempHistory.push({
-				key: i + 1,
-				subject: randomElement(sampleNames),
-				type: randomElement(sampleTypes),
-				address: "0x12...2345",
-				message: randomElement(sampleMessage),
-				amount: (Math.random() * 100).toFixed(2),
-			});
-		}
-		// ---------------------------------------------------
-
-		// setRequests([
-		// 	{ uuid: 1, name: "John Doe", username: "joster", amount: 19.94 },
-		// 	{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 25 },
-		// 	{ uuid: 2, name: "Sam Oh", username: "s0m", amount: 20.23 },
-		// 	{ uuid: 3, name: "Sam Oh", username: "fakes0m", amount: 17.38 },
-		// 	{ uuid: 4, name: "Caitlyn Kiramman", username: "kuppcake", amount: 17.38 },
-		// ]);
-
-		setBalance((Math.random() * 1000).toFixed(2));
-
-		// setAddresses([{ street: "3400 Poly Vista", primary: true }]);
-
-		// setCards([{ cardNumber: "0040", primary: true }]);
-
 		// initial login
 		// updateAccount(null);
-		const accountPromise = fetchPM("/getAccount", "u1", "p1");
 
-		accountPromise
-			.then(async (account) => {
-				const addressListPromise = fetchPM("/getAddressList", account.accountID);
-				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
-				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
-				const requestInListPromise = historyListPromise.then(() => fetchPM("/getRequestInList", account.accountID));
-				const requestOutListPromise = requestInListPromise.then(() => fetchPM("/getRequestOutList", account.accountID));
+		login();
 
-				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise, requestOutListPromise]).then(
-					async ([account, addressList, cardList, historyList, requestInList, requestOutList]) => {
-						updateAccount(account);
-						updateAddressList(addressList);
-						updateCardList(cardList);
-
-						const history = [];
-
-						for (let i = 0; i < historyList.length; i++) {
-							const record = historyList[i];
-
-							const otherPartyUUID = getOtherPartyUUID(record, account);
-							const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
-							console.log(record);
-							const historyActivity = {
-								key: i,
-								subject: otherParty.firstName,
-								username: otherParty.username,
-								type: isRecipient(record, account) ? "Receive" : "Send",
-								message: record.message,
-								amount: record.transactionAmount,
-							};
-							history.unshift(historyActivity);
-						}
-
-						updateHistoryList(history);
-
-						var requests = [];
-
-						for (let i = 0; i < requestInList.length; i++) {
-							const request = requestInList[i];
-							if (request.settled) continue;
-							console.log(request);
-
-							const transaction = await fetchPM("/getTransaction", request.transactionID);
-							const otherParty = await fetchPM("/getAccountByUuid", transaction.recipientID);
-							const requestDetails = {
-								key: i,
-								requestId: request.requestID,
-								transactionId: transaction.transactionID,
-								subject: fullName(otherParty),
-								username: otherParty.username,
-								message: transaction.message,
-								amount: transaction.transactionAmount,
-							};
-							requests.push(requestDetails);
-						}
-						updateRequestInList(requests);
-
-						requests = [];
-
-						for (let i = 0; i < requestOutList.length; i++) {
-							const request = requestOutList[i];
-							if (request.settled) continue;
-							console.log(request);
-
-							const transaction = await fetchPM("/getTransaction", request.transactionID);
-							const otherParty = await fetchPM("/getAccountByUuid", transaction.payerID);
-							const requestDetails = {
-								key: i,
-								requestId: request.requestID,
-								transactionId: transaction.transactionID,
-								subject: fullName(otherParty),
-								username: otherParty.username,
-								message: transaction.message,
-								amount: transaction.transactionAmount,
-							};
-							requests.push(requestDetails);
-						}
-						updateRequestOutList(requests);
-					}
-				);
-			})
-			.catch(console.error);
-
-		// Temporary buffer
-		// Will be replaced in the future when we need to wait for
-		// API calls to be made to retrieve data
 		setTimeout(() => {
 			setLoading(false);
 		}, 1500);

@@ -15,7 +15,7 @@ import { useState } from "react";
  *
  */
 export default function LoginForm({ apply, onRelease, onAltRelease }) {
-	const { account, updateAccount, updateAddressList, updateCardList, updateHistoryList, updateRequestInList, updateRequestOutList } = useAccount();
+	const { updateAccount, updateAddressList, updateCardList, updateHistoryList, updateRequestInList, updateRequestOutList, updateFriendList } = useAccount();
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -23,90 +23,69 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 	// log user in
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		console.log(username, password);
 
-		const accountPromise = fetchPM("/getAccount", username, password);
+		const account = await fetchPM("/getAccount", "u1", "p1");
+		console.log(account);
+		updateAccount(account);
 
-		accountPromise
-			.then(async (account) => {
-				const addressListPromise = fetchPM("/getAddressList", account.accountID);
-				const cardListPromise = addressListPromise.then(() => fetchPM("/getCreditCardList", account.accountID));
-				const historyListPromise = cardListPromise.then(() => fetchPM("/getTransactionList", account.accountID));
-				const requestInListPromise = historyListPromise.then(() => fetchPM("/getRequestInList", account.accountID));
-				const requestOutListPromise = requestInListPromise.then(() => fetchPM("/getRequestOutList", account.accountID));
+		const [addressList, cardList, historyList, requestInList, requestOutList, friendList] = await Promise.all([
+			fetchPM("/getAddressList", account.accountID),
+			fetchPM("/getCreditCardList", account.accountID),
+			fetchPM("/getTransactionList", account.accountID),
+			fetchPM("/getRequestInList", account.accountID),
+			fetchPM("/getRequestOutList", account.accountID),
+			fetchPM("/getFriendList", account.accountID),
+		]);
 
-				return Promise.all([accountPromise, addressListPromise, cardListPromise, historyListPromise, requestInListPromise, requestOutListPromise]).then(
-					async ([account, addressList, cardList, historyList, requestInList, requestOutList]) => {
-						updateAccount(account);
-						updateAddressList(addressList);
-						updateCardList(cardList);
+		updateAddressList(addressList);
+		updateCardList(cardList);
 
-						const history = [];
-
-						for (let i = 0; i < historyList.length; i++) {
-							const record = historyList[i];
-
-							const otherPartyUUID = getOtherPartyUUID(record, account);
-							const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
-							const historyActivity = {
-								key: i,
-								subject: otherParty.firstName,
-								username: otherParty.username,
-								type: isRecipient(record, account) ? "Receive" : "Send",
-								message: record.message,
-								amount: record.transactionAmount,
-							};
-							history.unshift(historyActivity);
-						}
-
-						updateHistoryList(history);
-
-						var requests = [];
-
-						for (let i = 0; i < requestInList.length; i++) {
-							const request = requestInList[i];
-							if (request.settled) continue;
-							console.log(request);
-
-							const transaction = await fetchPM("/getTransaction", request.transactionID);
-							const otherParty = await fetchPM("/getAccountByUuid", transaction.recipientID);
-							const requestDetails = {
-								key: i,
-								transactionId: transaction.transactionID,
-								subject: fullName(otherParty),
-								username: otherParty.username,
-								message: transaction.message,
-								amount: transaction.transactionAmount,
-							};
-							requests.push(requestDetails);
-						}
-						updateRequestInList(requests);
-
-						requests = [];
-
-						for (let i = 0; i < requestOutList.length; i++) {
-							const request = requestOutList[i];
-							if (request.settled) continue;
-							console.log(request);
-
-							const transaction = await fetchPM("/getTransaction", request.transactionID);
-							const otherParty = await fetchPM("/getAccountByUuid", transaction.payerID);
-							const requestDetails = {
-								key: i,
-								transactionId: transaction.transactionID,
-								subject: fullName(otherParty),
-								username: otherParty.username,
-								message: transaction.message,
-								amount: transaction.transactionAmount,
-							};
-							requests.push(requestDetails);
-						}
-						updateRequestOutList(requests);
-					}
-				);
+		const history = await Promise.all(
+			historyList.map(async (record, index) => {
+				const otherPartyUUID = getOtherPartyUUID(record, account);
+				const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
+				return {
+					key: index,
+					subject: otherParty.firstName,
+					username: otherParty.username,
+					type: isRecipient(record, account) ? "Receive" : "Send",
+					message: record.message,
+					amount: record.transactionAmount,
+				};
 			})
-			.then(apply) // ensure all data is correctly retrieved before closing form
-			.catch(console.error);
+		);
+
+		updateHistoryList(history);
+
+		const updateRequests = async (requestList, updateFunction, isPayer) => {
+			const requests = await Promise.all(
+				requestList.map(async (request, index) => {
+					if (request.settled) return null;
+
+					const transaction = await fetchPM("/getTransaction", request.transactionID);
+					const otherParty = await fetchPM("/getAccountByUuid", isPayer ? transaction.recipientID : transaction.payerID);
+
+					return {
+						key: index,
+						transactionId: transaction.transactionID,
+						requestId: request.requestID,
+						subject: fullName(otherParty),
+						username: otherParty.username,
+						message: transaction.message,
+						amount: transaction.transactionAmount,
+					};
+				})
+			);
+
+			updateFunction(requests.filter(Boolean));
+		};
+
+		await updateRequests(requestInList, updateRequestInList, true);
+		await updateRequests(requestOutList, updateRequestOutList, false);
+
+		updateFriendList(friendList);
+
+		apply(); // ensure all data is correctly retrieved before closing form
 	};
 
 	const formInputs = [
