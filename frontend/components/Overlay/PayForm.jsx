@@ -26,6 +26,8 @@ export default function PayForm({ apply, onRelease }) {
 	const [friendSelected, setFriendSelected] = useState(-1);
 	const [newFriend, setNewFriend] = useState(false);
 
+	const [error, setError] = useState(false);
+
 	const firstFormInput = [
 		<input
 			type="text"
@@ -37,6 +39,7 @@ export default function PayForm({ apply, onRelease }) {
 				event.target.value = formattedRecipient;
 				setFriendSelected(friendList.findIndex((friend) => friend.username === event.target.value.replace("@", "")));
 				setRecipient(formattedRecipient);
+				setError(false);
 			}}
 		/>,
 	];
@@ -64,9 +67,16 @@ export default function PayForm({ apply, onRelease }) {
 
 	const toggleStep = (event) => {
 		event.preventDefault();
-		setStep((step === 1) + 1);
 
-		if (friendSelected === -1 && recipient !== "") setNewFriend(true);
+		fetchPM("/getAccount", recipient.replace("@", ""))
+			.then(() => {
+				if (friendSelected === -1) setNewFriend(true);
+				setStep((step === 1) + 1);
+			})
+			.catch((error) => {
+				setError(true);
+				setNewFriend(false);
+			});
 	};
 
 	// update user balance and transaction history
@@ -82,15 +92,20 @@ export default function PayForm({ apply, onRelease }) {
 
 		const friendPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
-		friendPromise.then(async (friendAccount) => {
-			const friendPromise = postPM("/addFriend", {}, account.accountID, friendAccount.accountID);
-			const friendAccountPromise = friendPromise.then(friendObject => fetchPM("/getAccountByUuid", friendObject.friend2ID));
+		friendPromise
+			.then(async (friendAccount) => {
+				const friendPromise = postPM("/addFriend", {}, account.accountID, friendAccount.accountID);
+				const friendAccountPromise = friendPromise.then((friendObject) => fetchPM("/getAccountByUuid", friendObject.friend2ID));
 
-			return Promise.all([friendPromise, friendAccountPromise]).then(async ([friend, friendAccount]) => {
-				const { firstName, lastName, username } = friendAccount;
-				updateFriendList([{ firstName, lastName, username }, ...friendList]);
+				return Promise.all([friendPromise, friendAccountPromise]).then(async ([friend, friendAccount]) => {
+					const { firstName, lastName, username } = friendAccount;
+					updateFriendList([{ firstName, lastName, username }, ...friendList]);
+				});
+			})
+			.catch((error) => {
+				setStep(1);
+				console.log(error);
 			});
-		});
 	};
 
 	return (
@@ -118,6 +133,7 @@ export default function PayForm({ apply, onRelease }) {
 									setNewFriend(false);
 									setFriendSelected(index);
 									setRecipient(`@${item.username}`);
+									setError(false);
 								}}
 							>
 								<div className={clsx("d-flex flex-column w-100 my-2 align-items-start")}>
@@ -128,6 +144,7 @@ export default function PayForm({ apply, onRelease }) {
 						))}
 					</div>
 				</div>
+				{error && <div className={clsx("my-2 mx-2", styles.accountError)}>Username not found</div>}
 				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 					Next
 				</button>
