@@ -1,7 +1,9 @@
 package com.example.PayMe.controller;
 
 
+import com.example.PayMe.entity.Account;
 import com.example.PayMe.entity.Friend;
+import com.example.PayMe.service.AccountService;
 import com.example.PayMe.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,23 +18,28 @@ public class FriendController {
 
     @Autowired
     private FriendService service;
+    @Autowired
+    private AccountService accountService;
 
     @PostMapping("/addFriend/{friend1ID}/{friend2ID}")
     public ResponseEntity<Friend> addFriend(@PathVariable("friend1ID") String friend1ID, @PathVariable("friend2ID") String friend2ID, @RequestBody Friend friend) {
-        System.out.println("Added friend :: " + friend.toString());
         friend = service.createFriend(UUID.fromString(friend1ID), UUID.fromString(friend2ID), friend);
         return new ResponseEntity<>(friend, friend == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 
     @GetMapping("/getFriendList/{userId}")
-    public ResponseEntity<List<Friend>> getFriendList(@PathVariable("userId") UUID userId) {
+    public ResponseEntity<List<Account>> getFriendList(@PathVariable("userId") String userId) {
         System.out.println("Accessing friends from account with uuid: " + userId);
-        return new ResponseEntity<>(service.retrieveFriends(userId), HttpStatus.OK);
+        List<Friend> friendList = service.retrieveFriends(UUID.fromString(userId));
+        List<Account> friendAccountList = friendList.parallelStream()
+                .map(friend -> accountService.retrieveAccount(friend.getFriend2ID()))
+                .toList();
+        return new ResponseEntity<>(friendAccountList, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteFriend/{uuid}")
-    public ResponseEntity<String> deleteFriend(@PathVariable UUID uuid) {
-        service.deleteFriend(uuid);
+    public ResponseEntity<String> deleteFriend(@PathVariable("uuid") String uuid) {
+        service.deleteFriend(UUID.fromString(uuid));
         return new ResponseEntity<>("Friend deleted successfully", HttpStatus.OK);
     }
 
