@@ -238,73 +238,9 @@ export default function PayMeApp() {
 		postPM("/updateCreditCardList", updatedCards, account.accountID).then((updatedList) => console.log(updatedList));
 	};
 
-	const login = async () => {
-		const account = await fetchPM("/getAccount", "u1", "p1");
-		updateAccount(account);
-
-		const [addressList, cardList, historyList, requestInList, requestOutList, friendList] = await Promise.all([
-			fetchPM("/getAddressList", account.accountID),
-			fetchPM("/getCreditCardList", account.accountID),
-			fetchPM("/getTransactionList", account.accountID),
-			fetchPM("/getRequestInList", account.accountID),
-			fetchPM("/getRequestOutList", account.accountID),
-			fetchPM("/getFriendList", account.accountID),
-		]);
-
-		updateAddressList(addressList);
-		updateCardList(cardList);
-
-		const history = await Promise.all(
-			historyList.map(async (record, index) => {
-				const otherPartyUUID = getOtherPartyUUID(record, account);
-				const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
-				return {
-					key: index,
-					subject: otherParty.firstName,
-					username: otherParty.username,
-					type: isRecipient(record, account) ? "Receive" : "Send",
-					message: record.message,
-					amount: record.transactionAmount,
-				};
-			})
-		);
-
-		updateHistoryList(history);
-
-		const updateRequests = async (requestList, updateFunction, isPayer) => {
-			const requests = await Promise.all(
-				requestList.map(async (request, index) => {
-					if (request.settled) return null;
-
-					const transaction = await fetchPM("/getTransaction", request.transactionID);
-					const otherParty = await fetchPM("/getAccountByUuid", isPayer ? transaction.recipientID : transaction.payerID);
-
-					return {
-						key: index,
-						transactionId: transaction.transactionID,
-						requestId: request.requestID,
-						subject: fullName(otherParty),
-						username: otherParty.username,
-						message: transaction.message,
-						amount: transaction.transactionAmount,
-					};
-				})
-			);
-
-			updateFunction(requests.filter(Boolean));
-		};
-
-		await updateRequests(requestInList, updateRequestInList, true);
-		await updateRequests(requestOutList, updateRequestOutList, false);
-
-		updateFriendList(friendList);
-	}
-
 	useEffect(() => {
 		// initial login
-		// updateAccount(null);
-
-		login();
+		updateAccount(null);
 
 		setTimeout(() => {
 			setLoading(false);
