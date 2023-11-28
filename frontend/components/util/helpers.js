@@ -130,5 +130,5 @@ export function getOtherPartyUUID(record, account) {
 }
 
 export function checkSufficientBalance(balance, amount) {
-	if (balance < amount) throw new Error("Insufficient Balance");
+	return balance >= amount;
 }

@@ -2,7 +2,7 @@ import styles from "../../styles/heading.module.css";
 import typingStyles from "../../styles/typing.module.css";
 import { useAccount } from "../providers/AccountProvider";
 
-import { doubleify, fetchPM, formatUsername, fullName, postPM, toFloat } from "../util/helpers";
+import { checkSufficientBalance, doubleify, fetchPM, formatUsername, fullName, postPM, toFloat } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -26,7 +26,7 @@ export default function PayForm({ apply, onRelease }) {
 	const [friendSelected, setFriendSelected] = useState(-1);
 	const [newFriend, setNewFriend] = useState(false);
 
-	const [error, setError] = useState(false);
+	const [error, setError] = useState(null);
 
 	const firstFormInput = [
 		<input
@@ -39,7 +39,7 @@ export default function PayForm({ apply, onRelease }) {
 				event.target.value = formattedRecipient;
 				setFriendSelected(friendList.findIndex((friend) => friend.username === event.target.value.replace("@", "")));
 				setRecipient(formattedRecipient);
-				setError(false);
+				setError(null);
 			}}
 		/>,
 	];
@@ -74,7 +74,7 @@ export default function PayForm({ apply, onRelease }) {
 				setStep((step === 1) + 1);
 			})
 			.catch((error) => {
-				setError(true);
+				setError({ status: 404, message: "Username not found" });
 				setNewFriend(false);
 			});
 	};
@@ -82,6 +82,11 @@ export default function PayForm({ apply, onRelease }) {
 	// update user balance and transaction history
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+
+		if (!checkSufficientBalance(account.balance, amount)) {
+			setError({ status: 403, message: "Insufficient funds" });
+			return;
+		}
 
 		apply({ recipient, amount, message });
 	};
@@ -109,7 +114,7 @@ export default function PayForm({ apply, onRelease }) {
 	};
 
 	return (
-		<Form formType={"Pay"} formAltType={"Payment Sent"} onSubmit={handleSubmit} onRelease={onRelease} noTitle={!newFriend}>
+		<Form formType={"Pay"} formAltType={"Payment Sent"} onRelease={onRelease} noTitle={!newFriend}>
 			<fieldset className={clsx("w-100", { [styles.hide]: step > 1 })}>
 				{firstFormInput.map((item, index) => (
 					<div key={index} className={clsx("my-3", styles.formInput)}>
@@ -134,7 +139,7 @@ export default function PayForm({ apply, onRelease }) {
 										setNewFriend(false);
 										setFriendSelected(index);
 										setRecipient(`@${item.username}`);
-										setError(false);
+										setError(null);
 									}}
 								>
 									<div className={clsx("d-flex flex-column w-100 my-2 align-items-start")}>
@@ -146,7 +151,7 @@ export default function PayForm({ apply, onRelease }) {
 						</div>
 					</div>
 				)}
-				{error && <div className={clsx("my-2 mx-2", styles.accountError)}>Username not found</div>}
+				{error?.status === 404 && <div className={clsx("my-2 mx-2", styles.accountError)}>{error.message}</div>}
 				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 					Next
 				</button>
@@ -157,11 +162,19 @@ export default function PayForm({ apply, onRelease }) {
 						{item}
 					</div>
 				))}
+				{error?.status === 403 && <div className={clsx("my-2 mx-2", styles.accountError)}>{error.message}</div>}
 				<div className={clsx("d-flex w-100 justify-content-between")}>
 					<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 						Previous
 					</button>
-					<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
+					<button
+						type="submit"
+						className={clsx(styles.formSubmit, styles.loginButton)}
+						onClick={(event) => {
+							event.stopPropagation();
+							handleSubmit(event);
+						}}
+					>
 						Send
 					</button>
 				</div>

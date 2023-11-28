@@ -28,7 +28,6 @@ const config = createConfig({
 
 export default function PayMeApp() {
 	const [loading, setLoading] = useState(true);
-	// User Account (name/username/pass(?)/address/phone)
 	const {
 		account,
 		updateAccount,
@@ -44,7 +43,6 @@ export default function PayMeApp() {
 		updateRequestInList,
 		requestOutList,
 		updateRequestOutList,
-		updateFriendList,
 	} = useAccount();
 
 	const handleLogout = () => {
@@ -52,8 +50,6 @@ export default function PayMeApp() {
 	};
 
 	const handlePay = async ({ recipient, amount, message }) => {
-		checkSufficientBalance(account.balance, amount);
-
 		const accountPromise = fetchPM("/getAccount", recipient.replace("@", ""));
 
 		return accountPromise.then(async (recipientAccount) => {
