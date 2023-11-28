@@ -24,6 +24,7 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 
 	const login = async (account) => {
 		updateAccount(account);
+		console.log(account, account.accountID)
 
 		const [addressList, cardList, historyList, requestInList, requestOutList, friendList] = await Promise.all([
 			fetchPM("/getAddressList", account.accountID),
@@ -36,6 +37,8 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 
 		updateAddressList(addressList);
 		updateCardList(cardList);
+
+		console.log(historyList)
 
 		const history = await Promise.all(
 			historyList
@@ -56,6 +59,7 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 		);
 
 		updateHistoryList(history);
+		console.log(history)
 
 		const updateRequests = async (requestList, updateFunction, isPayer) => {
 			const requests = await Promise.all(

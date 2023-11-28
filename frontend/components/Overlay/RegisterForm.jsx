@@ -16,9 +16,9 @@ import { useState } from "react";
  *
  */
 export default function RegisterForm({ apply, onRelease, onAltRelease }) {
-	const { updateAccount, updateAddressList, updateCardList } = useAccount();
+	const { updateAccount, updateAddressList, updateCardList, updateHistoryList, updateRequestInList, updateRequestOutList } = useAccount();
 
-	const [error, setError] = useState(-1);
+	const [error, setError] = useState(null);
 
 	const [step, setStep] = useState(1);
 	const totalSteps = 3;
@@ -104,6 +104,10 @@ export default function RegisterForm({ apply, onRelease, onAltRelease }) {
 						console.log(cardList);
 					})
 					.catch(console.error);
+
+				updateHistoryList([]);
+				updateRequestInList([]);
+				updateRequestOutList([]);
 
 				apply(); // ensure all data is correctly sent/data is not duplicate before closing form
 			})

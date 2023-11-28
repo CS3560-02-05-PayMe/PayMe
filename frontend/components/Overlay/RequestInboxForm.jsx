@@ -7,6 +7,7 @@ import Form from "./Form";
 import clsx from "clsx";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useAccount } from "../providers/AccountProvider";
+import { checkSufficientBalance } from "../util/helpers";
 
 /**
  *
@@ -16,7 +17,7 @@ import { useAccount } from "../providers/AccountProvider";
  *
  */
 export default function RequestInboxForm({ apply, remove, onRelease }) {
-	const { requestInList, requestOutList } = useAccount();
+	const { account, requestInList, requestOutList } = useAccount();
 
 	const [selected, setSelected] = useState(0);
 	const [requestList, setRequestList] = useState(requestInList);
@@ -24,6 +25,8 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 	// moderation for checked/unchecked boxes
 	const [checkedItems, setCheckedItems] = useState(Array(requestList.length).fill(false));
 	const [listState, setListState] = useState("default");
+
+	const [error, setError] = useState(null);
 
 	const handleItemClicked = (index) => {
 		const newCheckedItems = [...checkedItems];
@@ -56,6 +59,18 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 	const handleTypeSelected = (event, index) => {
 		event.preventDefault();
 		setSelected(index);
+		setError(null);
+	};
+
+	const handleSubmit = (event, { recipient, amount, message, transactionId }) => {
+		event.preventDefault();
+
+		if (!checkSufficientBalance(account.balance, amount)) {
+			setError({ status: 403, message: "Insufficient funds" });
+			return;
+		}
+
+		apply({ recipient, amount, message, transactionId });
 	};
 
 	useEffect(() => {
@@ -65,13 +80,7 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 	}, [selected, requestList, requestInList, requestOutList]);
 
 	return (
-		<Form
-			formType={"Requests"}
-			onSubmit={(event) => {
-				event.preventDefault();
-			}}
-			onRelease={onRelease}
-		>
+		<Form formType={"Requests"} onRelease={onRelease}>
 			<div className="d-flex flex-column w-100">
 				<div
 					className={clsx("d-flex align-items-start p-2 mx-2", styles.listCheckable, {
@@ -96,7 +105,7 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 								if (value) indices.push(index);
 								return indices;
 							}, []);
-					
+
 							const toRemove = requestList.filter((_, index) => listIndexRemove.includes(index));
 							const updatedRequests = requestList.filter((_, index) => !listIndexRemove.includes(index));
 
@@ -150,12 +159,11 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 									{!selected && (
 										<span
 											className={clsx("ms-2 py-2 px-3", styles.payNowButton)}
-											onClick={() => {
+											onClick={(event) => {
+												event.stopPropagation();
 												const { amount, message, transactionId } = item;
 												console.log(item);
-												apply({ recipient: item.username, amount, message, transactionId }).then(() => {
-													// remove request
-												});
+												handleSubmit(event, { recipient: item.username, amount, message, transactionId });
 											}}
 										>
 											Pay
@@ -166,6 +174,7 @@ export default function RequestInboxForm({ apply, remove, onRelease }) {
 						</li>
 					))}
 				</ul>
+				{error?.status === 403 && <div className={clsx("my-2 mx-2", styles.accountError)}>{error.message}</div>}
 				{requestList.length == 0 && (
 					<div className={clsx("d-flex flex-column w-100 h-100 px-5")}>
 						<div className="py-2">
