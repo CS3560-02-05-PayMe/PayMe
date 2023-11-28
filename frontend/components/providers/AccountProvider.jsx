@@ -18,9 +18,7 @@ export const AccountProvider = ({ children }) => {
 	const [requestInList, setRequestInList] = useState([]);
 	const [requestOutList, setRequestOutList] = useState([]);
 
-	const [friendList, setFriendList] = useState([
-		{ firstName: "Caitlyn", lastName: "Kiramann", username: "kiralynn" },
-	]);
+	const [friendList, setFriendList] = useState([]);
 
 	const updateLoggedIn = (status) => {
 		setLoggedIn(status);
