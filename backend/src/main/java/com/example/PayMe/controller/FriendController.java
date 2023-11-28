@@ -13,20 +13,35 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+/*controller provides endpoints for 
+creating, retrieving, updating, and deleting friend relationships */
+
 @RestController
+// handle incoming HTTP requests and produce HTTP responses
+// Spring MVC application
 public class FriendController {
 
+    /*injects an instance of the FriendService into the controller
+    contains logic for managing friend-related operations*/
     @Autowired
     private FriendService service;
     @Autowired
     private AccountService accountService;
 
+    /*POST request 
+     *adds a friend relationship between two users
+     returns a ResponseEntity with the created Friend object 
+     an HTTP status code indicating success or failure
+     */
     @PostMapping("/addFriend/{friend1ID}/{friend2ID}")
     public ResponseEntity<Friend> addFriend(@PathVariable("friend1ID") String friend1ID, @PathVariable("friend2ID") String friend2ID, @RequestBody Friend friend) {
         friend = service.createFriend(UUID.fromString(friend1ID), UUID.fromString(friend2ID), friend);
         return new ResponseEntity<>(friend, friend == null ? HttpStatus.CONFLICT : HttpStatus.OK);
     }
 
+    /* GET request retrieves the list of friends for the given user
+     * returns the list of friends and an HTTP status code
+     */
     @GetMapping("/getFriendList/{userId}")
     public ResponseEntity<List<Account>> getFriendList(@PathVariable("userId") String userId) {
         System.out.println("Accessing friends from account with uuid: " + userId);
@@ -44,6 +59,9 @@ public class FriendController {
         return new ResponseEntity<>(friendAccountList, HttpStatus.OK);
     }
 
+    /*DELETE request
+     * deletes the friend with the specified UUID
+      */
     @DeleteMapping("/deleteFriend/{uuid}")
     public ResponseEntity<String> deleteFriend(@PathVariable("uuid") String uuid) {
         service.deleteFriend(UUID.fromString(uuid));
@@ -53,6 +71,7 @@ public class FriendController {
     ///////////////////////////////////
     //Functionality added 
     ///////////////////////////////////
+    /*Update Friend and Friend List Endpoints*/
     @PostMapping("/updateFriend/{userId}/{friendId}")
     public ResponseEntity<Friend> updateFriend(@PathVariable("userId") String userID, @PathVariable("friendId") String friendID, @RequestBody Friend updatedFriend) {
         Friend result = service.updateFriend(UUID.fromString(userID), UUID.fromString(friendID), updatedFriend);

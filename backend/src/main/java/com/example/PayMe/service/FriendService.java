@@ -1,6 +1,5 @@
 package com.example.PayMe.service;
 
-
 import com.example.PayMe.entity.Account;
 import com.example.PayMe.entity.Friend;
 import com.example.PayMe.repository.FriendRepository;
@@ -23,7 +22,8 @@ public class FriendService {
         Account friend1 = accountService.retrieveAccount(friend1ID);
         Account friend2 = accountService.retrieveAccount(friend2ID);
 
-        if (friend1 == null || friend2 == null) return null;
+        if (friend1 == null || friend2 == null)
+            return null;
 
         friend.setFriend1(friend1);
         friend.setFriend2(friend2);
@@ -47,9 +47,11 @@ public class FriendService {
 
     // get all friends associated with user
     public List<Friend> retrieveFriends(UUID userID) {
-        List<Friend> friend1List = repo.findAllByFriend1_AccountID(userID); //Collect all friend instances where user is friend1
-        List<Friend> friend2List = repo.findAllByFriend2_AccountID(userID); //Collect all friend instances where user is friend2
-        friend1List.addAll(friend2List);    //Combine instances to get complete friendList
+        List<Friend> friend1List = repo.findAllByFriend1_AccountID(userID); // Collect all friend instances where user
+                                                                            // is friend1
+        List<Friend> friend2List = repo.findAllByFriend2_AccountID(userID); // Collect all friend instances where user
+                                                                            // is friend2
+        friend1List.addAll(friend2List); // Combine instances to get complete friendList
 
         return friend1List;
     }
@@ -68,7 +70,7 @@ public class FriendService {
 
         Friend existingFriend;
 
-        //was: setFriendName & getFriendName, now: setFriend2 & getFriend2
+        // was: setFriendName & getFriendName, now: setFriend2 & getFriend2
         if (optionalFriend.isPresent()) {
             existingFriend = optionalFriend.get();
             existingFriend.setFriend2(updatedFriend.getFriend2());
@@ -92,7 +94,7 @@ public class FriendService {
         // update existing list with new friend list
         existingList.clear();
         updatedFriendList.parallelStream().forEach(friend -> {
-            //friend.setAccount(account);
+            // friend.setAccount(account);
             friend.setFriend1(account);
             existingList.add(friend);
         });
