@@ -118,7 +118,7 @@ export function shorten(input) {
 // helper function to check if form is empty
 // return true if all fields are empty
 export function emptyFields(...fields) {
-	return fields.every((field) => field === "");
+	return fields.some((field) => field === "");
 }
 
 export function isRecipient(record, account) {
