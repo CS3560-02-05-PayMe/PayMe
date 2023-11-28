@@ -7,7 +7,6 @@ import RecentActivity from "../components/Account/RecentActivity";
 import Pay from "../components/Transactions/Pay";
 import Request from "../components/Transactions/Request";
 
-import { Switch } from "antd";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import { configureChains, mainnet, WagmiConfig, createConfig } from "wagmi";
@@ -26,16 +25,6 @@ const config = createConfig({
 	provider,
 	webSocketProvider,
 });
-
-// TEMPORARY FOR SAMPLE DATA GENERATOR ---------------
-const sampleNames = ["Mike", "Amanda", "Roy", "Charlie", "Jimmy"];
-const sampleTypes = ["Send", "Receive"];
-const sampleMessage = ["Cookies", "Dinner", "Lunch", "Movie Tickets", "Golf", "Gatorade", "Poker", "Car Fix"];
-
-const randomElement = (data) => {
-	return data[Math.floor(Math.random() * data.length)];
-};
-// ---------------------------------------------------
 
 export default function PayMeApp() {
 	const [loading, setLoading] = useState(true);

@@ -116,34 +116,36 @@ export default function PayForm({ apply, onRelease }) {
 						{item}
 					</div>
 				))}
-				<div className={clsx("d-flex flex-column w-100 my-2")}>
-					<div className={clsx("d-flex h-100", styles.friendTab)}>
-						<div className={clsx("d-flex", styles.friendTabName)}>
-							<span className={clsx("mx-2", styles.payFriends)} />
-							<span className={clsx(typingStyles.fontType7)}>Friends</span>
+				{friendList.length > 0 && (
+					<div className={clsx("d-flex flex-column w-100 my-2")}>
+						<div className={clsx("d-flex h-100", styles.friendTab)}>
+							<div className={clsx("d-flex", styles.friendTabName)}>
+								<span className={clsx("mx-2", styles.payFriends)} />
+								<span className={clsx(typingStyles.fontType7)}>Friends</span>
+							</div>
+						</div>
+						<div className={clsx("d-flex flex-column w-100", styles.friendList)}>
+							{friendList.map((item, index) => (
+								<div
+									key={index}
+									className={clsx("d-flex w-100 px-2", styles.friend, { [styles.selected]: friendSelected === index })}
+									onClick={(event) => {
+										event.preventDefault();
+										setNewFriend(false);
+										setFriendSelected(index);
+										setRecipient(`@${item.username}`);
+										setError(false);
+									}}
+								>
+									<div className={clsx("d-flex flex-column w-100 my-2 align-items-start")}>
+										<span className={clsx(typingStyles.fontType8)}>{fullName(item)}</span>
+										<span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{item.username}</span>
+									</div>
+								</div>
+							))}
 						</div>
 					</div>
-					<div className={clsx("d-flex flex-column w-100", styles.friendList)}>
-						{friendList.map((item, index) => (
-							<div
-								key={index}
-								className={clsx("d-flex w-100 px-2", styles.friend, { [styles.selected]: friendSelected === index })}
-								onClick={(event) => {
-									event.preventDefault();
-									setNewFriend(false);
-									setFriendSelected(index);
-									setRecipient(`@${item.username}`);
-									setError(false);
-								}}
-							>
-								<div className={clsx("d-flex flex-column w-100 my-2 align-items-start")}>
-									<span className={clsx(typingStyles.fontType8)}>{fullName(item)}</span>
-									<span className={clsx(typingStyles.fontType4, typingStyles.white9)}>@{item.username}</span>
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
+				)}
 				{error && <div className={clsx("my-2 mx-2", styles.accountError)}>Username not found</div>}
 				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 					Next

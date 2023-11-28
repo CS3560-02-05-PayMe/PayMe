@@ -30,9 +30,16 @@ public class FriendController {
     @GetMapping("/getFriendList/{userId}")
     public ResponseEntity<List<Account>> getFriendList(@PathVariable("userId") String userId) {
         System.out.println("Accessing friends from account with uuid: " + userId);
-        List<Friend> friendList = service.retrieveFriends(UUID.fromString(userId));
+        UUID uuid = UUID.fromString(userId);
+        List<Friend> friendList = service.retrieveFriends(uuid);
         List<Account> friendAccountList = friendList.parallelStream()
-                .map(friend -> accountService.retrieveAccount(friend.getFriend2ID()))
+                .map(friend -> {
+                            Account account1 = accountService.retrieveAccount(friend.getFriend1ID());
+                            Account account2 = accountService.retrieveAccount(friend.getFriend2ID());
+
+                            return !account1.getAccountID().equals(uuid) ? account1 : !account2.getAccountID().equals(uuid) ? account2 : null;
+                        }
+                )
                 .toList();
         return new ResponseEntity<>(friendAccountList, HttpStatus.OK);
     }

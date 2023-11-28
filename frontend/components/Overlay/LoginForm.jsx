@@ -20,12 +20,9 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
-	// log user in
-	const handleSubmit = async (event) => {
-		event.preventDefault();
+	const [error, setError] = useState(false);
 
-		const account = await fetchPM("/getAccount", "u1", "p1");
-		console.log(account);
+	const login = async (account) => {
 		updateAccount(account);
 
 		const [addressList, cardList, historyList, requestInList, requestOutList, friendList] = await Promise.all([
@@ -41,18 +38,21 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 		updateCardList(cardList);
 
 		const history = await Promise.all(
-			historyList.map(async (record, index) => {
-				const otherPartyUUID = getOtherPartyUUID(record, account);
-				const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
-				return {
-					key: index,
-					subject: otherParty.firstName,
-					username: otherParty.username,
-					type: isRecipient(record, account) ? "Receive" : "Send",
-					message: record.message,
-					amount: record.transactionAmount,
-				};
-			})
+			historyList
+				.map(async (record, index) => {
+					const otherPartyUUID = getOtherPartyUUID(record, account);
+					const otherParty = await fetchPM("/getAccountByUuid", otherPartyUUID);
+					return {
+						key: index,
+						subject: otherParty.firstName,
+						username: otherParty.username,
+						type: isRecipient(record, account) ? "Receive" : "Send",
+						message: record.message,
+						amount: record.transactionAmount,
+					};
+				})
+				// replaces #unshift each element
+				.reverse()
 		);
 
 		updateHistoryList(history);
@@ -88,6 +88,19 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 		apply(); // ensure all data is correctly retrieved before closing form
 	};
 
+	// log user in
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+
+		await fetchPM("/getAccount", username, password)
+			.then((account) => {
+				login(account);
+			})
+			.catch((error) => {
+				setError(true);
+			});
+	};
+
 	const formInputs = [
 		// {/* <UserOutlined className={clsx("", styles.formInputIcon)} style={{ color: "black" }} /> */}
 		<input
@@ -110,8 +123,16 @@ export default function LoginForm({ apply, onRelease, onAltRelease }) {
 	];
 
 	return (
-		<Form formType={"Login"} formInputs={formInputs} onSubmit={handleSubmit} onRelease={onRelease} outsideClick={apply}>
-			<button type="submit" className={clsx(styles.formSubmit, styles.loginButton)}>
+		<Form formType={"Login"} formInputs={formInputs} onRelease={onRelease} outsideClick={apply}>
+			{error && <div className={clsx("my-2 mx-2", styles.accountError)}>Username or password incorrect</div>}
+			<button
+				type="submit"
+				className={clsx(styles.formSubmit, styles.loginButton)}
+				onClick={(event) => {
+					event.preventDefault();
+					handleSubmit(event);
+				}}
+			>
 				Login
 			</button>
 			<div className={clsx("my-2", styles.formRegister)}>

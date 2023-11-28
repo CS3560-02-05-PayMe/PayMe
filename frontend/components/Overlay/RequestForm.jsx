@@ -1,6 +1,6 @@
 import styles from "../../styles/heading.module.css";
 
-import { doubleify, formatUsername, toFloat } from "../util/helpers";
+import { doubleify, fetchPM, formatUsername, toFloat } from "../util/helpers";
 import Form from "./Form";
 
 import clsx from "clsx";
@@ -18,6 +18,8 @@ export default function RequestForm({ apply, onRelease }) {
 	const [message, setMessage] = useState("");
 
 	const [step, setStep] = useState(1);
+
+	const [error, setError] = useState(false);
 
 	const firstFormInput = [
 		<input
@@ -55,7 +57,14 @@ export default function RequestForm({ apply, onRelease }) {
 
 	const toggleStep = (event) => {
 		event.preventDefault();
-		setStep((step === 1) + 1);
+
+		fetchPM("/getAccount", debtor.replace("@", ""))
+			.then(() => {
+				setStep((step === 1) + 1);
+			})
+			.catch((error) => {
+				setError(true);
+			});
 	};
 
 	// send request to mentioned account's inbox
@@ -73,6 +82,7 @@ export default function RequestForm({ apply, onRelease }) {
 						{item}
 					</div>
 				))}
+				{error && <div className={clsx("my-2 mx-2", styles.accountError)}>Username not found</div>}
 				<button className={clsx(styles.formSubmit, styles.loginButton)} onClick={toggleStep}>
 					Next
 				</button>
