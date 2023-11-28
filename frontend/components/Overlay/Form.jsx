@@ -15,7 +15,7 @@ import FormSubmitted from "./PostOverlay/FormSubmitted";
  * @param outsideClick Calls provided function from parent
  *
  */
-export default function Form({ children, formType, formAltType = undefined, formInputs = [], onSubmit: handleSubmit = () => {}, onRelease: apply, outsideClick = () => {}, formAltSrc }) {
+export default function Form({ children, formType, formAltType = undefined, formInputs = [], onSubmit: handleSubmit = () => {}, onRelease: apply, outsideClick = () => {}, formAltSrc, noTitle = true }) {
 	const formRef = useRef(null);
 
 	const [formTitle, setFormTitle] = useState("");
@@ -44,7 +44,7 @@ export default function Form({ children, formType, formAltType = undefined, form
 			<div className={clsx("d-flex flex-column position-relative top-50 start-50 p-4", styles.formWrapper, typingStyles.fontType5)} ref={formRef}>
 				{showFields && (
 					<>
-						<span className={clsx("w-100 text-center", styles.formHeading, typingStyles.fontTypeHeading1)}>{formTitle}</span>
+						<span className={clsx("w-100 text-center", styles.formHeading, typingStyles.fontTypeHeading1)}>{noTitle ? formTitle : ""}</span>
 						<form
 							className={clsx("w-100 text-center overflow-hidden", styles.formFields, { [styles.fadeOut]: !showFields })}
 							onSubmit={(event) => {

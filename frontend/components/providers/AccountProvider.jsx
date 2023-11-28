@@ -10,11 +10,17 @@ export const AccountProvider = ({ children }) => {
 	const [loggedIn, setLoggedIn] = useState(false);
 
 	const [account, setAccount] = useState(null);
+
 	const [addressList, setAddressList] = useState([]);
 	const [cardList, setCardList] = useState([]);
 	const [historyList, setHistoryList] = useState([]);
+
 	const [requestInList, setRequestInList] = useState([]);
 	const [requestOutList, setRequestOutList] = useState([]);
+
+	const [friendList, setFriendList] = useState([
+		{ firstName: "Caitlyn", lastName: "Kiramann", username: "kiralynn" },
+	]);
 
 	const updateLoggedIn = (status) => {
 		setLoggedIn(status);
@@ -45,6 +51,10 @@ export const AccountProvider = ({ children }) => {
 		setRequestOutList(list);
 	};
 
+	const updateFriendList = (list) => {
+		setFriendList(list);
+	};
+
 	return (
 		<AccountContext.Provider
 			value={{
@@ -62,6 +72,8 @@ export const AccountProvider = ({ children }) => {
 				updateRequestInList,
 				requestOutList,
 				updateRequestOutList,
+				friendList,
+				updateFriendList,
 			}}
 		>
 			{children}
