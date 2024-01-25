@@ -6,6 +6,8 @@ Introducing PayMe, a cutting-edge P2P payment website designed for efficient and
 <img width="1306" alt="image" src="https://github.com/CS3560-02-05-PayMe/PayMe/assets/111472652/19ecb9c5-aef3-4f78-8b20-ab3ee8f260fc">
 
 **Use case: Create Account**
+
+
 <img width="458" alt="image" src="https://github.com/CS3560-02-05-PayMe/PayMe/assets/111472652/b1d5b5a4-c5fd-4243-933b-f0bd0b3a5e7f">
 
 
@@ -18,6 +20,8 @@ Introducing PayMe, a cutting-edge P2P payment website designed for efficient and
 
 
 **Use case: Create Payment**
+
+
 <img width="333" alt="image" src="https://github.com/CS3560-02-05-PayMe/PayMe/assets/111472652/05439c12-2da1-4528-8bd8-e10b784ce551">
 
 
