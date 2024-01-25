@@ -44,10 +44,14 @@ Introducing PayMe, a cutting-edge P2P payment website designed for efficient and
 
 
 **Domain Model Class Diagram**
+
+
 <img width="595" alt="image" src="https://github.com/CS3560-02-05-PayMe/PayMe/assets/111472652/3dfa87d6-0967-4cbc-aebb-d052ccd9824b">
 
 
 **Database Schema**
+
+
 <img width="459" alt="image" src="https://github.com/CS3560-02-05-PayMe/PayMe/assets/111472652/e32a3080-0a6d-4776-b2a6-3743566279fd">
 
 
